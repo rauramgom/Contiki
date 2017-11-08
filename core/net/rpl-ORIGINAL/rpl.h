@@ -101,7 +101,6 @@ struct rpl_metric_container {
   union metric_object {
     struct rpl_metric_object_energy energy;
     uint16_t etx;
-    uint16_t num_low_bat; /*Low batteries counter along the path*/
   } obj;
 };
 typedef struct rpl_metric_container rpl_metric_container_t;
