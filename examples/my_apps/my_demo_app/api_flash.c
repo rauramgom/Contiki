@@ -94,7 +94,7 @@ write_flash(struct Measure data_to_write, uint32_t *pos_flash)
 
 	//Antes de escribir comprueba que no se hayan completado los 4k
 	if(*pos_flash < FLASH_ADDR_START+BLOCK_LEN/*FLASH_ADDR_END*/ || 
-		((*pos_flash > FLASH_ADDR_START+BLOCK_LEN) &&
+		((*pos_flash >= FLASH_ADDR_START+BLOCK_LEN) &&
 			erase_flash(pos_flash) == ERASE_SUCCESS))
 	{
 		while(FlashCheckFsmForError() != FAPI_STATUS_SUCCESS &&
@@ -112,8 +112,9 @@ write_flash(struct Measure data_to_write, uint32_t *pos_flash)
 		FlashIntEnable(FLASH_INT_FSM_DONE);
 		if (write_resul == FAPI_STATUS_SUCCESS)
 		{
-			printf("[%lu] Flash written correctly.\n\n", clock_seconds());
+			printf("[%lu] Flash written correctly.\n", clock_seconds());
 			*pos_flash += sizeof(write_buffer);
+			printf("pos_flash: %lu\n", *pos_flash);
 		} else if (write_resul == FAPI_STATUS_FSM_ERROR) {
 			//Cuando intenta escribir 1 donde hay 0 sin Erase() previo
 			printf("[%lu] [** WRITE ERROR**] A programming \
@@ -123,7 +124,7 @@ write_flash(struct Measure data_to_write, uint32_t *pos_flash)
 			printf("[%lu] [**WRITE ERROR**] Too many bytes \
 				were requested.\n", clock_seconds());
 		}
-	}
+	} 
 } //End of write_flash()
 
 

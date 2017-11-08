@@ -182,7 +182,7 @@ PROCESS_THREAD(my_demo_app, ev, data)
 		{
 			//Save the data on Flash
 			leds_toggle(LEDS_RED);
-			printf("Storing value ...\n");
+			printf("Storing value ...\n"); 
 			//Fill up every Measure struct field
 			temp_measure.measure = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
 			temp_measure.ID = TEMP;

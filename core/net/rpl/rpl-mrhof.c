@@ -135,7 +135,7 @@ dao_ack_callback(rpl_parent_t *p, int status)
 /*---------------------------------------------------------------------------*/
 // Returns the link metric(ETX) of a parent  
 //
-//					 ETX^2/DIVISOR
+//				ETX^2/DIVISOR
 //		Node ================ Parent
 static uint16_t
 parent_link_metric(rpl_parent_t *p)
@@ -204,6 +204,14 @@ parent_path_cost(rpl_parent_t *p)
 	//Rounding to the upper integer only if is bigger than 0.5
 	if(new_link_cost - (int)new_link_cost >= 0.5)
 		new_link_cost = ceil(new_link_cost);
+
+	PRINTF("\n-*-*-*-*-*\n");
+	PRINTF(" -ETX_base: %lu\n", base);
+	PRINTF(" -ETX_parent_link_metric: %lu",
+				(uint32_t)new_link_cost - (1-ALPHA)*(p->mc.obj.num_low_bat));
+	PRINTF(" -ETC_num_low_bat: %d", (1-ALPHA)*(p->mc.obj.num_low_bat));
+	PRINTF(" -ETX_new_link_cos: %d\n", (uint32_t)new_link_cost);
+	PRINTF("-*-*-*-*-*\n\n");
 #else /* RPL_WITH_MC */
 	base = p->rank;
 #endif /* RPL_WITH_MC */
@@ -355,7 +363,7 @@ update_metric_container(rpl_instance_t *instance)
 		case RPL_DAG_MC_NONE:
 			break;
 		case RPL_DAG_MC_ETX:
-			//Fill in the DIO message fields
+			//Fill up the DIO message fields
 			instance->mc.length = sizeof(instance->mc.obj.etx); //uint16_t
 			instance->mc.obj.etx = path_cost; //cost = ALPHA*etx + (1-ALPHA)*battery
 			instance->mc.obj.num_low_bat = dag->preferred_parent.mc.obj.num_low_bat;
