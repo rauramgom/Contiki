@@ -1,19 +1,21 @@
 CONTIKI_PROJECT = my_demo_app
 all: $(CONTIKI_PROJECT)
 
-#REST_RESOURCES_DIR = ./resources
+CONTIKI=../../..
+CFLAGS += -DPROJECT_CONF_H=\"project-conf.h\"
 
-#REST_RESOURCES_FILES += res-leds.c res-toggle-leds.c
-#PROJECTDIRS += $(REST_RESOURCES_DIR)
-#PROJECT_SOURCEFILES += $(REST_RESOURCES_FILES)
+CONTIKI_WITH_IPV6 = 1
+MAKE_WITH_SECURITY = 1 
+
+MODULES += core/net/mac/tsch
+
+ifeq ($(MAKE_WITH_SECURITY),1)
+CFLAGS += -DWITH_SECURITY=1
+endif
 
 PROJECT_SOURCEFILES += api_flash.c
-
-#UIP_CONF_IPV6=1
-CONTIKI_WITH_IPV6 = 1
 
 APPS += er-coap
 APPS += rest-engine
 
-CONTIKI = ../../..
 include $(CONTIKI)/Makefile.include
