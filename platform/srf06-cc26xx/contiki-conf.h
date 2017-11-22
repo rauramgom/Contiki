@@ -224,7 +224,9 @@
 
 #define UIP_CONF_ND6_SEND_RA                 0
 #define UIP_CONF_IP_FORWARD                  0
+#ifndef RPL_CONF_STATS
 #define RPL_CONF_STATS                       0
+#endif
 
 #define UIP_CONF_ND6_REACHABLE_TIME     600000
 #define UIP_CONF_ND6_RETRANS_TIMER       10000
@@ -383,13 +385,19 @@ typedef uint32_t rtimer_clock_t;
 #define USEC_TO_RADIO(X)     ((X) * 4)
 
 /* The PHY header (preamble + SFD, 4+1 bytes) duration is equivalent to 10 symbols */
+#ifndef RADIO_IEEE_802154_PHY_HEADER_DURATION_USEC
 #define RADIO_IEEE_802154_PHY_HEADER_DURATION_USEC 160
+#endif
 
 /* Do not turn off TSCH within a timeslot: not enough time */
+#ifndef TSCH_CONF_RADIO_ON_DURING_TIMESLOT
 #define TSCH_CONF_RADIO_ON_DURING_TIMESLOT 1
+#endif
 
 /* Disable TSCH frame filtering */
+#ifndef TSCH_CONF_HW_FRAME_FILTERING
 #define TSCH_CONF_HW_FRAME_FILTERING	0
+#endif
 
 /* Use hardware timestamps */
 #ifndef TSCH_CONF_RESYNC_WITH_SFD_TIMESTAMPS

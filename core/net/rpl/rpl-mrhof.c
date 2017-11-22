@@ -57,6 +57,9 @@
 #define DEBUG DEBUG_FULL //DEBUG_NONE
 #include "net/ip/uip-debug.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
 //Necesario para comprobar la bateria del nodo
 //#include "batmon-sensor.h"
 
@@ -206,11 +209,11 @@ parent_path_cost(rpl_parent_t *p)
 		new_link_cost = ceil(new_link_cost);
 
 	PRINTF("\n-*-*-*-*-*\n");
-	PRINTF(" -ETX_base: %lu\n", base);
-	PRINTF(" -ETX_parent_link_metric: %lu",
-				(uint32_t)new_link_cost - (1-ALPHA)*(p->mc.obj.num_low_bat));
-	PRINTF(" -ETC_num_low_bat: %d", (1-ALPHA)*(p->mc.obj.num_low_bat));
-	PRINTF(" -ETX_new_link_cos: %d\n", (uint32_t)new_link_cost);
+	PRINTF(" -ETX_base: %d\n", base);
+	PRINTF(" -ETX_parent_link_metric: %lf",
+				new_link_cost - (1-ALPHA)*(p->mc.obj.num_low_bat));
+	PRINTF(" -ETC_num_low_bat: %lf", (1-ALPHA)*(p->mc.obj.num_low_bat));
+	PRINTF(" -ETX_new_link_cos: %lu\n", (uint32_t)new_link_cost);
 	PRINTF("-*-*-*-*-*\n\n");
 #else /* RPL_WITH_MC */
 	base = p->rank;
@@ -218,7 +221,7 @@ parent_path_cost(rpl_parent_t *p)
 
 	/* path cost upper bound: 0xffff 
 	*
-	*		- base:						parent_ETX
+	*		- base:				parent_ETX
 	*		- new_link_cost:	link cost based on link_metric + num_device_low_battery
 	*/
 #if RPL_WITH_MC
@@ -366,7 +369,7 @@ update_metric_container(rpl_instance_t *instance)
 			//Fill up the DIO message fields
 			instance->mc.length = sizeof(instance->mc.obj.etx); //uint16_t
 			instance->mc.obj.etx = path_cost; //cost = ALPHA*etx + (1-ALPHA)*battery
-			instance->mc.obj.num_low_bat = dag->preferred_parent.mc.obj.num_low_bat;
+			instance->mc.obj.num_low_bat = dag->preferred_parent->mc.obj.num_low_bat;
 			//Check if it is necessary to enhance the low battery count
 			//if(batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT) <= BATTERY_LOW_LIMIT)
 			if(rand()%10 < 5)

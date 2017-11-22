@@ -51,7 +51,7 @@
  * point (OCP) of the OF, RPL_OCP_OF0 or RPL_OCP_MRHOF. This flag is of
  * no relevance to non-root nodes, which run the OF advertised in the
  * instance they join.
- * Make sure the selected of is inRPL_SUPPORTED_OFS.
+ * Make sure the selected OF is in RPL_SUPPORTED_OFS.
  */
 #ifdef RPL_CONF_OF_OCP
 #define RPL_OF_OCP RPL_CONF_OF_OCP
@@ -137,9 +137,9 @@
  * default route with infinite lifetime secures the upstream route.
  */
 #ifdef RPL_CONF_DEFAULT_ROUTE_INFINITE_LIFETIME
-#define RPL_DEFAULT_ROUTE_INFINITE_LIFETIME                    RPL_CONF_DEFAULT_ROUTE_INFINITE_LIFETIME
+#define RPL_DEFAULT_ROUTE_INFINITE_LIFETIME      RPL_CONF_DEFAULT_ROUTE_INFINITE_LIFETIME
 #else
-#define RPL_DEFAULT_ROUTE_INFINITE_LIFETIME                    1
+#define RPL_DEFAULT_ROUTE_INFINITE_LIFETIME      1
 #endif /* RPL_CONF_DEFAULT_ROUTE_INFINITE_LIFETIME */
 
 /*

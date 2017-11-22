@@ -33,7 +33,7 @@
  *         Orchestra configuration
  *
  * \author Simon Duquennoy <simonduq@sics.se>
- */
+ */ 
 
 #ifndef __ORCHESTRA_CONF_H__
 #define __ORCHESTRA_CONF_H__
