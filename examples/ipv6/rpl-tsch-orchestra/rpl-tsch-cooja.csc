@@ -25,9 +25,9 @@
       org.contikios.cooja.contikimote.ContikiMoteType
       <identifier>mtype660</identifier>
       <description>Cooja Mote Type #z11</description>
-      <source>[CONTIKI_DIR]/examples/ipv6/rpl-tsch/node.c</source>
+      <source>[CONTIKI_DIR]/examples/ipv6/rpl-tsch-orchestra/node_orchestra.c</source>
       <commands>make TARGET=cooja clean
-      make TARGET=cooja node.cooja</commands>
+      make TARGET=cooja node_orchestra.cooja</commands>
       <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
       <moteinterface>org.contikios.cooja.interfaces.Battery</moteinterface>
       <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiVib</moteinterface>

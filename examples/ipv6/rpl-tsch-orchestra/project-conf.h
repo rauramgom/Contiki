@@ -29,7 +29,8 @@
  */
 
 /**
- * \author Simon Duquennoy <simonduq@sics.se>
+ * \author 		Simon Duquennoy <simonduq@sics.se>
+ * \modified	Raul Ramirez Gomez <raulramirezgomez@gmail.com>
  */
 
 #ifndef __PROJECT_CONF_H__
@@ -46,15 +47,53 @@
 #endif /* WITH_SECURITY */
 
 /*******************************************************/
-/********* Enable RPL non-storing mode *****************/
+/****************** SLOTFRAMES LENGTH ******************/
 /*******************************************************/
+/* Length of the various slotframes. Tune to balance network capacity,
+ * contention, energy, latency. */
+#undef ORCHESTRA_CONF_EBSF_PERIOD
+#define ORCHESTRA_CONF_EBSF_PERIOD	397 //Level TSCH. Default: 397
 
+#undef ORCHESTRA_CONF_COMMON_RPL_PERIOD
+#define ORCHESTRA_CONF_COMMON_RPL_PERIOD	103 //Level RPL. Default: 51
+
+#ifdef ORCHESTRA_CONF_COMMON_RPL_PERIOD
+#define ORCHESTRA_COMMON_RPL_PERIOD ORCHESTRA_CONF_COMMON_RPL_PERIOD
+#endif
+
+#undef ORCHESTRA_CONF_COMMON_SHARED_PERIOD
+#define ORCHESTRA_CONF_COMMON_SHARED_PERIOD	1010 //Level App_shared. Default: 31
+
+#undef ORCHESTRA_CONF_UNICAST_PERIOD
+#define ORCHESTRA_CONF_UNICAST_PERIO 510 //Level App_unicast.Default: 17
+
+
+/*******************************************************/
+/*********** RPL storing mode & Sender-based ***********/
+/*******************************************************/
 #undef UIP_CONF_MAX_ROUTES
-#define UIP_CONF_MAX_ROUTES 0 /* No need for routes */
+#define UIP_CONF_MAX_ROUTES 10 /* No need for routes */
+
+/* DAG Mode of Operation 
+#define RPL_MOP_NO_DOWNWARD_ROUTES      0
+#define RPL_MOP_NON_STORING             1
+#define RPL_MOP_STORING_NO_MULTICAST    2
+#define RPL_MOP_STORING_MULTICAST       3
+*/
 #undef RPL_CONF_MOP
-#define RPL_CONF_MOP RPL_MOP_NON_STORING /* Mode of operation*/
+#define RPL_CONF_MOP RPL_MOP_STORING_NO_MULTICAST /* Mode of operation*/
+
+/* Orchestra in storing mode for the sender-based */
 #undef ORCHESTRA_CONF_RULES
-#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &unicast_per_neighbor_rpl_ns, &default_common } /* Orchestra in non-storing */
+#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &rpl_common, &default_common, &unicast_per_neighbor_rpl_storing } 
+//										MAC ------------> RPL -------> APP_common ------> APP_unicast
+
+/* Is the per-neighbor unicast slotframe sender-based (if not, it is receiver-based).
+ * Note: sender-based works only with RPL storing mode as it relies on DAO and
+ * routing entries to keep track of children and parents. */
+#undef ORCHESTRA_CONF_UNICAST_SENDER_BASED
+#define ORCHESTRA_CONF_UNICAST_SENDER_BASED 1
+
 
 /*******************************************************/
 /********************* Enable TSCH *********************/
@@ -77,20 +116,6 @@
 #define RPL_CALLBACK_NEW_DIO_INTERVAL tsch_rpl_callback_new_dio_interval
 #define TSCH_CALLBACK_JOINING_NETWORK tsch_rpl_callback_joining_network
 #define TSCH_CALLBACK_LEAVING_NETWORK tsch_rpl_callback_leaving_network
-
-/* Needed for CC2538 platforms only */
-/* For TSCH we have to use the more accurate crystal oscillator
- * by default the RC oscillator is activated */
-#undef SYS_CTRL_CONF_OSC32K_USE_XTAL
-#define SYS_CTRL_CONF_OSC32K_USE_XTAL 1
-
-/* Needed for cc2420 platforms only */
-/* Disable DCO calibration (uses timerB) */
-#undef DCOSYNCH_CONF_ENABLED
-#define DCOSYNCH_CONF_ENABLED 0
-/* Enable SFD timestamps (uses timerB) */
-#undef CC2420_CONF_SFD_TIMESTAMPS
-#define CC2420_CONF_SFD_TIMESTAMPS 1
 
 /*******************************************************/
 /******************* Configure TSCH ********************/
@@ -174,12 +199,6 @@
 #endif /* WITH_SECURITY */
 
 #endif /* CONTIKI_TARGET_Z1 */
-
-#if CONTIKI_TARGET_CC2538DK || CONTIKI_TARGET_ZOUL || \
-  CONTIKI_TARGET_OPENMOTE_CC2538
-#define TSCH_CONF_HW_FRAME_FILTERING    0
-#endif /* CONTIKI_TARGET_CC2538DK || CONTIKI_TARGET_ZOUL \
-       || CONTIKI_TARGET_OPENMOTE_CC2538 */
 
 #if CONTIKI_TARGET_COOJA
 #define COOJA_CONF_SIMULATE_TURNAROUND 0
