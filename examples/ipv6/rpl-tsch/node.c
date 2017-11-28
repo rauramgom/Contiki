@@ -45,7 +45,6 @@
 #if WITH_ORCHESTRA
 #include "orchestra.h"
 #endif /* WITH_ORCHESTRA */
-#include "clock.h"
 
 #define DEBUG DEBUG_PRINT
 #include "net/ip/uip-debug.h"
@@ -155,15 +154,14 @@ net_init(uip_ipaddr_t *br_prefix)
     rpl_set_root(RPL_DEFAULT_INSTANCE, &global_ipaddr);
     rpl_set_prefix(rpl_get_any_dag(), br_prefix, 64);
     rpl_repair_root(RPL_DEFAULT_INSTANCE);
-    //NETSTACK_MAC.off(1);
   }
-  NETSTACK_MAC.on();
+
+  //NETSTACK_MAC.on();
 }
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(node_process, ev, data)
 {
   static struct etimer et;
-  //static struct etimer et_measures;
   PROCESS_BEGIN();
 
   /* 3 possible roles:
@@ -245,17 +243,10 @@ PROCESS_THREAD(node_process, ev, data)
 
   /* Print out routing tables every minute */
   etimer_set(&et, CLOCK_SECOND * 60);
-  /* Timer simulating measurements */
-  //etimer_set(&et_measures, CLOCK_SECOND*0.51);
   while(1) {
-    PROCESS_YIELD();
-    if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et)){
-      print_network_status();
-      etimer_reset(&et);
-    } /*else if (ev == PROCESS_EVENT_TIMER && etimer_expired(&et_measures)) {
-      //printf("[%lu] Measure Realized!\n", clock_seconds());
-      etimer_reset(&et_measures);
-    }*/
+    print_network_status();
+    PROCESS_YIELD_UNTIL(etimer_expired(&et));
+    etimer_reset(&et);
   }
 
   PROCESS_END();

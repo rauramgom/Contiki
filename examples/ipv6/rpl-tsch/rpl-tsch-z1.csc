@@ -24,9 +24,9 @@
       org.contikios.cooja.mspmote.Z1MoteType
       <identifier>z11</identifier>
       <description>Z1 Mote Type #z11</description>
-      <source EXPORT="discard">[CONFIG_DIR]/node_orchestra.c</source>
-      <commands EXPORT="discard">make node_orchestra.z1 TARGET=z1</commands>
-      <firmware EXPORT="copy">[CONFIG_DIR]/node_orchestra.z1</firmware>
+      <source EXPORT="discard">[CONFIG_DIR]/node.c</source>
+      <commands EXPORT="discard">make node.z1 TARGET=z1</commands>
+      <firmware EXPORT="copy">[CONFIG_DIR]/node.z1</firmware>
       <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
       <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
       <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>

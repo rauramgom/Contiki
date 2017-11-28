@@ -29,8 +29,7 @@
  */
 
 /**
- * \author 		Simon Duquennoy <simonduq@sics.se>
- * \modified	Raul Ramirez Gomez <raulramirezgomez@gmail.com>
+ * \author Simon Duquennoy <simonduq@sics.se>
  */
 
 #ifndef __PROJECT_CONF_H__
@@ -43,30 +42,12 @@
 
 /* Set to enable TSCH security */
 #ifndef WITH_SECURITY
-#define WITH_SECURITY 0
+#define WITH_SECURITY 1
 #endif /* WITH_SECURITY */
-
-/*******************************************************/
-/****************** SLOTFRAMES LENGTH ******************/
-/*******************************************************/
-/* Length of the various slotframes. Tune to balance network capacity,
- * contention, energy, latency. */
-#undef ORCHESTRA_CONF_EBSF_PERIOD
-#define ORCHESTRA_CONF_EBSF_PERIOD	397 //Level TSCH. Default: 397
-
-#undef ORCHESTRA_CONF_COMMON_RPL_PERIOD
-#define ORCHESTRA_CONF_COMMON_RPL_PERIOD	103 //Level RPL. Default: 51
-
-#undef ORCHESTRA_CONF_COMMON_SHARED_PERIOD
-#define ORCHESTRA_CONF_COMMON_SHARED_PERIOD	1010 //Level App_shared. Default: 31
-
-#undef ORCHESTRA_CONF_UNICAST_PERIOD
-#define ORCHESTRA_CONF_UNICAST_PERIO 510 //Level App_unicast.Default: 17
 
 /*******************************************************/
 /********************* Enable TSCH *********************/
 /*******************************************************/
-
 /* Netstack layers */
 #undef NETSTACK_CONF_MAC
 #define NETSTACK_CONF_MAC     tschmac_driver
@@ -98,9 +79,9 @@
 #undef IEEE802154_CONF_PANID
 #define IEEE802154_CONF_PANID 0xabcd
 
-/* Set to start TSCH at init, without waiting for NETSTACK_MAC.on() */
+/* Set start TSCH at init, without waiting for NETSTACK_MAC.on() */
 #undef TSCH_CONF_AUTOSTART
-#define TSCH_CONF_AUTOSTART 0
+#define TSCH_CONF_AUTOSTART 1
 
 /* 6TiSCH minimal schedule length.
  * Larger values result in less frequent active slots: reduces capacity and saves energy. */
@@ -135,49 +116,43 @@
 #endif /* WITH_ORCHESTRA */
 
 /*******************************************************/
-/************* Other system configuration **************/
+/****************** SLOTFRAMES LENGTH ******************/
+/*******************************************************/
+/* Length of the various slotframes. Tune to balance network capacity,
+ * contention, energy, latency. */
+#undef ORCHESTRA_CONF_EBSF_PERIOD
+#define ORCHESTRA_CONF_EBSF_PERIOD	397 //Level TSCH. Default: 397
+
+#undef ORCHESTRA_CONF_COMMON_RPL_PERIOD
+#define ORCHESTRA_CONF_COMMON_RPL_PERIOD	103 //Level RPL. Default: 103
+
+#undef ORCHESTRA_CONF_COMMON_SHARED_PERIOD
+#define ORCHESTRA_CONF_COMMON_SHARED_PERIOD	1010 //Level App_shared. Default: 31
+
+#undef ORCHESTRA_CONF_UNICAST_PERIOD
+#define ORCHESTRA_CONF_UNICAST_PERIO 510 //Level App_unicast.Default: 17
+/*******************************************************/
+/********* Enable RPL non-storing mode *****************/
 /*******************************************************/
 
-#if CONTIKI_TARGET_Z1
-/* Save some space to fit the limited RAM of the z1 */
-#undef UIP_CONF_TCP
-#define UIP_CONF_TCP 0
-#undef QUEUEBUF_CONF_NUM
-#define QUEUEBUF_CONF_NUM 3
-#undef RPL_NS_CONF_LINK_NUM
-#define RPL_NS_CONF_LINK_NUM  8
-#undef NBR_TABLE_CONF_MAX_NEIGHBORS
-#define NBR_TABLE_CONF_MAX_NEIGHBORS 8
-#undef UIP_CONF_ND6_SEND_NS
-#define UIP_CONF_ND6_SEND_NS 0
-#undef SICSLOWPAN_CONF_FRAG
-#define SICSLOWPAN_CONF_FRAG 0
-
-#if WITH_SECURITY
-/* Note: on sky or z1 in cooja, crypto operations are done in S/W and
- * cannot be accommodated in normal slots. Use 65ms slots instead, and
- * a very short 6TiSCH minimal schedule length */
-#undef TSCH_CONF_DEFAULT_TIMESLOT_LENGTH
-#define TSCH_CONF_DEFAULT_TIMESLOT_LENGTH 65000
-#undef TSCH_SCHEDULE_CONF_DEFAULT_LENGTH
-#define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH 2
-/* Reduce log level to make space for security on z1 */
-#undef TSCH_LOG_CONF_LEVEL
-#define TSCH_LOG_CONF_LEVEL 0
-#endif /* WITH_SECURITY */
-
-#endif /* CONTIKI_TARGET_Z1 */
-
-#if CONTIKI_TARGET_COOJA
-#define COOJA_CONF_SIMULATE_TURNAROUND 0
-#endif /* CONTIKI_TARGET_COOJA */
-
+#undef UIP_CONF_MAX_ROUTES
+#define UIP_CONF_MAX_ROUTES 0 /* No need for routes */
+#undef RPL_CONF_MOP
+#define RPL_CONF_MOP RPL_MOP_NON_STORING /* Mode of operation*/
+#undef ORCHESTRA_CONF_RULES
+#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &unicast_per_neighbor_rpl_ns, &default_common } 
 
 /*******************************************************/
 /*********** RPL storing mode & Sender-based ***********/
 /*******************************************************/
-#undef UIP_CONF_MAX_ROUTES
-#define UIP_CONF_MAX_ROUTES 10 /* No need for routes */
+//#undef UIP_CONF_MAX_ROUTES
+//#define UIP_CONF_MAX_ROUTES 100 /* No need for routes */
+
+/* Is the per-neighbor unicast slotframe sender-based (if not, it is receiver-based).
+ * Note: sender-based works only with RPL storing mode as it relies on DAO and
+ * routing entries to keep track of children and parents. */
+//#undef ORCHESTRA_CONF_UNICAST_SENDER_BASED
+//#define ORCHESTRA_CONF_UNICAST_SENDER_BASED 1
 
 /* DAG Mode of Operation 
 #define RPL_MOP_NO_DOWNWARD_ROUTES      0
@@ -185,19 +160,13 @@
 #define RPL_MOP_STORING_NO_MULTICAST    2
 #define RPL_MOP_STORING_MULTICAST       3
 */
-#undef RPL_CONF_MOP
-#define RPL_CONF_MOP RPL_MOP_STORING_NO_MULTICAST /* Mode of operation*/
+//#undef RPL_CONF_MOP
+//#define RPL_CONF_MOP RPL_MOP_STORING_NO_MULTICAST /* Mode of operation*/
 
 /* Orchestra in storing mode for the sender-based */
-#undef ORCHESTRA_CONF_RULES
-#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &rpl_common, &default_common, &unicast_per_neighbor_rpl_storing } 
+//#undef ORCHESTRA_CONF_RULES
+//#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &rpl_common, &default_common, &unicast_per_neighbor_rpl_storing } 
 //										MAC ------------> RPL -------> APP_common ------> APP_unicast
-
-/* Is the per-neighbor unicast slotframe sender-based (if not, it is receiver-based).
- * Note: sender-based works only with RPL storing mode as it relies on DAO and
- * routing entries to keep track of children and parents. */
-#undef ORCHESTRA_CONF_UNICAST_SENDER_BASED
-#define ORCHESTRA_CONF_UNICAST_SENDER_BASED 1
 
 /*******************************************************/
 /******************* Configuring RPL *******************/
@@ -235,12 +204,51 @@
  * that requires MC (e.g., MRHOF with a metric other than ETX).
  */
 //#undef RPL_CONF_WITH_MC
-#define RPL_CONF_WITH_MC 0
+//#define RPL_CONF_WITH_MC 0	//[¡¡¡PROBLEMA!!!]COOJA ROMPE SI LO ACTIVAMOS
 
 
 /* The MC advertised in DIOs and propagating from the root */
 #undef RPL_CONF_DAG_MC
 #define RPL_CONF_DAG_MC RPL_DAG_MC_ETX
-/*****************************************************************************/
+
+
+/*******************************************************/
+/************* Other system configuration **************/
+/*******************************************************/
+
+//#if CONTIKI_TARGET_Z1
+/* Save some space to fit the limited RAM of the z1 */
+/*#undef UIP_CONF_TCP
+#define UIP_CONF_TCP 0
+#undef QUEUEBUF_CONF_NUM
+#define QUEUEBUF_CONF_NUM 3
+#undef RPL_NS_CONF_LINK_NUM
+#define RPL_NS_CONF_LINK_NUM  8
+#undef NBR_TABLE_CONF_MAX_NEIGHBORS
+#define NBR_TABLE_CONF_MAX_NEIGHBORS 8
+#undef UIP_CONF_ND6_SEND_NS
+#define UIP_CONF_ND6_SEND_NS 0
+#undef SICSLOWPAN_CONF_FRAG
+#define SICSLOWPAN_CONF_FRAG 0
+
+#if WITH_SECURITY*/
+/* Note: on sky or z1 in cooja, crypto operations are done in S/W and
+ * cannot be accommodated in normal slots. Use 65ms slots instead, and
+ * a very short 6TiSCH minimal schedule length */
+/*#undef TSCH_CONF_DEFAULT_TIMESLOT_LENGTH
+#define TSCH_CONF_DEFAULT_TIMESLOT_LENGTH 65000
+#undef TSCH_SCHEDULE_CONF_DEFAULT_LENGTH
+#define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH 2*/
+/* Reduce log level to make space for security on z1 */
+/*#undef TSCH_LOG_CONF_LEVEL
+#define TSCH_LOG_CONF_LEVEL 0
+#endif*/ /* WITH_SECURITY */
+
+//#endif /* CONTIKI_TARGET_Z1 */
+
+
+#if CONTIKI_TARGET_COOJA
+#define COOJA_CONF_SIMULATE_TURNAROUND 0
+#endif /* CONTIKI_TARGET_COOJA */
 
 #endif /* __PROJECT_CONF_H__ */

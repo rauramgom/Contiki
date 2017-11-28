@@ -68,6 +68,8 @@
 #define NETSTACK_CONF_RDC     nordc_driver
 #undef NETSTACK_CONF_FRAMER
 #define NETSTACK_CONF_FRAMER  framer_802154
+#undef NETSTACK_CONF_RDC_CHANNEL_CHECK_RATE
+#define NETSTACK_CONF_RDC_CHANNEL_CHECK_RATE 2 /*Always power of 2 (2, 4, 8, 16, 32...)*/
 
 /* IEEE802.15.4 frame version */
 #undef FRAME802154_CONF_VERSION

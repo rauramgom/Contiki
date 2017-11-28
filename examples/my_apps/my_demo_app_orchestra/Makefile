@@ -19,5 +19,6 @@ APPS += rest-engine
 
 APPS += orchestra
 MODULES += core/net/mac/tsch
+MODULES += core/net/mac/rpl
 
 include $(CONTIKI)/Makefile.include
