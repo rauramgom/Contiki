@@ -136,22 +136,12 @@
 
 #undef ORCHESTRA_CONF_UNICAST_PERIOD
 #define ORCHESTRA_CONF_UNICAST_PERIO 510 //Level App_unicast.Default: 17
-/*******************************************************/
-/********* Enable RPL non-storing mode *****************/
-/*******************************************************/
-
-#undef UIP_CONF_MAX_ROUTES
-#define UIP_CONF_MAX_ROUTES 0 /* No need for routes */
-#undef RPL_CONF_MOP
-#define RPL_CONF_MOP RPL_MOP_NON_STORING /* Mode of operation*/
-//#undef ORCHESTRA_CONF_RULES
-//#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &unicast_per_neighbor_rpl_ns, &default_common } 
 
 /*******************************************************/
 /*********** RPL storing mode & Sender-based ***********/
 /*******************************************************/
-//#undef UIP_CONF_MAX_ROUTES
-//#define UIP_CONF_MAX_ROUTES 100 /* No need for routes */
+#undef UIP_CONF_MAX_ROUTES
+#define UIP_CONF_MAX_ROUTES 0 /* No need for routes */
 
 /* Is the per-neighbor unicast slotframe sender-based (if not, it is receiver-based).
  * Note: sender-based works only with RPL storing mode as it relies on DAO and
@@ -165,11 +155,13 @@
 #define RPL_MOP_STORING_NO_MULTICAST    2
 #define RPL_MOP_STORING_MULTICAST       3
 */
-//#undef RPL_CONF_MOP
+#undef RPL_CONF_MOP
+#define RPL_CONF_MOP RPL_MOP_NON_STORING /* Mode of operation*/
 //#define RPL_CONF_MOP RPL_MOP_STORING_NO_MULTICAST /* Mode of operation*/
 
 /* Orchestra in storing mode for the sender-based */
 #undef ORCHESTRA_CONF_RULES
+//#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &unicast_per_neighbor_rpl_ns, &default_common }
 #define ORCHESTRA_CONF_RULES { &eb_per_time_source, &rpl_common, &default_common, &unicast_per_neighbor_rpl_storing } 
 //										MAC ------------> RPL -------> APP_common ------> APP_unicast
 
@@ -215,42 +207,6 @@
 /* The MC advertised in DIOs and propagating from the root */
 #undef RPL_CONF_DAG_MC
 #define RPL_CONF_DAG_MC RPL_DAG_MC_ETX
-
-
-/*******************************************************/
-/************* Other system configuration **************/
-/*******************************************************/
-
-//#if CONTIKI_TARGET_Z1
-/* Save some space to fit the limited RAM of the z1 */
-/*#undef UIP_CONF_TCP
-#define UIP_CONF_TCP 0
-#undef QUEUEBUF_CONF_NUM
-#define QUEUEBUF_CONF_NUM 3
-#undef RPL_NS_CONF_LINK_NUM
-#define RPL_NS_CONF_LINK_NUM  8
-#undef NBR_TABLE_CONF_MAX_NEIGHBORS
-#define NBR_TABLE_CONF_MAX_NEIGHBORS 8
-#undef UIP_CONF_ND6_SEND_NS
-#define UIP_CONF_ND6_SEND_NS 0
-#undef SICSLOWPAN_CONF_FRAG
-#define SICSLOWPAN_CONF_FRAG 0
-
-#if WITH_SECURITY*/
-/* Note: on sky or z1 in cooja, crypto operations are done in S/W and
- * cannot be accommodated in normal slots. Use 65ms slots instead, and
- * a very short 6TiSCH minimal schedule length */
-/*#undef TSCH_CONF_DEFAULT_TIMESLOT_LENGTH
-#define TSCH_CONF_DEFAULT_TIMESLOT_LENGTH 65000
-#undef TSCH_SCHEDULE_CONF_DEFAULT_LENGTH
-#define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH 2*/
-/* Reduce log level to make space for security on z1 */
-/*#undef TSCH_LOG_CONF_LEVEL
-#define TSCH_LOG_CONF_LEVEL 0
-#endif*/ /* WITH_SECURITY */
-
-//#endif /* CONTIKI_TARGET_Z1 */
-
 
 #if CONTIKI_TARGET_COOJA
 #define COOJA_CONF_SIMULATE_TURNAROUND 0
