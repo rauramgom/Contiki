@@ -14,7 +14,7 @@
 #include "sys/process.h"
 #include "rest-engine.h"
 #include "er-coap.h"
-//#include "batmon-sensor.h"
+#include "batmon-sensor.h"
 // IPv6/RPL Stack
 #include "net/netstack.h"
 #include "net/ipv6/uip-ds6-nbr.h"
@@ -32,7 +32,7 @@
 #include <string.h>
 #include <stdbool.h>
 // API FLASH
-//#include "api_flash.h"
+#include "api_flash.h"
 
 #ifdef WITH_ORCHESTRA
 #include "orchestra.h"
@@ -69,8 +69,8 @@ static struct etimer et_routing_tables;	//To print network routing tables
 #endif /*WITH_ORCHESTRA*/
 
 //FLASH
-//static uint32_t pos_flash = FLASH_ADDR_START;
-//struct Measure temp_measure;	//Create a Measure struct to store the value
+static uint32_t pos_flash = FLASH_ADDR_START;
+struct Measure temp_measure;	//Create a Measure struct to store the value
 
 //COAP
 const char *not_supported_msg = "Supported:text/plain,application/json";
@@ -197,7 +197,7 @@ reading_resources_GET_handler(void *request, void *response, uint8_t *buffer,
 								uint16_t preferred_size, int32_t *offset)
 {
 	unsigned int accept = -1;
-	//struct Measure measure_temp;
+	struct Measure measure_temp;
 	int voltage;
 
 	if(request != NULL) {
@@ -206,10 +206,8 @@ reading_resources_GET_handler(void *request, void *response, uint8_t *buffer,
 
 	//Value of sensor is rescued
 	//measure_temp = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
-	//measure_temp = read_flash(pos_flash);
-	int measure_temp = 21;
-	voltage = 3000;
-	//voltage = batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT);
+	measure_temp = read_flash(pos_flash);
+	voltage = batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT);
 
 	if(accept == -1 || accept == REST.type.APPLICATION_JSON) {
 		//Set the header content
@@ -217,14 +215,14 @@ reading_resources_GET_handler(void *request, void *response, uint8_t *buffer,
 		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE,
 			"{\"temp\":{\"v\":%d,\"u\":\"C\"},"
 			"\"voltage\":{\"v\":%d,\"u\":\"mV\"}}",
-			measure_temp, (voltage * 125) >> 5);
+			measure_temp.measure, (voltage * 125) >> 5);
 
 		//Set the payload content 
 		REST.set_response_payload(response, buffer, strlen((char *)buffer));
 	} else if(accept == REST.type.TEXT_PLAIN) {
 		REST.set_header_content_type(response, REST.type.TEXT_PLAIN);
 		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "Temp=%dC, Voltage=%dmV",
-			measure_temp, (voltage * 125) >> 5);
+			measure_temp.measure, (voltage * 125) >> 5);
 
 		REST.set_response_payload(response, buffer, strlen((char *)buffer));
 	} else {
@@ -261,13 +259,13 @@ PROCESS_THREAD(my_demo_app, ev, data)
 	//Initialize the REST engine. 
 	rest_init_engine();
 	//Activate comun sensors
-	//SENSORS_ACTIVATE(batmon_sensor);
+	SENSORS_ACTIVATE(batmon_sensor);
 	//Activate the created resources
 	reading_resources.flags += IS_OBSERVABLE;
 	rest_activate_resource(&reading_resources, "sen/readings");
 
 	printf("Erasing the flash for first time...\n\n");
-	//erase_flash(&pos_flash);
+	erase_flash(&pos_flash);
 
 #ifdef WITH_ORCHESTRA
 	/* 3 possible roles:
@@ -324,7 +322,7 @@ PROCESS_THREAD(my_demo_app, ev, data)
 		{
 			//Get the last value stored on the Flash
 			leds_toggle(LEDS_GREEN);
-			//read_flash(pos_flash);
+			read_flash(pos_flash);
 			REST.notify_subscribers(&reading_resources);
 			etimer_restart(&et_get);
 		}
@@ -335,10 +333,10 @@ PROCESS_THREAD(my_demo_app, ev, data)
 			leds_toggle(LEDS_RED);
 			printf("Storing value ...\n"); 
 			//Fill up every Measure struct field
-			//temp_measure.measure = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
-			//temp_measure.ID = TEMP;
-			//temp_measure.sysUpTime = clock_seconds();
-			//write_flash(temp_measure, &pos_flash);
+			temp_measure.measure = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
+			temp_measure.ID = TEMP;
+			temp_measure.sysUpTime = clock_seconds();
+			write_flash(temp_measure, &pos_flash);
 			etimer_restart(&et_store);
 		}
 
@@ -351,6 +349,6 @@ PROCESS_THREAD(my_demo_app, ev, data)
 	#endif /*WITH_ORCHESTRA*/
 	}
 
-	//SENSORS_DEACTIVATE(batmon_sensor);
+	SENSORS_DEACTIVATE(batmon_sensor);
 	PROCESS_END();
 } //End of PROCESS_THREAD

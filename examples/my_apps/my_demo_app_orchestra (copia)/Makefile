@@ -12,7 +12,7 @@ ifeq ($(MAKE_WITH_SECURITY),1)
 CFLAGS += -DWITH_SECURITY=1
 endif
 
-#PROJECT_SOURCEFILES += api_flash.c
+PROJECT_SOURCEFILES += api_flash.c
 
 APPS += er-coap
 APPS += rest-engine

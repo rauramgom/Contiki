@@ -43,7 +43,7 @@
 
 /* Set to enable TSCH security */
 #ifndef WITH_SECURITY
-#define WITH_SECURITY 0
+#define WITH_SECURITY 1
 #endif /* WITH_SECURITY */
 
 /*******************************************************/
@@ -100,7 +100,7 @@
 
 /* Set to start TSCH at init, without waiting for NETSTACK_MAC.on() */
 #undef TSCH_CONF_AUTOSTART
-#define TSCH_CONF_AUTOSTART 0
+#define TSCH_CONF_AUTOSTART 1
 
 /* 6TiSCH minimal schedule length.
  * Larger values result in less frequent active slots: reduces capacity and saves energy. */
@@ -177,7 +177,7 @@
 /*********** RPL storing mode & Sender-based ***********/
 /*******************************************************/
 #undef UIP_CONF_MAX_ROUTES
-#define UIP_CONF_MAX_ROUTES 10 /* No need for routes */
+#define UIP_CONF_MAX_ROUTES 100 /* No need for routes */
 
 /* DAG Mode of Operation 
 #define RPL_MOP_NO_DOWNWARD_ROUTES      0
@@ -185,19 +185,19 @@
 #define RPL_MOP_STORING_NO_MULTICAST    2
 #define RPL_MOP_STORING_MULTICAST       3
 */
-#undef RPL_CONF_MOP
-#define RPL_CONF_MOP RPL_MOP_STORING_NO_MULTICAST /* Mode of operation*/
+//#undef RPL_CONF_MOP
+//#define RPL_CONF_MOP RPL_MOP_STORING_NO_MULTICAST /* Mode of operation*/
 
 /* Orchestra in storing mode for the sender-based */
 #undef ORCHESTRA_CONF_RULES
-#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &rpl_common, &default_common, &unicast_per_neighbor_rpl_storing } 
-//										MAC ------------> RPL -------> APP_common ------> APP_unicast
+#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &unicast_per_neighbor_rpl_storing, &rpl_common, &default_common,  } 
+//										MAC ------------> APP_unicast -----------------> RPL -------> APP_unicast
 
 /* Is the per-neighbor unicast slotframe sender-based (if not, it is receiver-based).
  * Note: sender-based works only with RPL storing mode as it relies on DAO and
  * routing entries to keep track of children and parents. */
-#undef ORCHESTRA_CONF_UNICAST_SENDER_BASED
-#define ORCHESTRA_CONF_UNICAST_SENDER_BASED 1
+//#undef ORCHESTRA_CONF_UNICAST_SENDER_BASED
+//#define ORCHESTRA_CONF_UNICAST_SENDER_BASED 1
 
 /*******************************************************/
 /******************* Configuring RPL *******************/
