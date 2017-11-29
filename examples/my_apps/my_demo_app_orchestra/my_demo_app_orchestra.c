@@ -37,6 +37,7 @@
 #ifdef WITH_ORCHESTRA
 #include "orchestra.h"
 #include "node-id.h"
+#include "net/mac/tsch/tsch.h"
 #define DEBUG DEBUG_PRINT
 #include "net/ip/uip-debug.h"
 #endif
@@ -237,7 +238,7 @@ reading_resources_GET_handler(void *request, void *response, uint8_t *buffer,
 } //End of reading_resources_GET_handler
 
 //Creation of the associated resource. Valid to make it OBSERVABLE
-// or be activated
+// or to be activated
 //	\params
 //			-name, 
 //			-atribute,
