@@ -49,18 +49,24 @@
 #define DEBUG DEBUG_PRINT
 #include "net/ip/uip-debug.h"
 
-#define CONFIG_VIA_BUTTON PLATFORM_HAS_BUTTON
-#if CONFIG_VIA_BUTTON
-#include "button-sensor.h"
-#endif /* CONFIG_VIA_BUTTON */
+//#define CONFIG_VIA_BUTTON PLATFORM_HAS_BUTTON
+//#if CONFIG_VIA_BUTTON
+//#include "button-sensor.h"
+//#endif /* CONFIG_VIA_BUTTON */
+
+#define ETIMER_STORE CLOCK_SECOND*5
+#define ETIMER_GET  CLOCK_SECOND*7
+#ifdef WITH_ORCHESTRA
+#define ETIMER_ROUTING CLOCK_SECOND*60
+#endif /* WITH_ORCHESTRA */
 
 /*---------------------------------------------------------------------------*/
 PROCESS(node_process, "RPL Node");
-#if CONFIG_VIA_BUTTON
-AUTOSTART_PROCESSES(&node_process, &sensors_process);
-#else /* CONFIG_VIA_BUTTON */
+//#if CONFIG_VIA_BUTTON
+//AUTOSTART_PROCESSES(&node_process, &sensors_process);
+//#else /* CONFIG_VIA_BUTTON */
 AUTOSTART_PROCESSES(&node_process);
-#endif /* CONFIG_VIA_BUTTON */
+//#endif /* CONFIG_VIA_BUTTON */
 
 /*---------------------------------------------------------------------------*/
 static void
@@ -162,6 +168,7 @@ net_init(uip_ipaddr_t *br_prefix)
 PROCESS_THREAD(node_process, ev, data)
 {
   static struct etimer et_routing_tables;
+  static struct etimer et_store;
   PROCESS_BEGIN();
 
   /* 3 possible roles:
@@ -205,20 +212,29 @@ PROCESS_THREAD(node_process, ev, data)
 
 #if WITH_ORCHESTRA
   orchestra_init();
-#endif /* WITH_ORCHESTRA */
-
   /* Print out routing tables every minute */
-  etimer_set(&et_routing_tables, CLOCK_SECOND * 60);
-  //etimer_set(&et_routing_tables, CLOCK_SECOND * 0.6);
+  etimer_set(&et_routing_tables, ETIMER_ROUTING);
+#endif /* WITH_ORCHESTRA */
+  etimer_set(&et_store, ETIMER_STORE);
+
   while(1) {
-    //print_network_status();
-    //PROCESS_YIELD_UNTIL(etimer_expired(&et_routing_tables));
-    //etimer_reset(&et_routing_tables);
     PROCESS_YIELD();
     if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_routing_tables))
     {
       print_network_status();
       etimer_restart(&et_routing_tables);
+    }
+
+    if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_store))
+    {
+      //Save the data on Flash
+      printf("Storing value ...\n"); 
+      //Fill up every Measure struct field
+      //temp_measure.measure = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
+      //temp_measure.ID = TEMP;
+      //temp_measure.sysUpTime = clock_seconds();
+      //write_flash(temp_measure, &pos_flash);
+      etimer_restart(&et_store);
     }
   }
 
