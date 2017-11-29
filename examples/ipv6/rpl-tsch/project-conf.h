@@ -86,7 +86,7 @@
 /* 6TiSCH minimal schedule length.
  * Larger values result in less frequent active slots: reduces capacity and saves energy. */
 #undef TSCH_SCHEDULE_CONF_DEFAULT_LENGTH
-#define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH 3
+#define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH 7 //3
 
 /* Keep radio always on within TSCH timeslot (1) or 
  * turn it off between packet and ACK? (0) */
@@ -144,8 +144,8 @@
 #define UIP_CONF_MAX_ROUTES 0 /* No need for routes */
 #undef RPL_CONF_MOP
 #define RPL_CONF_MOP RPL_MOP_NON_STORING /* Mode of operation*/
-#undef ORCHESTRA_CONF_RULES
-#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &unicast_per_neighbor_rpl_ns, &default_common } 
+//#undef ORCHESTRA_CONF_RULES
+//#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &unicast_per_neighbor_rpl_ns, &default_common } 
 
 /*******************************************************/
 /*********** RPL storing mode & Sender-based ***********/
@@ -156,8 +156,8 @@
 /* Is the per-neighbor unicast slotframe sender-based (if not, it is receiver-based).
  * Note: sender-based works only with RPL storing mode as it relies on DAO and
  * routing entries to keep track of children and parents. */
-//#undef ORCHESTRA_CONF_UNICAST_SENDER_BASED
-//#define ORCHESTRA_CONF_UNICAST_SENDER_BASED 1
+#undef ORCHESTRA_CONF_UNICAST_SENDER_BASED
+#define ORCHESTRA_CONF_UNICAST_SENDER_BASED 1
 
 /* DAG Mode of Operation 
 #define RPL_MOP_NO_DOWNWARD_ROUTES      0
@@ -169,8 +169,8 @@
 //#define RPL_CONF_MOP RPL_MOP_STORING_NO_MULTICAST /* Mode of operation*/
 
 /* Orchestra in storing mode for the sender-based */
-//#undef ORCHESTRA_CONF_RULES
-//#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &rpl_common, &default_common, &unicast_per_neighbor_rpl_storing } 
+#undef ORCHESTRA_CONF_RULES
+#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &rpl_common, &default_common, &unicast_per_neighbor_rpl_storing } 
 //										MAC ------------> RPL -------> APP_common ------> APP_unicast
 
 /*******************************************************/

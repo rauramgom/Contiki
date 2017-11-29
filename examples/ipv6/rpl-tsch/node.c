@@ -280,7 +280,7 @@ PROCESS_THREAD(node_process, ev, data)
     uip_ipaddr_t prefix;
     uip_ip6addr(&prefix, UIP_DS6_DEFAULT_PREFIX, 0, 0, 0, 0, 0, 0, 0);
     net_init(&prefix);
-    NETSTACK_MAC.off(1);
+    //NETSTACK_MAC.off(1);
   } else {
     net_init(NULL);
   }
