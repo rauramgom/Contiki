@@ -280,6 +280,7 @@ PROCESS_THREAD(node_process, ev, data)
     uip_ipaddr_t prefix;
     uip_ip6addr(&prefix, UIP_DS6_DEFAULT_PREFIX, 0, 0, 0, 0, 0, 0, 0);
     net_init(&prefix);
+    NETSTACK_MAC.off(1);
   } else {
     net_init(NULL);
   }
@@ -313,7 +314,7 @@ PROCESS_THREAD(node_process, ev, data)
       //write_flash(temp_measure, &pos_flash);
       etimer_restart(&et_store);
     }
-    if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_get))
+    if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_get)) 
     {
       //Get the last value stored on the Flash
       leds_toggle(LEDS_GREEN);
