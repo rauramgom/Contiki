@@ -37,12 +37,14 @@
 
 /* Set to run orchestra */
 #ifndef WITH_ORCHESTRA
-#define WITH_ORCHESTRA 1
+#define WITH_ORCHESTRA 0
 #endif /* WITH_ORCHESTRA */
+
+#if WITH_ORCHESTRA
 
 /* Set to enable TSCH security */
 #ifndef WITH_SECURITY
-#define WITH_SECURITY 1
+#define WITH_SECURITY 0
 #endif /* WITH_SECURITY */
 
 /*******************************************************/
@@ -107,8 +109,6 @@
 
 #endif /* WITH_SECURITY */
 
-#if WITH_ORCHESTRA
-
 /* See apps/orchestra/README.md for more Orchestra configuration options */
 #define TSCH_SCHEDULE_CONF_WITH_6TISCH_MINIMAL 0 /* No 6TiSCH minimal schedule */
 #define TSCH_CONF_WITH_LINK_SELECTOR 1 /* Orchestra requires per-packet link selection */
@@ -117,8 +117,6 @@
 #define TSCH_CALLBACK_PACKET_READY orchestra_callback_packet_ready
 #define NETSTACK_CONF_ROUTING_NEIGHBOR_ADDED_CALLBACK orchestra_callback_child_added
 #define NETSTACK_CONF_ROUTING_NEIGHBOR_REMOVED_CALLBACK orchestra_callback_child_removed
-
-#endif /* WITH_ORCHESTRA */
 
 /*******************************************************/
 /****************** SLOTFRAMES LENGTH ******************/
@@ -149,6 +147,14 @@
 #undef ORCHESTRA_CONF_UNICAST_SENDER_BASED
 #define ORCHESTRA_CONF_UNICAST_SENDER_BASED 1
 
+/* Orchestra in storing mode for the sender-based */
+#undef ORCHESTRA_CONF_RULES
+//#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &unicast_per_neighbor_rpl_ns, &default_common }
+#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &rpl_common, &default_common, &unicast_per_neighbor_rpl_storing } 
+//										MAC ------------> RPL -------> APP_common ------> APP_unicast
+
+//////////////////#endif /* WITH_ORCHESTRA */
+
 /* DAG Mode of Operation 
 #define RPL_MOP_NO_DOWNWARD_ROUTES      0
 #define RPL_MOP_NON_STORING             1
@@ -158,13 +164,6 @@
 #undef RPL_CONF_MOP
 #define RPL_CONF_MOP RPL_MOP_NON_STORING /* Mode of operation*/
 //#define RPL_CONF_MOP RPL_MOP_STORING_NO_MULTICAST /* Mode of operation*/
-
-/* Orchestra in storing mode for the sender-based */
-#undef ORCHESTRA_CONF_RULES
-//#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &unicast_per_neighbor_rpl_ns, &default_common }
-#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &rpl_common, &default_common, &unicast_per_neighbor_rpl_storing } 
-//										MAC ------------> RPL -------> APP_common ------> APP_unicast
-
 /*******************************************************/
 /******************* Configuring RPL *******************/
 /*******************************************************/
@@ -208,8 +207,10 @@
 #undef RPL_CONF_DAG_MC
 #define RPL_CONF_DAG_MC RPL_DAG_MC_ETX
 
-#if CONTIKI_TARGET_COOJA
-#define COOJA_CONF_SIMULATE_TURNAROUND 0
-#endif /* CONTIKI_TARGET_COOJA */
+//#if CONTIKI_TARGET_COOJA
+//#define COOJA_CONF_SIMULATE_TURNAROUND 0
+//#endif /* CONTIKI_TARGET_COOJA */
+
+#endif /* WITH_ORCHESTRA */
 
 #endif /* __PROJECT_CONF_H__ */

@@ -63,12 +63,13 @@
 // API FLASH
 #include "api_flash.h"
 
-#ifdef WITH_ORCHESTRA
+#define DEBUG DEBUG_PRINT
+#include "net/ip/uip-debug.h"
+
+#if WITH_ORCHESTRA
 #include "orchestra.h"
 #include "node-id.h"
 #include "net/mac/tsch/tsch.h"
-#define DEBUG DEBUG_PRINT
-#include "net/ip/uip-debug.h"
 #endif /* WITH_ORCHESTRA */
 
 
@@ -78,7 +79,7 @@
 //TIMERS
 #define ETIMER_STORE CLOCK_SECOND*5
 #define ETIMER_GET  CLOCK_SECOND*7
-#ifdef WITH_ORCHESTRA
+#if WITH_ORCHESTRA
 #define ETIMER_ROUTING CLOCK_SECOND*60
 static struct etimer et_routing_tables;
 #endif /* WITH_ORCHESTRA */
@@ -102,6 +103,7 @@ AUTOSTART_PROCESSES(&node_process);
 //#endif /* CONFIG_VIA_BUTTON */
 
 /*---------------------------------------------------------------------------*/
+#if WITH_ORCHESTRA
 static void
 print_network_status(void)
 {
@@ -196,6 +198,7 @@ net_init(uip_ipaddr_t *br_prefix)
   }
   //NETSTACK_MAC.on();
 }
+#endif /* WITH_ORCHESTRA */
 
 /*
 * Show all the available resources
@@ -214,6 +217,7 @@ reading_resources_GET_handler(void *request, void *response, uint8_t *buffer,
 
   //Value of sensor is rescued
   measure_temp = read_flash(pos_flash);
+  measure_temp.measure = 99;
   voltage = batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT);
 
   if(accept == -1 || accept == REST.type.APPLICATION_JSON) {
@@ -311,7 +315,7 @@ PROCESS_THREAD(node_process, ev, data)
 
   while(1) {
     PROCESS_YIELD();
-#ifdef WITH_ORCHESTRA
+#if WITH_ORCHESTRA
     if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_routing_tables))
     {
       print_network_status();
