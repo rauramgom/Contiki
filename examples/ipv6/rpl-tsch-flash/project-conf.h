@@ -37,8 +37,13 @@
 
 /* Set to run orchestra */
 #ifndef WITH_ORCHESTRA
-#define WITH_ORCHESTRA 1
+#define WITH_ORCHESTRA 0
 #endif /* WITH_ORCHESTRA */
+
+/* Set to run RPL */
+#ifndef WITH_RPL
+#define WITH_RPL 1
+#endif /* WITH_RPL */
 
 #ifndef WITH_AUX
 #define WITH_AUX 0
@@ -158,7 +163,7 @@
 //#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &rpl_common, &default_common, &unicast_per_neighbor_rpl_storing } 
 //										MAC ------------> RPL -------> APP_common ------> APP_unicast
 
-//////////////////#endif /* WITH_ORCHESTRA */
+#endif /* WITH_ORCHESTRA */
 #endif /* WITH_AUX */ //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 /* DAG Mode of Operation 
 #define RPL_MOP_NO_DOWNWARD_ROUTES      0
@@ -169,6 +174,8 @@
 //#undef RPL_CONF_MOP
 //#define RPL_CONF_MOP RPL_MOP_NON_STORING /* Mode of operation*/
 //#define RPL_CONF_MOP RPL_MOP_STORING_NO_MULTICAST /* Mode of operation*/
+
+#if WITH_RPL
 /*******************************************************/
 /******************* Configuring RPL *******************/
 /*******************************************************/
@@ -216,6 +223,6 @@
 //#define COOJA_CONF_SIMULATE_TURNAROUND 0
 //#endif /* CONTIKI_TARGET_COOJA */
 
-#endif /* WITH_ORCHESTRA */
+#endif /* WITH_RPL */
 
 #endif /* __PROJECT_CONF_H__ */

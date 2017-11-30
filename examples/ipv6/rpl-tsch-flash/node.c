@@ -81,10 +81,9 @@
 //TIMERS
 #define ETIMER_STORE CLOCK_SECOND*5
 #define ETIMER_GET  CLOCK_SECOND*7
-#if WITH_ORCHESTRA
 #define ETIMER_ROUTING CLOCK_SECOND*60
+
 static struct etimer et_routing_tables;
-#endif /* WITH_ORCHESTRA */
 static struct etimer et_store;  //To store data in Flash
 static struct etimer et_get;    //To get the last value stored
 
@@ -105,7 +104,6 @@ AUTOSTART_PROCESSES(&node_process);
 //#endif /* CONFIG_VIA_BUTTON */
 
 /*---------------------------------------------------------------------------*/
-#if WITH_ORCHESTRA
 static void
 print_network_status(void)
 {
@@ -184,6 +182,7 @@ print_network_status(void)
   PRINTF("----------------------\n");
 }
 /*---------------------------------------------------------------------------*/
+#if WITH_ORCHESTRA
 #if WITH_AUX
 static void
 net_init(uip_ipaddr_t *br_prefix)
@@ -310,24 +309,22 @@ PROCESS_THREAD(node_process, ev, data)
   }*/
 
 #if WITH_ORCHESTRA
-  #if WITH_AUX
   orchestra_init();
-  #endif
+#endif /* WITH_ORCHESTRA */
   /* Print out routing tables every minute */
   etimer_set(&et_routing_tables, ETIMER_ROUTING);
-#endif /* WITH_ORCHESTRA */
   etimer_set(&et_store, ETIMER_STORE);
   etimer_set(&et_get, ETIMER_GET);
 
   while(1) {
     PROCESS_YIELD();
-#if WITH_ORCHESTRA
+
     if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_routing_tables))
     {
       print_network_status();
       etimer_restart(&et_routing_tables);
     }
-#endif /* WITH_ORCHESTRA */
+
     if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_store))
     {
       //Save the data on Flash
