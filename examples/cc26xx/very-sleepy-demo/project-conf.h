@@ -32,7 +32,7 @@
 #define PROJECT_CONF_H_
 /*---------------------------------------------------------------------------*/
 /* Change to match your configuration */
-#define IEEE802154_CONF_PANID            0xABCD
+#define IEEE802154_CONF_PANID            0xABCD 
 #define RF_CORE_CONF_CHANNEL                 25
 /*---------------------------------------------------------------------------*/
 /* Enable the ROM bootloader */

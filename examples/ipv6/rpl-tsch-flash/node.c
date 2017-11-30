@@ -71,12 +71,13 @@
 #include "net/ip/uip-debug.h"
 #endif /* WITH_ORCHESTRA */
 
+
 /*************************************/
 //  DEFINES & ASSOCIATED VARIABLES
 /*************************************/
 //TIMERS
-#define ETIMER_STORE CLOCK_SECOND*0.51
-#define ETIMER_GET  CLOCK_SECOND*1.01
+#define ETIMER_STORE CLOCK_SECOND*5
+#define ETIMER_GET  CLOCK_SECOND*7
 #ifdef WITH_ORCHESTRA
 #define ETIMER_ROUTING CLOCK_SECOND*60
 static struct etimer et_routing_tables;
@@ -268,17 +269,14 @@ PROCESS_THREAD(node_process, ev, data)
    * - role_6dr: DAG root, will advertise (unsecured) beacons
    * - role_6dr_sec: DAG root, will advertise secured beacons
    * */
-  static int is_coordinator = 0;
-  static enum { role_6ln, role_6dr, role_6dr_sec } node_role;
-  node_role = role_6ln;
+  //static int is_coordinator = 0;
+  //static enum { role_6ln, role_6dr, role_6dr_sec } node_role;
+  //node_role = role_6ln;
 
-  int coordinator_candidate = 0;
+  //int coordinator_candidate = 0;
+  //coordinator_candidate = (node_id == 1);
 
-//#ifdef CONTIKI_TARGET_COOJA
-  coordinator_candidate = (node_id == 1);
-//#endif
-
-  if(coordinator_candidate) {
+  /*if(coordinator_candidate) {
     if(LLSEC802154_ENABLED) {
       node_role = role_6dr_sec;
     } else {
@@ -301,10 +299,10 @@ PROCESS_THREAD(node_process, ev, data)
     //NETSTACK_MAC.off(1);
   } else {
     net_init(NULL);
-  }
+  }*/
 
 #if WITH_ORCHESTRA
-  orchestra_init();
+//  orchestra_init();
   /* Print out routing tables every minute */
   etimer_set(&et_routing_tables, ETIMER_ROUTING);
 #endif /* WITH_ORCHESTRA */

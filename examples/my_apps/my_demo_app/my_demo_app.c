@@ -13,7 +13,7 @@
 #include "contiki.h"
 #include "sys/process.h"
 #include "rest-engine.h"
-//#include "er-coap.h"
+#include "er-coap.h"
 #include "batmon-sensor.h"
 // IPv6/RPL Stack
 #include "net/netstack.h"
@@ -33,6 +33,12 @@
 #include <stdbool.h>
 // API FLASH
 #include "api_flash.h"
+
+
+#include "board-peripherals.h"
+#include "ti-lib.h"
+
+
 
 
 /*
@@ -98,7 +104,6 @@ reading_resources_GET_handler(void *request, void *response, uint8_t *buffer,
 	}
 
 	//Value of sensor is rescued
-	//measure_temp = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
 	measure_temp = read_flash(pos_flash);
 	voltage = batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT);
 

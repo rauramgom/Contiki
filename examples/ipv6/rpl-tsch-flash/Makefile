@@ -13,6 +13,8 @@ APPS += rest-engine
 APPS += orchestra
 MODULES += core/net/mac/tsch
 
+PROJECT_SOURCEFILES += api_flash.c
+
 ifeq ($(MAKE_WITH_ORCHESTRA),1)
 CFLAGS += -DWITH_ORCHESTRA=1
 endif
