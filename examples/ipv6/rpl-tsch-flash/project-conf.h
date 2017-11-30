@@ -159,15 +159,15 @@
 //										MAC ------------> RPL -------> APP_common ------> APP_unicast
 
 //////////////////#endif /* WITH_ORCHESTRA */
-
+#endif /* WITH_AUX */ //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 /* DAG Mode of Operation 
 #define RPL_MOP_NO_DOWNWARD_ROUTES      0
 #define RPL_MOP_NON_STORING             1
 #define RPL_MOP_STORING_NO_MULTICAST    2
 #define RPL_MOP_STORING_MULTICAST       3
 */
-#undef RPL_CONF_MOP
-#define RPL_CONF_MOP RPL_MOP_NON_STORING /* Mode of operation*/
+//#undef RPL_CONF_MOP
+//#define RPL_CONF_MOP RPL_MOP_NON_STORING /* Mode of operation*/
 //#define RPL_CONF_MOP RPL_MOP_STORING_NO_MULTICAST /* Mode of operation*/
 /*******************************************************/
 /******************* Configuring RPL *******************/
@@ -207,7 +207,7 @@
 //#undef RPL_CONF_WITH_MC
 //#define RPL_CONF_WITH_MC 0	//[¡¡¡PROBLEMA!!!]COOJA ROMPE SI LO ACTIVAMOS
 
-#endif /* WITH_AUX */ //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 /* The MC advertised in DIOs and propagating from the root */
 #undef RPL_CONF_DAG_MC
 #define RPL_CONF_DAG_MC RPL_DAG_MC_ETX
