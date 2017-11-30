@@ -54,7 +54,60 @@
 /* Set to enable TSCH security */
 #ifndef WITH_SECURITY
 #define WITH_SECURITY 0
-#endif /* WITH_SECURITY */
+#endif /* WITH_SECURITY */ 
+
+#if WITH_RPL
+/*******************************************************/
+/******************* Configuring RPL *******************/
+/*******************************************************/
+/* Set to 1 to enable RPL statistics */
+#define RPL_CONF_STATS 1
+
+/*
+ * The objective function (OF) used by a RPL root is configurable through
+ * the RPL_CONF_OF_OCP parameter. This is defined as the objective code
+ * point (OCP) of the OF, RPL_OCP_OF0 or RPL_OCP_MRHOF. This flag is of
+ * no relevance to non-root nodes, which run the OF advertised in the
+ * instance they join.
+ * Make sure the selected OF is in RPL_SUPPORTED_OFS.
+ */
+#undef RPL_CONF_OF_OCP
+#define RPL_CONF_OF_OCP RPL_OCP_MRHOF
+
+/*
+ * The set of objective functions supported at runtime. Nodes are only
+ * able to join instances that advertise an OF in this set. To include
+ * both OF0 and MRHOF, use {&rpl_of0, &rpl_mrhof}.
+ */
+#undef RPL_CONF_SUPPORTED_OFS
+#define RPL_CONF_SUPPORTED_OFS {&rpl_mrhof}
+
+/*
+ * Enable/disable RPL Metric Containers (MC). The actual MC in use
+ * for a given DODAG is decided at runtime, when joining. Note that
+ * OF0 (RFC6552) operates without MC, and so does MRHOF (RFC6719) when
+ * used with ETX as a metric (the rank is the metric). We disable MC
+ * by default, but note it must be enabled to support joining a DODAG
+ * that requires MC (e.g., MRHOF with a metric other than ETX).
+ */
+//#undef RPL_CONF_WITH_MC
+//#define RPL_CONF_WITH_MC 0	//[¡¡¡PROBLEMA!!!]COOJA ROMPE SI LO ACTIVAMOS
+
+/* The MC advertised in DIOs and propagating from the root */
+#undef RPL_CONF_DAG_MC
+#define RPL_CONF_DAG_MC RPL_DAG_MC_ETX
+
+/* DAG Mode of Operation 
+#define RPL_MOP_NO_DOWNWARD_ROUTES      0
+#define RPL_MOP_NON_STORING             1
+#define RPL_MOP_STORING_NO_MULTICAST    2
+#define RPL_MOP_STORING_MULTICAST       3
+*/
+//#undef RPL_CONF_MOP
+//#define RPL_CONF_MOP RPL_MOP_NON_STORING /* Mode of operation*/
+//#define RPL_CONF_MOP RPL_MOP_STORING_NO_MULTICAST /* Mode of operation*/
+
+#endif /* WITH_RPL */
 
 #if WITH_AUX //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 /*******************************************************/
@@ -146,7 +199,7 @@
 #define ORCHESTRA_CONF_UNICAST_PERIO 510 //Level App_unicast.Default: 17
 
 /*******************************************************/
-/*********** RPL storing mode & Sender-based ***********/
+/***********  Sender-based ***********/
 /*******************************************************/
 #undef UIP_CONF_MAX_ROUTES
 #define UIP_CONF_MAX_ROUTES 0 /* No need for routes */
@@ -165,64 +218,5 @@
 
 #endif /* WITH_ORCHESTRA */
 #endif /* WITH_AUX */ //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-/* DAG Mode of Operation 
-#define RPL_MOP_NO_DOWNWARD_ROUTES      0
-#define RPL_MOP_NON_STORING             1
-#define RPL_MOP_STORING_NO_MULTICAST    2
-#define RPL_MOP_STORING_MULTICAST       3
-*/
-//#undef RPL_CONF_MOP
-//#define RPL_CONF_MOP RPL_MOP_NON_STORING /* Mode of operation*/
-//#define RPL_CONF_MOP RPL_MOP_STORING_NO_MULTICAST /* Mode of operation*/
-
-#if WITH_RPL
-/*******************************************************/
-/******************* Configuring RPL *******************/
-/*******************************************************/
-/* Set to 1 to enable RPL statistics */
-#define RPL_CONF_STATS 1
-
-/*
- * The objective function (OF) used by a RPL root is configurable through
- * the RPL_CONF_OF_OCP parameter. This is defined as the objective code
- * point (OCP) of the OF, RPL_OCP_OF0 or RPL_OCP_MRHOF. This flag is of
- * no relevance to non-root nodes, which run the OF advertised in the
- * instance they join.
- * Make sure the selected OF is in RPL_SUPPORTED_OFS.
- */
-#undef RPL_CONF_OF_OCP
-#define RPL_CONF_OF_OCP RPL_OCP_MRHOF
-
-
-/*
- * The set of objective functions supported at runtime. Nodes are only
- * able to join instances that advertise an OF in this set. To include
- * both OF0 and MRHOF, use {&rpl_of0, &rpl_mrhof}.
- */
-#undef RPL_CONF_SUPPORTED_OFS
-#define RPL_CONF_SUPPORTED_OFS {&rpl_mrhof}
-
-
-/*
- * Enable/disable RPL Metric Containers (MC). The actual MC in use
- * for a given DODAG is decided at runtime, when joining. Note that
- * OF0 (RFC6552) operates without MC, and so does MRHOF (RFC6719) when
- * used with ETX as a metric (the rank is the metric). We disable MC
- * by default, but note it must be enabled to support joining a DODAG
- * that requires MC (e.g., MRHOF with a metric other than ETX).
- */
-//#undef RPL_CONF_WITH_MC
-//#define RPL_CONF_WITH_MC 0	//[¡¡¡PROBLEMA!!!]COOJA ROMPE SI LO ACTIVAMOS
-
-
-/* The MC advertised in DIOs and propagating from the root */
-#undef RPL_CONF_DAG_MC
-#define RPL_CONF_DAG_MC RPL_DAG_MC_ETX
-
-//#if CONTIKI_TARGET_COOJA
-//#define COOJA_CONF_SIMULATE_TURNAROUND 0
-//#endif /* CONTIKI_TARGET_COOJA */
-
-#endif /* WITH_RPL */
 
 #endif /* __PROJECT_CONF_H__ */
