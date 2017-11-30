@@ -35,9 +35,6 @@
 #include "api_flash.h"
 
 
-#include "board-peripherals.h"
-#include "ti-lib.h"
-
 
 
 
