@@ -67,9 +67,9 @@
 #include "net/ip/uip-debug.h"
 
 #if WITH_ORCHESTRA
+#if WITH_AUX
 #include "orchestra.h"
 #include "node-id.h"
-#if WITH_AUX
 #include "net/mac/tsch/tsch.h"
 #endif
 #endif /* WITH_ORCHESTRA */

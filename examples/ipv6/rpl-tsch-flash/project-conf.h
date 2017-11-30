@@ -207,7 +207,7 @@
 //#undef RPL_CONF_WITH_MC
 //#define RPL_CONF_WITH_MC 0	//[¡¡¡PROBLEMA!!!]COOJA ROMPE SI LO ACTIVAMOS
 
-
+#endif /* WITH_AUX */ //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 /* The MC advertised in DIOs and propagating from the root */
 #undef RPL_CONF_DAG_MC
 #define RPL_CONF_DAG_MC RPL_DAG_MC_ETX
@@ -216,7 +216,6 @@
 //#define COOJA_CONF_SIMULATE_TURNAROUND 0
 //#endif /* CONTIKI_TARGET_COOJA */
 
-#endif /* WITH_AUX */ //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 #endif /* WITH_ORCHESTRA */
 
 #endif /* __PROJECT_CONF_H__ */

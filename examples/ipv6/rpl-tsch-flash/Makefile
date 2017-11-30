@@ -10,9 +10,9 @@ CONTIKI_WITH_IPV6 = 1
 
 APPS += er-coap
 APPS += rest-engine
-APPS += orchestra
+#APPS += orchestra
 #MODULES += core/net/mac/tsch
-#MODULES += core/net/rpl
+MODULES += core/net/rpl
 
 PROJECT_SOURCEFILES += api_flash.c
 
