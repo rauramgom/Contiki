@@ -37,8 +37,12 @@
 
 /* Set to run orchestra */
 #ifndef WITH_ORCHESTRA
-#define WITH_ORCHESTRA 0
+#define WITH_ORCHESTRA 1
 #endif /* WITH_ORCHESTRA */
+
+#ifndef WITH_AUX
+#define WITH_AUX 0
+#endif /* WITH_AUX */
 
 #if WITH_ORCHESTRA
 
@@ -47,6 +51,7 @@
 #define WITH_SECURITY 0
 #endif /* WITH_SECURITY */
 
+#if WITH_AUX //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 /*******************************************************/
 /********************* Enable TSCH *********************/
 /*******************************************************/
@@ -149,8 +154,8 @@
 
 /* Orchestra in storing mode for the sender-based */
 #undef ORCHESTRA_CONF_RULES
-//#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &unicast_per_neighbor_rpl_ns, &default_common }
-#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &rpl_common, &default_common, &unicast_per_neighbor_rpl_storing } 
+#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &unicast_per_neighbor_rpl_ns, &default_common }
+//#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &rpl_common, &default_common, &unicast_per_neighbor_rpl_storing } 
 //										MAC ------------> RPL -------> APP_common ------> APP_unicast
 
 //////////////////#endif /* WITH_ORCHESTRA */
@@ -211,6 +216,7 @@
 //#define COOJA_CONF_SIMULATE_TURNAROUND 0
 //#endif /* CONTIKI_TARGET_COOJA */
 
+#endif /* WITH_AUX */ //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 #endif /* WITH_ORCHESTRA */
 
 #endif /* __PROJECT_CONF_H__ */

@@ -69,7 +69,9 @@
 #if WITH_ORCHESTRA
 #include "orchestra.h"
 #include "node-id.h"
+#if WITH_AUX
 #include "net/mac/tsch/tsch.h"
+#endif
 #endif /* WITH_ORCHESTRA */
 
 
@@ -182,6 +184,7 @@ print_network_status(void)
   PRINTF("----------------------\n");
 }
 /*---------------------------------------------------------------------------*/
+#if WITH_AUX
 static void
 net_init(uip_ipaddr_t *br_prefix)
 {
@@ -198,6 +201,7 @@ net_init(uip_ipaddr_t *br_prefix)
   }
   //NETSTACK_MAC.on();
 }
+#endif
 #endif /* WITH_ORCHESTRA */
 
 /*
