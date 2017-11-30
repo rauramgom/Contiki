@@ -199,7 +199,7 @@ net_init(uip_ipaddr_t *br_prefix)
     rpl_set_prefix(rpl_get_any_dag(), br_prefix, 64);
     rpl_repair_root(RPL_DEFAULT_INSTANCE);
   }
-  //NETSTACK_MAC.on();
+  NETSTACK_MAC.on();
 }
 #endif
 #endif /* WITH_ORCHESTRA */
@@ -310,7 +310,9 @@ PROCESS_THREAD(node_process, ev, data)
   }*/
 
 #if WITH_ORCHESTRA
-//  orchestra_init();
+  #if WITH_AUX
+  orchestra_init();
+  #endif
   /* Print out routing tables every minute */
   etimer_set(&et_routing_tables, ETIMER_ROUTING);
 #endif /* WITH_ORCHESTRA */
