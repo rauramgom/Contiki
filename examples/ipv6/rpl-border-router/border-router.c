@@ -57,6 +57,12 @@
 #define DEBUG DEBUG_NONE
 #include "net/ip/uip-debug.h"
 
+#if WITH_ORCHESTRA
+#include "orchestra.h"
+#include "node-id.h"
+#include "net/mac/tsch/tsch.h"
+#endif /* WITH_ORCHESTRA */
+
 static uip_ipaddr_t prefix;
 static uint8_t prefix_set;
 
@@ -438,6 +444,10 @@ PROCESS_THREAD(border_router_process, ev, data)
 
 #if DEBUG || 1
   print_local_addresses();
+#endif
+
+#if WITH_ORCHESTRA
+  orchestra_init();
 #endif
 
   while(1) {

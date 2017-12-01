@@ -61,18 +61,18 @@ erase_flash(uint32_t *pos_flash)
 		{
 			resul = ERASE_SUCCESS;
 			*pos_flash = FLASH_ADDR_START;
-			printf("[%lu] ERASE -- OK.\n", clock_seconds());
+			PRINTF("[%lu] ERASE -- OK.\n", clock_seconds());
 		} else if (erase == FAPI_STATUS_FSM_ERROR) {
-			printf("[%lu] [**ERASE ERROR**] A programming error \
+			PRINTF("[%lu] [**ERASE ERROR**] A programming error \
 					is encountered.\n", clock_seconds());
 		} else {
 			//Cuando no se introduce una dirección de inicio de bloque
-			printf("[%lu] [**ERASE ERROR**] Invalid argument.\n",
+			PRINTF("[%lu] [**ERASE ERROR**] Invalid argument.\n",
 				clock_seconds());
 		}
 		FlashIntEnable(FLASH_INT_FSM_DONE);
 	} else {
-		printf("[%lu] [**ERROR**] Flash is not ready or there is A FSM error.\n", 
+		PRINTF("[%lu] [**ERROR**] Flash is not ready or there is A FSM error.\n", 
 			clock_seconds());
 	}
 
@@ -99,7 +99,7 @@ write_flash(struct Measure data_to_write, uint32_t *pos_flash)
 	{
 		while(FlashCheckFsmForError() != FAPI_STATUS_SUCCESS &&
 				FlashCheckFsmForReady() != FAPI_STATUS_FSM_READY){
-			printf("[%lu] Waiting until Fsm is Ready...\n", clock_seconds());
+			PRINTF("[%lu] Waiting until Fsm is Ready...\n", clock_seconds());
 		}
 
 		write_buffer[0] = (uint8_t)data_to_write.sysUpTime;
@@ -112,16 +112,16 @@ write_flash(struct Measure data_to_write, uint32_t *pos_flash)
 		FlashIntEnable(FLASH_INT_FSM_DONE);
 		if (write_resul == FAPI_STATUS_SUCCESS)
 		{
-			printf("[%lu] Flash written correctly.\n", clock_seconds());
+			PRINTF("[%lu] Flash written correctly.\n", clock_seconds());
 			*pos_flash += sizeof(write_buffer);
-			printf("pos_flash: %lu\n", *pos_flash);
+			PRINTF("pos_flash: %lu\n", *pos_flash);
 		} else if (write_resul == FAPI_STATUS_FSM_ERROR) {
 			//Cuando intenta escribir 1 donde hay 0 sin Erase() previo
-			printf("[%lu] [** WRITE ERROR**] A programming \
+			PRINTF("[%lu] [** WRITE ERROR**] A programming \
 				error is encountered.\n", clock_seconds());
-			printf("POS_FLASH ESCRITA2: %d\n\n", (int)*pos_flash);
+			PRINTF("POS_FLASH ESCRITA2: %d\n\n", (int)*pos_flash);
 		} else {
-			printf("[%lu] [**WRITE ERROR**] Too many bytes \
+			PRINTF("[%lu] [**WRITE ERROR**] Too many bytes \
 				were requested.\n", clock_seconds());
 		}
 	} 
@@ -141,7 +141,7 @@ read_flash(uint32_t pos_flash)
 	
 	while(FlashCheckFsmForError() != FAPI_STATUS_SUCCESS &&
 			FlashCheckFsmForReady() != FAPI_STATUS_FSM_READY) {
-		printf("[%lu] Waiting until Fsm is Ready...\n", clock_seconds());
+		PRINTF("[%lu] Waiting until Fsm is Ready...\n", clock_seconds());
 	}
 
 	//Lee el último valor almacenado en la flash
@@ -166,19 +166,19 @@ read_flash(uint32_t pos_flash)
 				strcpy(IDmeasure, "VOLT");
 				break;
 		}
-		printf("[%lu] Measure data:\r -sysUpTime: %lu\r -ID: %s\r -value: %i\n", 
+		PRINTF("[%lu] Measure data:\r -sysUpTime: %lu\r -ID: %s\r -value: %i\n", 
 					clock_seconds(), readed_measure.sysUpTime,
 					IDmeasure, readed_measure.measure);
 //[ ....
 		FlashRead(buffer_total, FLASH_ADDR_START, sizeof(buffer_total));
-		printf("BUFFER: ");
+		PRINTF("BUFFER: ");
 		for(int i=0; i<BLOCK_LEN; i++)
-			printf("%i-", buffer_total[i]);
-		printf("\n\n");
+			PRINTF("%i-", buffer_total[i]);
+		PRINTF("\n\n");
 // .... ]
 		FlashIntEnable(FLASH_INT_FSM_DONE);
 	} else {
-		printf("[%lu] [**ERROR**] Flash is not ready or \
+		PRINTF("[%lu] [**ERROR**] Flash is not ready or \
 			there is a FSM error.\n", clock_seconds());
 	}
 

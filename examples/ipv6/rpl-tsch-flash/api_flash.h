@@ -35,6 +35,8 @@ extern "C"
 #include <string.h>
 #include <stdbool.h>
 
+#include "net/ip/uip-debug.h"
+
 
 /*************************************/
 //	DEFINES & ASSOCIATED VARIABLES

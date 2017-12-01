@@ -37,7 +37,7 @@
 
 /* Set to run orchestra */
 #ifndef WITH_ORCHESTRA
-#define WITH_ORCHESTRA 0
+#define WITH_ORCHESTRA 1
 #endif /* WITH_ORCHESTRA */
 
 /* Set to run RPL */
@@ -46,8 +46,12 @@
 #endif /* WITH_RPL */
 
 #ifndef WITH_AUX
-#define WITH_AUX 0
+#define WITH_AUX 1
 #endif /* WITH_AUX */
+
+#ifndef WITH_AUX2
+#define WITH_AUX2 0
+#endif /* WITH_AUX2 */
 
 #if WITH_ORCHESTRA
 
@@ -202,7 +206,7 @@
 /***********  Sender-based ***********/
 /*******************************************************/
 #undef UIP_CONF_MAX_ROUTES
-#define UIP_CONF_MAX_ROUTES 0 /* No need for routes */
+#define UIP_CONF_MAX_ROUTES 50 /* No need for routes */
 
 /* Is the per-neighbor unicast slotframe sender-based (if not, it is receiver-based).
  * Note: sender-based works only with RPL storing mode as it relies on DAO and

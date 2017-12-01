@@ -183,7 +183,7 @@ print_network_status(void)
 }
 /*---------------------------------------------------------------------------*/
 #if WITH_ORCHESTRA
-#if WITH_AUX
+#if WITH_AUX2
 static void
 net_init(uip_ipaddr_t *br_prefix)
 {
@@ -246,7 +246,7 @@ reading_resources_GET_handler(void *request, void *response, uint8_t *buffer,
       strlen(not_supported_msg));
   }
 
-  PRINTF(" APP: READING RESOURCE \n");
+  //PRINTF(" APP: READING RESOURCE \n");
 } //End of reading_resources_GET_handler
 
 //Creation of the associated resource. Valid to make it OBSERVABLE
@@ -293,7 +293,7 @@ PROCESS_THREAD(node_process, ev, data)
     node_role = role_6ln;
   }
 
-  printf("Init: node starting with role %s\n",
+  PRINTF("Init: node starting with role %s\n",
          node_role == role_6ln ? "6ln" : (node_role == role_6dr) ? "6dr" : "6dr-sec");
 
   tsch_set_pan_secured(LLSEC802154_ENABLED && (node_role == role_6dr_sec));
@@ -309,6 +309,7 @@ PROCESS_THREAD(node_process, ev, data)
   }*/
 
 #if WITH_ORCHESTRA
+  NETSTACK_MAC.on();
   orchestra_init();
 #endif /* WITH_ORCHESTRA */
   /* Print out routing tables every minute */
@@ -328,7 +329,7 @@ PROCESS_THREAD(node_process, ev, data)
     if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_store))
     {
       //Save the data on Flash
-      printf("APP: Storing value ...\n"); 
+      PRINTF("APP: Storing value ...\n"); 
       leds_toggle(LEDS_RED);
       //Fill up every Measure struct field
       temp_measure.measure = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
@@ -341,7 +342,7 @@ PROCESS_THREAD(node_process, ev, data)
     {
       //Get the last value stored on the Flash
       leds_toggle(LEDS_GREEN);
-      printf("APP: Getting value ...\n");
+      PRINTF("APP: Getting value ...\n");
       read_flash(pos_flash);
       REST.notify_subscribers(&reading_resources);
       etimer_restart(&et_get);
