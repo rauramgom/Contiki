@@ -117,69 +117,69 @@ print_network_status(void)
   rpl_ns_node_t *link;
 #endif /* RPL_WITH_NON_STORING */
 
-  PRINTF("--- Network status ---\n");
+  printf("--- Network status ---\n");
 
   /* Our IPv6 addresses */
-  PRINTF("- Server IPv6 addresses:\n");
+  printf("- Server IPv6 addresses:\n");
   for(i = 0; i < UIP_DS6_ADDR_NB; i++) {
     state = uip_ds6_if.addr_list[i].state;
     if(uip_ds6_if.addr_list[i].isused &&
        (state == ADDR_TENTATIVE || state == ADDR_PREFERRED)) {
-      PRINTF("-- ");
+      printf("-- ");
       PRINT6ADDR(&uip_ds6_if.addr_list[i].ipaddr);
-      PRINTF("\n");
+      printf("\n");
     }
   }
 
   /* Our default route */
-  PRINTF("- Default route:\n");
+  printf("- Default route:\n");
   default_route = uip_ds6_defrt_lookup(uip_ds6_defrt_choose());
   if(default_route != NULL) {
-    PRINTF("-- ");
+    printf("-- ");
     PRINT6ADDR(&default_route->ipaddr);
-    PRINTF(" (lifetime: %lu seconds)\n", (unsigned long)default_route->lifetime.interval);
+    printf(" (lifetime: %lu seconds)\n", (unsigned long)default_route->lifetime.interval);
   } else {
-    PRINTF("-- None\n");
+    printf("-- None\n");
   }
 
 #if RPL_WITH_STORING
   /* Our routing entries */
-  PRINTF("- Routing entries (%u in total):\n", uip_ds6_route_num_routes());
+  printf("- Routing entries (%u in total):\n", uip_ds6_route_num_routes());
   route = uip_ds6_route_head();
   while(route != NULL) {
-    PRINTF("-- ");
+    printf("-- ");
     PRINT6ADDR(&route->ipaddr);
-    PRINTF(" via ");
+    printf(" via ");
     PRINT6ADDR(uip_ds6_route_nexthop(route));
-    PRINTF(" (lifetime: %lu seconds)\n", (unsigned long)route->state.lifetime);
+    printf(" (lifetime: %lu seconds)\n", (unsigned long)route->state.lifetime);
     route = uip_ds6_route_next(route);
   }
 #endif
 
 #if RPL_WITH_NON_STORING
   /* Our routing links */
-  PRINTF("- Routing links (%u in total):\n", rpl_ns_num_nodes());
+  printf("- Routing links (%u in total):\n", rpl_ns_num_nodes());
   link = rpl_ns_node_head();
   while(link != NULL) {
     uip_ipaddr_t child_ipaddr;
     uip_ipaddr_t parent_ipaddr;
     rpl_ns_get_node_global_addr(&child_ipaddr, link);
     rpl_ns_get_node_global_addr(&parent_ipaddr, link->parent);
-    PRINTF("-- ");
+    printf("-- ");
     PRINT6ADDR(&child_ipaddr);
     if(link->parent == NULL) {
       memset(&parent_ipaddr, 0, sizeof(parent_ipaddr));
-      PRINTF(" --- DODAG root ");
+      printf(" --- DODAG root ");
     } else {
-      PRINTF(" to ");
+      printf(" to ");
       PRINT6ADDR(&parent_ipaddr);
     }
-    PRINTF(" (lifetime: %lu seconds)\n", (unsigned long)link->lifetime);
+    printf(" (lifetime: %lu seconds)\n", (unsigned long)link->lifetime);
     link = rpl_ns_node_next(link);
   }
 #endif
 
-  PRINTF("----------------------\n");
+  printf("----------------------\n");
 }
 /*---------------------------------------------------------------------------*/
 #if WITH_ORCHESTRA
@@ -219,9 +219,10 @@ reading_resources_GET_handler(void *request, void *response, uint8_t *buffer,
   }
 
   //Value of sensor is rescued
-  measure_temp = read_flash(pos_flash);
+  //measure_temp = read_flash(pos_flash);
   measure_temp.measure = 99;
-  voltage = batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT);
+  voltage = 99;
+  //voltage = batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT);
 
   if(accept == -1 || accept == REST.type.APPLICATION_JSON) {
     //Set the header content
@@ -246,7 +247,7 @@ reading_resources_GET_handler(void *request, void *response, uint8_t *buffer,
       strlen(not_supported_msg));
   }
 
-  //PRINTF(" APP: READING RESOURCE \n");
+  printf("[%lu] APP: READING RESOURCE \n", clock_seconds());
 } //End of reading_resources_GET_handler
 
 //Creation of the associated resource. Valid to make it OBSERVABLE
@@ -293,7 +294,7 @@ PROCESS_THREAD(node_process, ev, data)
     node_role = role_6ln;
   }
 
-  PRINTF("Init: node starting with role %s\n",
+  printf("Init: node starting with role %s\n",
          node_role == role_6ln ? "6ln" : (node_role == role_6dr) ? "6dr" : "6dr-sec");
 
   tsch_set_pan_secured(LLSEC802154_ENABLED && (node_role == role_6dr_sec));
@@ -329,21 +330,21 @@ PROCESS_THREAD(node_process, ev, data)
     if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_store))
     {
       //Save the data on Flash
-      PRINTF("APP: Storing value ...\n"); 
+      printf("[%lu]APP: Storing value ...\n", clock_seconds()); 
       leds_toggle(LEDS_RED);
       //Fill up every Measure struct field
-      temp_measure.measure = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
+      //temp_measure.measure = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
       temp_measure.ID = TEMP;
       temp_measure.sysUpTime = clock_seconds();
-      write_flash(temp_measure, &pos_flash);
+      //write_flash(temp_measure, &pos_flash);
       etimer_restart(&et_store);
     }
     if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_get)) 
     {
       //Get the last value stored on the Flash
       leds_toggle(LEDS_GREEN);
-      PRINTF("APP: Getting value ...\n");
-      read_flash(pos_flash);
+      printf("[%lu]APP: Getting value ...\n", clock_seconds());
+      //read_flash(pos_flash);
       REST.notify_subscribers(&reading_resources);
       etimer_restart(&et_get);
     }
