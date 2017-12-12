@@ -93,11 +93,7 @@ const char *not_supported_msg = "Supported:text/plain,application/json";
 
 /*---------------------------------------------------------------------------*/
 PROCESS(node_process, "RPL Node");
-//#if CONFIG_VIA_BUTTON
-//AUTOSTART_PROCESSES(&node_process, &sensors_process);
-//#else /* CONFIG_VIA_BUTTON */
 AUTOSTART_PROCESSES(&node_process);
-//#endif /* CONFIG_VIA_BUTTON */
 
 /*---------------------------------------------------------------------------*/
 static void
@@ -304,7 +300,7 @@ PROCESS_THREAD(node_process, ev, data)
     net_init(NULL);
   }*/
 
-  NETSTACK_MAC.on();
+  //NETSTACK_MAC.on();
 
   /* Print out routing tables every minute */
   etimer_set(&et_routing_tables, ETIMER_ROUTING);

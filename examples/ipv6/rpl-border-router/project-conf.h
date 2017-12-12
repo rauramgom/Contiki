@@ -73,7 +73,7 @@
 
 /* Set to run TSCH */
 #ifndef WITH_TSCH
-#define WITH_TSCH 0
+#define WITH_TSCH 1
 #endif /* WITH_TSCH */
 
 /* Set to run RPL */
@@ -167,6 +167,31 @@
 #define TSCH_CALLBACK_JOINING_NETWORK tsch_rpl_callback_joining_network
 #define TSCH_CALLBACK_LEAVING_NETWORK tsch_rpl_callback_leaving_network
 
+/*******************************************************/
+/******************* Configure TSCH ********************/
+/*******************************************************/
+/* Default hopping sequence, used in case hopping sequence ID == 0 */
+#undef TSCH_CONF_DEFAULT_HOPPING_SEQUENCE
+#define TSCH_CONF_DEFAULT_HOPPING_SEQUENCE TSCH_HOPPING_SEQUENCE_1_1
+/* TSCH logging. 0: disabled. 1: basic log. 2: with delayed
+ * log messages from interrupt */
+#undef TSCH_LOG_CONF_LEVEL
+#define TSCH_LOG_CONF_LEVEL 2
+
+/* IEEE802.15.4 PANID */
+#undef IEEE802154_CONF_PANID
+#define IEEE802154_CONF_PANID 0xabcd
+
+/* 6TiSCH minimal schedule length.
+ * Larger values result in less frequent active slots: reduces capacity and saves energy. */
+#undef TSCH_SCHEDULE_CONF_DEFAULT_LENGTH
+#define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH 3 //7
+
+/* Keep radio always on within TSCH timeslot (1) or 
+ * turn it off between packet and ACK? (0) */
+#undef TSCH_CONF_RADIO_ON_DURING_TIMESLOT
+#define TSCH_CONF_RADIO_ON_DURING_TIMESLOT 1
+
 #if WITH_SECURITY
 
 /* Enable security */
@@ -182,33 +207,6 @@
 #endif /* WITH_SECURITY */
 
 #if WITH_ORCHESTRA
-/*******************************************************/
-/******************* Configure TSCH ********************/
-/*******************************************************/
-
-/* TSCH logging. 0: disabled. 1: basic log. 2: with delayed
- * log messages from interrupt */
-#undef TSCH_LOG_CONF_LEVEL
-#define TSCH_LOG_CONF_LEVEL 2
-
-/* IEEE802.15.4 PANID */
-#undef IEEE802154_CONF_PANID
-#define IEEE802154_CONF_PANID 0xabcd
-
-/* Set start TSCH at init, without waiting for NETSTACK_MAC.on() */
-#undef TSCH_CONF_AUTOSTART
-#define TSCH_CONF_AUTOSTART 1
-
-/* 6TiSCH minimal schedule length.
- * Larger values result in less frequent active slots: reduces capacity and saves energy. */
-#undef TSCH_SCHEDULE_CONF_DEFAULT_LENGTH
-#define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH 7 //3
-
-/* Keep radio always on within TSCH timeslot (1) or 
- * turn it off between packet and ACK? (0) */
-#undef TSCH_CONF_RADIO_ON_DURING_TIMESLOT
-#define TSCH_CONF_RADIO_ON_DURING_TIMESLOT 1
-
 /* See apps/orchestra/README.md for more Orchestra configuration options */
 #define TSCH_CONF_WITH_LINK_SELECTOR 1 /* Orchestra requires per-packet link selection */
 /* Orchestra callbacks */

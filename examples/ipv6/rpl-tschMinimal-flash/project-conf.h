@@ -35,14 +35,19 @@
 #ifndef __PROJECT_CONF_H__
 #define __PROJECT_CONF_H__
 
+/* Set to run TSCH */
+#ifndef WITH_TSCH
+#define WITH_TSCH 1
+#endif /* WITH_TSCH */
+
 /* Set to run RPL */
 #ifndef WITH_RPL
 #define WITH_RPL 1
 #endif /* WITH_RPL */
 
-#ifndef WITH_AUX
-#define WITH_AUX 0
-#endif /* WITH_AUX */
+#ifndef WITH_ORCHESTRA
+#define WITH_ORCHESTRA 0
+#endif /* WITH_ORCHESTRA */
 
 #ifndef WITH_AUX2
 #define WITH_AUX2 0
@@ -107,6 +112,8 @@
 
 #endif /* WITH_RPL */
 
+/* Set to run TSCH */
+#if WITH_TSCH
 /*******************************************************/
 /********************* Enable TSCH *********************/
 /*******************************************************/
@@ -134,15 +141,17 @@
 #define TSCH_CALLBACK_JOINING_NETWORK tsch_rpl_callback_joining_network
 #define TSCH_CALLBACK_LEAVING_NETWORK tsch_rpl_callback_leaving_network
 
-#if WITH_AUX //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 /*******************************************************/
 /******************* Configure TSCH ********************/
 /*******************************************************/
+/* Default hopping sequence, used in case hopping sequence ID == 0 */
+#undef TSCH_CONF_DEFAULT_HOPPING_SEQUENCE
+#define TSCH_CONF_DEFAULT_HOPPING_SEQUENCE TSCH_HOPPING_SEQUENCE_1_1
 
 /* TSCH logging. 0: disabled. 1: basic log. 2: with delayed
  * log messages from interrupt */
 #undef TSCH_LOG_CONF_LEVEL
-#define TSCH_LOG_CONF_LEVEL 1
+#define TSCH_LOG_CONF_LEVEL 2
 
 /* IEEE802.15.4 PANID */
 #undef IEEE802154_CONF_PANID
@@ -151,7 +160,7 @@
 /* 6TiSCH minimal schedule length.
  * Larger values result in less frequent active slots: reduces capacity and saves energy. */
 #undef TSCH_SCHEDULE_CONF_DEFAULT_LENGTH
-#define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH 7 //3
+#define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH 1 //7
 
 /* Keep radio always on within TSCH timeslot (1) or 
  * turn it off between packet and ACK? (0) */
@@ -181,6 +190,7 @@
 //#define NETSTACK_CONF_ROUTING_NEIGHBOR_ADDED_CALLBACK orchestra_callback_child_added
 //#define NETSTACK_CONF_ROUTING_NEIGHBOR_REMOVED_CALLBACK orchestra_callback_child_removed
 
+#if WITH_ORCHESTRA
 /*******************************************************/
 /****************** SLOTFRAMES LENGTH ******************/
 /*******************************************************/
@@ -216,6 +226,10 @@
 //#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &rpl_common, &default_common, &unicast_per_neighbor_rpl_storing } 
 //										MAC ------------> RPL -------> APP_common ------> APP_unicast
 
-#endif /* WITH_AUX */ //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+#endif /* WITH_ORCHESTRA */ 
+#endif /* WITH_TSCH */
 
 #endif /* __PROJECT_CONF_H__ */
+
+
+
