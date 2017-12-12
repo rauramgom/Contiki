@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Swedish Institute of Computer Science.
+ * Copyright (c) 2015, SICS Swedish ICT.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,58 +28,26 @@
  *
  */
 
-#ifndef PROJECT_ROUTER_CONF_H_
-#define PROJECT_ROUTER_CONF_H_
+/**
+ * \author Simon Duquennoy <simonduq@sics.se>
+ */
 
-#ifndef WITH_NON_STORING
-#define WITH_NON_STORING 0 /* Set this to run with non-storing mode */
-#endif /* WITH_NON_STORING */
-
-#if WITH_NON_STORING
-#undef RPL_NS_CONF_LINK_NUM
-#define RPL_NS_CONF_LINK_NUM 40 /* Number of links maintained at the root */
-#undef UIP_CONF_MAX_ROUTES
-#define UIP_CONF_MAX_ROUTES 0 /* No need for routes */
-#undef RPL_CONF_MOP
-#define RPL_CONF_MOP RPL_MOP_NON_STORING /* Mode of operation*/
-#endif /* WITH_NON_STORING */
-
-#ifndef UIP_FALLBACK_INTERFACE
-#define UIP_FALLBACK_INTERFACE rpl_interface
-#endif
-
-#ifndef QUEUEBUF_CONF_NUM
-#define QUEUEBUF_CONF_NUM          4
-#endif
-
-#ifndef UIP_CONF_BUFFER_SIZE
-#define UIP_CONF_BUFFER_SIZE    140
-#endif
-
-#ifndef UIP_CONF_RECEIVE_WINDOW
-#define UIP_CONF_RECEIVE_WINDOW  60
-#endif
-
-#ifndef WEBSERVER_CONF_CFS_CONNS
-#define WEBSERVER_CONF_CFS_CONNS 2
-#endif
-
-//#endif /* PROJECT_ROUTER_CONF_H_ */
-
-/* Set to run orchestra */
-#ifndef WITH_ORCHESTRA
-#define WITH_ORCHESTRA 0
-#endif /* WITH_ORCHESTRA */
-
-/* Set to run TSCH */
-#ifndef WITH_TSCH
-#define WITH_TSCH 0
-#endif /* WITH_TSCH */
+#ifndef __PROJECT_CONF_H__
+#define __PROJECT_CONF_H__
 
 /* Set to run RPL */
 #ifndef WITH_RPL
 #define WITH_RPL 1
 #endif /* WITH_RPL */
+
+#ifndef WITH_AUX
+#define WITH_AUX 0
+#endif /* WITH_AUX */
+
+#ifndef WITH_AUX2
+#define WITH_AUX2 0
+#endif /* WITH_AUX2 */
+
 
 /* Set to enable TSCH security */
 #ifndef WITH_SECURITY
@@ -139,7 +107,6 @@
 
 #endif /* WITH_RPL */
 
-#if WITH_TSCH
 /*******************************************************/
 /********************* Enable TSCH *********************/
 /*******************************************************/
@@ -167,6 +134,30 @@
 #define TSCH_CALLBACK_JOINING_NETWORK tsch_rpl_callback_joining_network
 #define TSCH_CALLBACK_LEAVING_NETWORK tsch_rpl_callback_leaving_network
 
+#if WITH_AUX //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+/*******************************************************/
+/******************* Configure TSCH ********************/
+/*******************************************************/
+
+/* TSCH logging. 0: disabled. 1: basic log. 2: with delayed
+ * log messages from interrupt */
+#undef TSCH_LOG_CONF_LEVEL
+#define TSCH_LOG_CONF_LEVEL 1
+
+/* IEEE802.15.4 PANID */
+#undef IEEE802154_CONF_PANID
+#define IEEE802154_CONF_PANID 0xabcd
+
+/* 6TiSCH minimal schedule length.
+ * Larger values result in less frequent active slots: reduces capacity and saves energy. */
+#undef TSCH_SCHEDULE_CONF_DEFAULT_LENGTH
+#define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH 7 //3
+
+/* Keep radio always on within TSCH timeslot (1) or 
+ * turn it off between packet and ACK? (0) */
+#undef TSCH_CONF_RADIO_ON_DURING_TIMESLOT
+#define TSCH_CONF_RADIO_ON_DURING_TIMESLOT 1
+
 #if WITH_SECURITY
 
 /* Enable security */
@@ -181,78 +172,50 @@
 
 #endif /* WITH_SECURITY */
 
-#if WITH_ORCHESTRA
-/*******************************************************/
-/******************* Configure TSCH ********************/
-/*******************************************************/
-
-/* TSCH logging. 0: disabled. 1: basic log. 2: with delayed
- * log messages from interrupt */
-#undef TSCH_LOG_CONF_LEVEL
-#define TSCH_LOG_CONF_LEVEL 2
-
-/* IEEE802.15.4 PANID */
-#undef IEEE802154_CONF_PANID
-#define IEEE802154_CONF_PANID 0xabcd
-
-/* Set start TSCH at init, without waiting for NETSTACK_MAC.on() */
-#undef TSCH_CONF_AUTOSTART
-#define TSCH_CONF_AUTOSTART 1
-
-/* 6TiSCH minimal schedule length.
- * Larger values result in less frequent active slots: reduces capacity and saves energy. */
-#undef TSCH_SCHEDULE_CONF_DEFAULT_LENGTH
-#define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH 7 //3
-
-/* Keep radio always on within TSCH timeslot (1) or 
- * turn it off between packet and ACK? (0) */
-#undef TSCH_CONF_RADIO_ON_DURING_TIMESLOT
-#define TSCH_CONF_RADIO_ON_DURING_TIMESLOT 1
-
 /* See apps/orchestra/README.md for more Orchestra configuration options */
-#define TSCH_CONF_WITH_LINK_SELECTOR 1 /* Orchestra requires per-packet link selection */
+//#define TSCH_SCHEDULE_CONF_WITH_6TISCH_MINIMAL 1 /* 6TiSCH minimal schedule */
+//#define TSCH_CONF_WITH_LINK_SELECTOR 1 /* Orchestra requires per-packet link selection */
 /* Orchestra callbacks */
-#define TSCH_CALLBACK_NEW_TIME_SOURCE orchestra_callback_new_time_source
-#define TSCH_CALLBACK_PACKET_READY orchestra_callback_packet_ready
-#define NETSTACK_CONF_ROUTING_NEIGHBOR_ADDED_CALLBACK orchestra_callback_child_added
-#define NETSTACK_CONF_ROUTING_NEIGHBOR_REMOVED_CALLBACK orchestra_callback_child_removed
+//#define TSCH_CALLBACK_NEW_TIME_SOURCE orchestra_callback_new_time_source
+//#define TSCH_CALLBACK_PACKET_READY orchestra_callback_packet_ready
+//#define NETSTACK_CONF_ROUTING_NEIGHBOR_ADDED_CALLBACK orchestra_callback_child_added
+//#define NETSTACK_CONF_ROUTING_NEIGHBOR_REMOVED_CALLBACK orchestra_callback_child_removed
 
 /*******************************************************/
 /****************** SLOTFRAMES LENGTH ******************/
 /*******************************************************/
 /* Length of the various slotframes. Tune to balance network capacity,
  * contention, energy, latency. */
-#undef ORCHESTRA_CONF_EBSF_PERIOD
-#define ORCHESTRA_CONF_EBSF_PERIOD	397 //Level TSCH. Default: 397
+//#undef ORCHESTRA_CONF_EBSF_PERIOD
+//#define ORCHESTRA_CONF_EBSF_PERIOD	397 //Level TSCH. Default: 397
 
-#undef ORCHESTRA_CONF_COMMON_RPL_PERIOD
-#define ORCHESTRA_CONF_COMMON_RPL_PERIOD	103 //Level RPL. Default: 103
+//#undef ORCHESTRA_CONF_COMMON_RPL_PERIOD
+//#define ORCHESTRA_CONF_COMMON_RPL_PERIOD	103 //Level RPL. Default: 103
 
-#undef ORCHESTRA_CONF_COMMON_SHARED_PERIOD
-#define ORCHESTRA_CONF_COMMON_SHARED_PERIOD	1010 //Level App_shared. Default: 31
+//#undef ORCHESTRA_CONF_COMMON_SHARED_PERIOD
+//#define ORCHESTRA_CONF_COMMON_SHARED_PERIOD	1010 //Level App_shared. Default: 31
 
-#undef ORCHESTRA_CONF_UNICAST_PERIOD
-#define ORCHESTRA_CONF_UNICAST_PERIO 510 //Level App_unicast.Default: 17
+//#undef ORCHESTRA_CONF_UNICAST_PERIOD
+//#define ORCHESTRA_CONF_UNICAST_PERIO 510 //Level App_unicast.Default: 17
 
 /*******************************************************/
 /***********  Sender-based ***********/
 /*******************************************************/
 #undef UIP_CONF_MAX_ROUTES
-#define UIP_CONF_MAX_ROUTES 100 /* No need for routes */
+#define UIP_CONF_MAX_ROUTES 50 /* No need for routes */
 
 /* Is the per-neighbor unicast slotframe sender-based (if not, it is receiver-based).
  * Note: sender-based works only with RPL storing mode as it relies on DAO and
  * routing entries to keep track of children and parents. */
-#undef ORCHESTRA_CONF_UNICAST_SENDER_BASED
-#define ORCHESTRA_CONF_UNICAST_SENDER_BASED 1
+//#undef ORCHESTRA_CONF_UNICAST_SENDER_BASED
+//#define ORCHESTRA_CONF_UNICAST_SENDER_BASED 1
 
 /* Orchestra in storing mode for the sender-based */
-#undef ORCHESTRA_CONF_RULES
-#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &unicast_per_neighbor_rpl_ns, &default_common }
+//#undef ORCHESTRA_CONF_RULES
+//#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &unicast_per_neighbor_rpl_ns, &default_common }
 //#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &rpl_common, &default_common, &unicast_per_neighbor_rpl_storing } 
 //										MAC ------------> RPL -------> APP_common ------> APP_unicast
 
-#endif /* WITH_ORCHESTRA */
-#endif /* WITH_TSCH */
+#endif /* WITH_AUX */ //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 #endif /* __PROJECT_CONF_H__ */

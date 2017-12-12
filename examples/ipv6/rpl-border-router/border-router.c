@@ -59,9 +59,9 @@
 
 #if WITH_ORCHESTRA
 #include "orchestra.h"
+#endif /* WITH_ORCHESTRA */
 #include "node-id.h"
 #include "net/mac/tsch/tsch.h"
-#endif /* WITH_ORCHESTRA */
 
 static uip_ipaddr_t prefix;
 static uint8_t prefix_set;

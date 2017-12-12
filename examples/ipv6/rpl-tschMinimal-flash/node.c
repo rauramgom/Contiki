@@ -66,13 +66,9 @@
 #define DEBUG DEBUG_PRINT
 #include "net/ip/uip-debug.h"
 
-#if WITH_ORCHESTRA
-#if WITH_AUX
-#include "orchestra.h"
 #include "node-id.h"
 #include "net/mac/tsch/tsch.h"
-#endif
-#endif /* WITH_ORCHESTRA */
+
 
 
 /*************************************/
@@ -182,7 +178,6 @@ print_network_status(void)
   printf("----------------------\n");
 }
 /*---------------------------------------------------------------------------*/
-#if WITH_ORCHESTRA
 #if WITH_AUX2
 static void
 net_init(uip_ipaddr_t *br_prefix)
@@ -200,8 +195,7 @@ net_init(uip_ipaddr_t *br_prefix)
   }
   NETSTACK_MAC.on();
 }
-#endif
-#endif /* WITH_ORCHESTRA */
+#endif /* WITH_AUX2 */
 
 /*
 * Show all the available resources
@@ -310,10 +304,8 @@ PROCESS_THREAD(node_process, ev, data)
     net_init(NULL);
   }*/
 
-#if WITH_ORCHESTRA
   NETSTACK_MAC.on();
-  orchestra_init();
-#endif /* WITH_ORCHESTRA */
+
   /* Print out routing tables every minute */
   etimer_set(&et_routing_tables, ETIMER_ROUTING);
   etimer_set(&et_store, ETIMER_STORE);

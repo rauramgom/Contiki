@@ -40,7 +40,7 @@ ifeq ($(PREFIX),)
  PREFIX = fd00::1/64
 endif
 
-APPS += orchestra
+#APPS += orchestra
 MODULES += core/net/mac/tsch
 
 CONTIKI_WITH_IPV6 = 1
