@@ -63,8 +63,8 @@ erase_flash(uint32_t *pos_flash)
 			*pos_flash = FLASH_ADDR_START;
 			printf("[%lu] ERASE -- OK.\n", clock_seconds());
 		} else if (erase == FAPI_STATUS_FSM_ERROR) {
-			printf("[%lu] [**ERASE ERROR**] A programming error \
-					is encountered.\n", clock_seconds());
+			printf("[%lu] [**ERASE ERROR**] A programming error is encountered.\n",
+				clock_seconds());
 		} else {
 			//Cuando no se introduce una dirección de inicio de bloque
 			printf("[%lu] [**ERASE ERROR**] Invalid argument.\n",
@@ -73,7 +73,7 @@ erase_flash(uint32_t *pos_flash)
 		FlashIntEnable(FLASH_INT_FSM_DONE);
 	} else {
 		printf("[%lu] [**ERROR**] Flash is not ready or there is A FSM error.\n", 
-			clock_seconds());
+				clock_seconds());
 	}
 
 	return resul;
@@ -117,12 +117,12 @@ write_flash(struct Measure data_to_write, uint32_t *pos_flash)
 			printf("pos_flash: %lu\n", *pos_flash);
 		} else if (write_resul == FAPI_STATUS_FSM_ERROR) {
 			//Cuando intenta escribir 1 donde hay 0 sin Erase() previo
-			printf("[%lu] [** WRITE ERROR**] A programming \
-				error is encountered.\n", clock_seconds());
+			printf("[%lu] [** WRITE ERROR**] A programming error is encountered.\n",
+				clock_seconds());
 			printf("POS_FLASH ESCRITA2: %d\n\n", (int)*pos_flash);
 		} else {
-			printf("[%lu] [**WRITE ERROR**] Too many bytes \
-				were requested.\n", clock_seconds());
+			printf("[%lu] [**WRITE ERROR**] Too many bytes were requested.\n",
+				clock_seconds());
 		}
 	} 
 } //End of write_flash()
@@ -178,8 +178,8 @@ read_flash(uint32_t pos_flash)
 // .... ]
 		FlashIntEnable(FLASH_INT_FSM_DONE);
 	} else {
-		printf("[%lu] [**ERROR**] Flash is not ready or \
-			there is a FSM error.\n", clock_seconds());
+		printf("[%lu] [**ERROR**] Flash is not ready or there is a FSM error.\n",
+			clock_seconds());
 	}
 
 	return readed_measure;

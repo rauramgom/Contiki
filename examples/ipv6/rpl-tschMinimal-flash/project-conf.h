@@ -49,11 +49,6 @@
 #define WITH_ORCHESTRA 0
 #endif /* WITH_ORCHESTRA */
 
-#ifndef WITH_AUX2
-#define WITH_AUX2 0
-#endif /* WITH_AUX2 */
-
-
 /* Set to enable TSCH security */
 #ifndef WITH_SECURITY
 #define WITH_SECURITY 0
