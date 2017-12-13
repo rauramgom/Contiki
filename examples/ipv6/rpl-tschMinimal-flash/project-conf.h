@@ -107,12 +107,24 @@
 
 #endif /* WITH_RPL */
 
-/* Set to run TSCH */
 #if WITH_TSCH
 /*******************************************************/
 /********************* Enable TSCH *********************/
 /*******************************************************/
+#undef TSCH_SCHEDULE_CONF_WITH_6TISCH_MINIMAL
 #define TSCH_SCHEDULE_CONF_WITH_6TISCH_MINIMAL 1
+
+/* Period between two consecutive EBs */
+#undef TSCH_CONF_EB_PERIOD
+#define TSCH_CONF_EB_PERIOD (1*CLOCK_SECOND)
+
+/* Max Period between two consecutive EBs */
+#undef TSCH_CONF_MAX_EB_PERIOD
+#define TSCH_CONF_MAX_EB_PERIOD (50 * CLOCK_SECOND)
+
+/* How long to scan each channel in the scanning phase */
+#undef TSCH_CONF_CHANNEL_SCAN_DURATION
+#define TSCH_CONF_CHANNEL_SCAN_DURATION (CLOCK_SECOND/10)
 
 /* Set start TSCH at init, without waiting for NETSTACK_MAC.on() */
 #undef TSCH_CONF_AUTOSTART
@@ -155,12 +167,12 @@
 /* 6TiSCH minimal schedule length.
  * Larger values result in less frequent active slots: reduces capacity and saves energy. */
 #undef TSCH_SCHEDULE_CONF_DEFAULT_LENGTH
-#define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH 1 //7
+#define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH	2  //7 
 
 /* Keep radio always on within TSCH timeslot (1) or 
  * turn it off between packet and ACK? (0) */
 #undef TSCH_CONF_RADIO_ON_DURING_TIMESLOT
-#define TSCH_CONF_RADIO_ON_DURING_TIMESLOT 1
+#define TSCH_CONF_RADIO_ON_DURING_TIMESLOT	1
 
 #if WITH_SECURITY
 
@@ -176,6 +188,8 @@
 
 #endif /* WITH_SECURITY */
 
+#if WITH_ORCHESTRA
+
 /* See apps/orchestra/README.md for more Orchestra configuration options */
 //#define TSCH_SCHEDULE_CONF_WITH_6TISCH_MINIMAL 1 /* 6TiSCH minimal schedule */
 //#define TSCH_CONF_WITH_LINK_SELECTOR 1 /* Orchestra requires per-packet link selection */
@@ -184,8 +198,6 @@
 //#define TSCH_CALLBACK_PACKET_READY orchestra_callback_packet_ready
 //#define NETSTACK_CONF_ROUTING_NEIGHBOR_ADDED_CALLBACK orchestra_callback_child_added
 //#define NETSTACK_CONF_ROUTING_NEIGHBOR_REMOVED_CALLBACK orchestra_callback_child_removed
-
-#if WITH_ORCHESTRA
 /*******************************************************/
 /****************** SLOTFRAMES LENGTH ******************/
 /*******************************************************/

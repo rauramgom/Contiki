@@ -266,7 +266,7 @@ PROCESS_THREAD(node_process, ev, data)
 	SENSORS_ACTIVATE(batmon_sensor);
 
 	printf("[%lu] Erasing the flash for first time...\n\n", clock_seconds());
-	erase_flash(&pos_flash);
+	//erase_flash(&pos_flash);
 
 	/* 3 possible roles:
 	 * - role_6ln: simple node, will join any network, secured or not
@@ -331,7 +331,7 @@ PROCESS_THREAD(node_process, ev, data)
 			temp_measure.measure = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
 			temp_measure.ID = TEMP;
 			temp_measure.sysUpTime = clock_seconds();
-			write_flash(temp_measure, &pos_flash);
+			//write_flash(temp_measure, &pos_flash);
 			etimer_restart(&et_store);
 		}
 		if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_get)) 
@@ -339,7 +339,7 @@ PROCESS_THREAD(node_process, ev, data)
 			//Get the last value stored on the Flash
 			leds_toggle(LEDS_GREEN);
 			printf("[%lu]APP: Getting value ...\n", clock_seconds());
-			read_flash(pos_flash);
+			//read_flash(pos_flash);
 			REST.notify_subscribers(&reading_resources);
 			etimer_restart(&et_get);
 		}
