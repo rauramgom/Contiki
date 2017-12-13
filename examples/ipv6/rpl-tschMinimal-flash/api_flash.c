@@ -165,6 +165,9 @@ read_flash(uint32_t pos_flash)
 			case VOLT:
 				strcpy(IDmeasure, "VOLT");
 				break;
+			default:
+				strcpy(IDmeasure, "ERRO");
+				break;
 		}
 		printf("[%lu] Measure data:\r -sysUpTime: %lu\r -ID: %s\r -value: %i\n", 
 					clock_seconds(), readed_measure.sysUpTime,
