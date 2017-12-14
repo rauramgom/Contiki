@@ -196,7 +196,7 @@
 #undef IEEE802154_CONF_PANID
 #define IEEE802154_CONF_PANID 0xabcd
 
-/* 6TiSCH minimal schedule length.
+/* 6TiSCH Minimal schedule slotframe length
  * Larger values result in less frequent active slots: reduces capacity and saves energy. */
 #undef TSCH_SCHEDULE_CONF_DEFAULT_LENGTH
 #define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH 1 //7

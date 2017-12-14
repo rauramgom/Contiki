@@ -54,7 +54,7 @@
 #include "net/nbr-table.h"
 #include "net/link-stats.h"
 
-#define DEBUG DEBUG_FULL //DEBUG_NONE
+#define DEBUG DEBUG_PRINT //DEBUG_NONE
 #include "net/ip/uip-debug.h"
 
 #include <stdio.h>

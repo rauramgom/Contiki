@@ -121,7 +121,7 @@
 
 /* Max Period between two consecutive EBs */
 #undef TSCH_CONF_MAX_EB_PERIOD
-#define TSCH_CONF_MAX_EB_PERIOD (10 * CLOCK_SECOND)
+#define TSCH_CONF_MAX_EB_PERIOD (10*CLOCK_SECOND)
 
 /* How long to scan each channel in the scanning phase */
 #undef TSCH_CONF_CHANNEL_SCAN_DURATION
@@ -165,7 +165,7 @@
 #undef IEEE802154_CONF_PANID
 #define IEEE802154_CONF_PANID 0xabcd
 
-/* 6TiSCH minimal schedule length.
+/* 6TiSCH Minimal schedule slotframe length 
  * Larger values result in less frequent active slots: reduces capacity and saves energy. */
 #undef TSCH_SCHEDULE_CONF_DEFAULT_LENGTH
 #define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH	2  //7 
