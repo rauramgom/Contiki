@@ -121,7 +121,7 @@
 
 /* Max Period between two consecutive EBs */
 #undef TSCH_CONF_MAX_EB_PERIOD
-#define TSCH_CONF_MAX_EB_PERIOD (10*CLOCK_SECOND)
+#define TSCH_CONF_MAX_EB_PERIOD (5*CLOCK_SECOND)
 
 /* How long to scan each channel in the scanning phase */
 #undef TSCH_CONF_CHANNEL_SCAN_DURATION
