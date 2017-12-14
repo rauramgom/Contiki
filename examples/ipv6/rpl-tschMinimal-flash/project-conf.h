@@ -96,6 +96,53 @@
 #undef RPL_CONF_DAG_MC
 #define RPL_CONF_DAG_MC RPL_DAG_MC_ETX
 
+/*
+ * The DIO interval (n) represents 2^n ms.
+ *
+ * According to the specification, the default value is 3 which
+ * means 8 milliseconds. That is far too low when using duty cycling
+ * with wake-up intervals that are typically hundreds of milliseconds.
+ * ContikiRPL thus sets the default to 2^12 ms = 4.096 s.
+ */
+#undef RPL_CONF_DIO_INTERVAL_MIN
+#define RPL_CONF_DIO_INTERVAL_MIN	12	
+
+/*
+ * Maximum amount of timer doublings.
+ *
+ * The maximum interval will by default be 2^(12+8) ms = 1048.576 s.
+ * RFC 6550 suggests a default value of 20, which of course would be
+ * unsuitable when we start with a minimum interval of 2^12.
+ */
+#undef RPL_CONF_DIO_INTERVAL_DOUBLINGS
+#define RPL_CONF_DIO_INTERVAL_DOUBLINGS 8
+
+/*
+ * Default route lifetime unit. This is the granularity of time
+ * used in RPL lifetime values, in seconds.
+ */
+#undef RPL_CONF_DEFAULT_LIFETIME_UNIT
+#define RPL_CONF_DEFAULT_LIFETIME_UNIT	10	//Default: 60 - a minute
+
+/*
+ * Default route lifetime as a multiple of the lifetime unit.
+ */
+#undef RPL_CONF_DEFAULT_LIFETIME
+#define RPL_CONF_DEFAULT_LIFETIME	1	//Default: 30
+
+/*
+ * RPL probing interval. When enabled, probes will be sent periodically to keep
+ * parent link estimates up to date.
+ */
+#undef RPL_CONF_PROBING_INTERVAL
+#define RPL_CONF_PROBING_INTERVAL	(10*CLOCK_SECOND)	//Default: 120
+
+/*
+ * Interval of DIS transmission
+ */
+#undef RPL_CONF_DIS_INTERVAL
+#define RPL_CONF_DIS_INTERVAL	60	//Default: 60
+
 /* DAG Mode of Operation 
 #define RPL_MOP_NO_DOWNWARD_ROUTES      0
 #define RPL_MOP_NON_STORING             1
