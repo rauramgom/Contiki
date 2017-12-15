@@ -206,7 +206,7 @@
 /* TSCH logging. 0: disabled. 1: basic log. 2: with delayed
  * log messages from interrupt */
 #undef TSCH_LOG_CONF_LEVEL
-#define TSCH_LOG_CONF_LEVEL 1
+#define TSCH_LOG_CONF_LEVEL 0
 
 /* IEEE802.15.4 PANID */
 #undef IEEE802154_CONF_PANID
@@ -215,7 +215,7 @@
 /* 6TiSCH Minimal schedule slotframe length 
  * Larger values result in less frequent active slots: reduces capacity and saves energy. */
 #undef TSCH_SCHEDULE_CONF_DEFAULT_LENGTH
-#define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH	3  //7 
+#define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH	7  //7 
 
 /* Keep radio always on within TSCH timeslot (1) or 
  * turn it off between packet and ACK? (0) */
