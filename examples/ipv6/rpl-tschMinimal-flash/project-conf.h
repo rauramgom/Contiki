@@ -164,15 +164,15 @@
 
 /* Period between two consecutive EBs */
 #undef TSCH_CONF_EB_PERIOD
-#define TSCH_CONF_EB_PERIOD (1*CLOCK_SECOND)
+#define TSCH_CONF_EB_PERIOD (1*CLOCK_SECOND)	//(4*CLOCK_SECOND)
 
 /* Max Period between two consecutive EBs */
 #undef TSCH_CONF_MAX_EB_PERIOD
-#define TSCH_CONF_MAX_EB_PERIOD (5*CLOCK_SECOND)
+#define TSCH_CONF_MAX_EB_PERIOD (3*CLOCK_SECOND)	//(10*CLOCK_SECOND)
 
 /* How long to scan each channel in the scanning phase */
 #undef TSCH_CONF_CHANNEL_SCAN_DURATION
-#define TSCH_CONF_CHANNEL_SCAN_DURATION (CLOCK_SECOND/20)
+#define TSCH_CONF_CHANNEL_SCAN_DURATION (CLOCK_SECOND/16)
 
 /* Set start TSCH at init, without waiting for NETSTACK_MAC.on() */
 #undef TSCH_CONF_AUTOSTART
@@ -210,7 +210,7 @@
 
 /* IEEE802.15.4 PANID */
 #undef IEEE802154_CONF_PANID
-#define IEEE802154_CONF_PANID 0xabcd
+#define IEEE802154_CONF_PANID 0xEEEE	//0xabcd
 
 /* 6TiSCH Minimal schedule slotframe length 
  * Larger values result in less frequent active slots: reduces capacity and saves energy. */

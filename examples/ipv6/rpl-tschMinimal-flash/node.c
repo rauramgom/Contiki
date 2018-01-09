@@ -203,6 +203,7 @@ reading_resources_GET_handler(void *request, void *response, uint8_t *buffer,
 	unsigned int accept = -1;
 	struct Measure measure_temp;
 	int voltage;
+	char measureID[4];
 
 	if(request != NULL) {
 		REST.get_header_accept(request, &accept);
@@ -216,9 +217,24 @@ reading_resources_GET_handler(void *request, void *response, uint8_t *buffer,
 	if(accept == -1 || accept == REST.type.APPLICATION_JSON) {
 		//Set the header content
 		REST.set_header_content_type(response, REST.type.APPLICATION_JSON);
-		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE,
+		switch(measure_temp.ID)
+		{
+			case TEMP:
+				strcpy(measureID, "TEMP");
+				break;
+			case VOLT:
+				strcpy(measureID, "VOLT");
+				break;
+			default:
+				strcpy(measureID, "ERRO");
+				break;
+		}
+		snprintf((char *)buffer, 100/*REST_MAX_CHUNK_SIZE*/,
+//{"info":{"ID":255,"sysUpTime":255},"temp":{"v":255,"u":"C"},"voltage":{"v":3000,"u":"mV"}}
+			//"{\"info\":{\"ID\":%s,\"sysUpTime\":%lu},"
 			"{\"temp\":{\"v\":%d,\"u\":\"C\"},"
 			"\"voltage\":{\"v\":%d,\"u\":\"mV\"}}",
+			//measureID, measure_temp.sysUpTime,
 			measure_temp.measure, (voltage * 125) >> 5);
 
 		//Set the payload content 
@@ -235,7 +251,6 @@ reading_resources_GET_handler(void *request, void *response, uint8_t *buffer,
 		REST.set_response_payload(response, not_supported_msg,
 			strlen(not_supported_msg));
 	}
-
 	printf("[%lu] APP: READING RESOURCE \n", clock_seconds());
 } //End of reading_resources_GET_handler
 

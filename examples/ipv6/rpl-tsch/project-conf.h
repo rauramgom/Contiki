@@ -45,6 +45,11 @@
 #define WITH_SECURITY 1
 #endif /* WITH_SECURITY */
 
+/* Set to enable batmon-sensor.h in rpl-mrhof.c */
+#ifndef WITH_BATMONSENSOR
+#define WITH_BATMONSENSOR 1
+#endif /* WITH_BATMONSENSOR */
+
 /*******************************************************/
 /********************* Enable TSCH *********************/
 /*******************************************************/

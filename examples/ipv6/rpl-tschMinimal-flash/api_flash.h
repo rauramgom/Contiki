@@ -65,7 +65,7 @@ typedef struct Measure {
 	unsigned long sysUpTime;
 	uint8_t ID;
 	uint8_t measure;
-} Measure;
+} Measure; 
 
 
 /******************************************************************************

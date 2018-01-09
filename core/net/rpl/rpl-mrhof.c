@@ -61,7 +61,9 @@
 #include <stdlib.h>
 
 //Necesario para comprobar la bateria del nodo
+#ifndef WITH_BATMONSENSOR
 #include "batmon-sensor.h"
+#endif
 
 /* RFC6551 and RFC6719 do not mandate the use of a specific formula to
  * compute the ETX value. This MRHOF implementation relies on the value
@@ -371,8 +373,11 @@ update_metric_container(rpl_instance_t *instance)
 			instance->mc.obj.etx = path_cost; //cost = ALPHA*etx + (1-ALPHA)*battery
 			instance->mc.obj.num_low_bat = dag->preferred_parent->mc.obj.num_low_bat;
 			//Check if it is necessary to enhance the low battery count
+#ifndef WITH_BATMONSENSOR
 			if(batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT) <= BATTERY_LOW_LIMIT)
-			//if(rand()%10 < 5)
+#else
+			if(rand()%10 < 5)
+#endif
 				instance->mc.obj.num_low_bat++;
 			break;
 		case RPL_DAG_MC_ENERGY:
