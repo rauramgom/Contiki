@@ -58,7 +58,11 @@
 #include <limits.h>
 #include <string.h>
 
+#ifdef WITH_RPL
 #define DEBUG DEBUG_PRINT
+#else
+#define DEBUG DEBUG_NONE
+#endif /* WITH_RPL */
 #include "net/ip/uip-debug.h"
 
 /* A configurable function called after every RPL parent switch */

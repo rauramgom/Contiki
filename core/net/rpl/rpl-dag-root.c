@@ -38,7 +38,12 @@
 
 #include <string.h>
 
+#ifdef WITH_RPL
 #define DEBUG DEBUG_PRINT
+#else
+#define DEBUG DEBUG_NONE
+#endif /* WITH_RPL */
+
 #include "net/ip/uip-debug.h"
 
 #define RPL_DAG_GRACE_PERIOD (CLOCK_SECOND * 20 * 1)

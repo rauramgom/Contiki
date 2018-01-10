@@ -31,6 +31,8 @@
  */
 #include "dev/serial-line.h"
 #include <string.h> /* for memcpy() */
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "lib/ringbuf.h"
 
@@ -121,6 +123,7 @@ PROCESS_THREAD(serial_line_process, ev, data)
           PROCESS_WAIT_EVENT_UNTIL(ev == PROCESS_EVENT_CONTINUE);
         }
         ptr = 0;
+        //printf("\nbuffer lleno: %s\n", buf);
       }
     }
   }
