@@ -1,3 +1,10 @@
+/**
+ * \file
+ *         Serial line interface slave
+ * \author
+ *         Raul Ramirez Gomez <raulramirezgomez@gmail.com>
+ *
+ */
 #include "contiki.h"
 #include "dev/cc26xx-uart.h"
 #include "dev/serial-line.h"
@@ -5,16 +12,18 @@
 #include "batmon-sensor.h"
 #include "button-sensor.h"
 
-#include <stdio.h> /* For printf() */
-#include <stdlib.h>
+#include <stdio.h> 
+//#include <stdlib.h>
 #include <string.h>
 
 //DEFINES AND VARIABLES
 #define END 0x0a
 #define MEASURE_SIZE 2
-int measure;
-char buf_measure[MEASURE_SIZE]; 
-int i;
+#define ERROR_SIZE 5
+int measure; 
+int pos;
+char buf_measure[MEASURE_SIZE];
+char buf_error[ERROR_SIZE] = "ERR";
 
 PROCESS(serial_slave, "Serial line interface slave");
 AUTOSTART_PROCESSES(&serial_slave);
@@ -27,7 +36,6 @@ PROCESS_THREAD(serial_slave, ev, data)
   cc26xx_uart_init();
   //Will receive a based-on dictionary measure ID
   cc26xx_uart_set_input(serial_line_input_byte);
-  //serial_line_init();
   
   printf("Serial line interface slave\n");
 
@@ -39,13 +47,48 @@ PROCESS_THREAD(serial_slave, ev, data)
         measure = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
         sprintf(buf_measure, "%d", measure);
       
-        for(i=0; i<strlen(buf_measure); i++){
-          //printf("letter: %c -- ASCII: %d -- serial: ",buf_measure[i], (uint8_t)buf_measure[i]);
-          cc26xx_uart_write_byte((uint8_t)buf_measure[i]);
-        }
-      //}
-      //Send 
-      cc26xx_uart_write_byte(END);
+        for(pos=0; pos<strlen(buf_measure); pos++)
+          cc26xx_uart_write_byte((uint8_t)buf_measure[pos]);
+        //Send EOF character to be correctly understanded by serial_line
+        cc26xx_uart_write_byte(END);
+      /*} else if (data == VOLT) {
+          [CONTINUAR]
+      }*/
+      
+      /*
+      switch(data) {
+        case TEMP
+          measure = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
+          sprintf(buf_measure, "%d", measure);
+          for(pos=0; pos<strlen(buf_measure); pos++)
+            cc26xx_uart_write_byte((uint8_t)buf_measure[pos]);
+          cc26xx_uart_write_byte(END);
+          break;
+        case VOLT
+          [FALTA]
+          break;
+        case LEDS_GREEN
+          leds_toggle(LEDS_GREEN);
+          break;
+        case LEDS_BLUE
+          leds_toggle(LEDS_BLUE);
+          break;
+        case LEDS_RED
+          leds_toggle(LEDS_RED);
+          break;
+        case LEDS_YELLOW
+          leds_toggle(LEDS_YELLOW);
+          break;
+        case LEDS_ALL
+          leds_toggle(LEDS_ALL);
+          break;
+        default:
+          for(pos=0; pos<strlen(buf_error); pos++)
+            cc26xx_uart_write_byte((uint8_t)buf_error[pos]);
+          cc26xx_uart_write_byte(END);
+      }
+      */
+      
     }
   }
   SENSORS_DEACTIVATE(batmon_sensor);

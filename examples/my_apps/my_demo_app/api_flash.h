@@ -50,11 +50,11 @@ extern "C"
 //SOURCE ID - DICTIONARY
 #define TEMP		0x01
 #define VOLT		0x02
-#define LED_ORANGE	0x03
-#define LED_GREEN	0x04
-#define LED_YELLOW	0x05
-#define LED_RED		0x06
-#define LED_ALL		0x07
+#define LEDS_ORANGE	0x03
+#define LEDS_GREEN	0x04
+#define LEDS_YELLOW	0x05
+#define LEDS_RED	0x06
+#define LEDS_ALL	0x07
 
 
 
