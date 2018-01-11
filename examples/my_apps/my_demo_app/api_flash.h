@@ -54,7 +54,7 @@ extern "C"
 #define LED_GREEN	0x04
 #define LED_YELLOW	0x05
 #define LED_RED		0x06
-#define LED_ALL		0X07
+#define LED_ALL		0x07
 
 
 
