@@ -154,10 +154,10 @@ PROCESS_THREAD(er_example_observe_client, ev, data)
   SERVER_NODE(server_ipaddr);
   /* receives all CoAP messages */
   coap_init_engine();
-  /* init timer and button (if available) */
+  /* init timer */
   etimer_set(&et, TOGGLE_INTERVAL);
 
-  /* toggle observation every time the timer elapses or the button is pressed */
+  /* toggle observation every time the timer elapses */
   while(1) {
     PROCESS_YIELD();
     if(etimer_expired(&et)) {
