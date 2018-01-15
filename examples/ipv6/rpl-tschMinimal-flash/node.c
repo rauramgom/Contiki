@@ -44,6 +44,7 @@
 #include "rest-engine.h"
 #include "er-coap.h"
 #include "batmon-sensor.h"
+#include "button-sensor.h"
 // IPv6/RPL Stack
 #include "net/netstack.h"
 #include "net/ipv6/uip-ds6-nbr.h"
@@ -53,7 +54,6 @@
 
 #include "sys/etimer.h"
 #include "dev/leds.h"
-#include "button-sensor.h"
 
 #include <stdio.h>
 #include <stdint.h>

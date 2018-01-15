@@ -42,17 +42,16 @@ PROCESS_THREAD(serial_slave, ev, data)
   while(1) {
     PROCESS_YIELD();
     if(ev == serial_line_event_message) {
-      //Checkout data received
+      //Checkout type of data received
       //if(data == TEMP){
         measure = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
         sprintf(buf_measure, "%d", measure);
-      
         for(pos=0; pos<strlen(buf_measure); pos++)
           cc26xx_uart_write_byte((uint8_t)buf_measure[pos]);
         //Send EOF character to be correctly understanded by serial_line
         cc26xx_uart_write_byte(END);
       /*} else if (data == VOLT) {
-          [CONTINUAR]
+          [CONTINUAR...]
       }*/
       
       /*
