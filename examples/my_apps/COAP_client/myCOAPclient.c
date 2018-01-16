@@ -25,9 +25,9 @@
                                 ((uint8_t *)addr)[14], ((uint8_t *)addr)[15])
 #endif /* WITH_PRINTF */
 
-// Fijar la IP del servidor a mano, luego recurrir a IPv6 multicast
-#define SERVER_NODE(ipaddr)   uip_ip6addr(ipaddr, 0xfe80, 0, 0, 0, 0x0212, 0x7402, 0x0002, 0x0202)
-//Server port
+// IPv6 multicast de todos los nodos de la red
+#define SERVER_NODE(ipaddr)   uip_ip6addr(ipaddr, 0xff02, 0, 0, 0, 0, 0, 0, 0x1)
+//#define SERVER_NODE(ipaddr)   uip_ip6addr(ipaddr, 0xfe80, 0, 0, 0, 0x0212, 0x7402, 0x0002, 0x0202)
 #define REMOTE_PORT     UIP_HTONS(COAP_DEFAULT_PORT)	//Default: 5683
 
 PROCESS(COAP_client, "COAP Client");
@@ -37,12 +37,7 @@ uip_ipaddr_t server_ipaddr;
 
 // Manual Request
 static struct etimer et_manual_request;
-#define MANUAL_INTERVAL 5*CLOCK_SECOND
-
-// Observer Request
-//static struct etimer et_observer_request;
-//#define OBSERVER_INTERVAL 12*CLOCK_SECOND
-//static coap_observee_t *obs;
+#define MANUAL_INTERVAL 2*CLOCK_SECOND
 
 /* URIs that can be queried. */
 #define NUMBER_OF_URLS 2
@@ -94,7 +89,7 @@ PROCESS_THREAD(COAP_client, ev, data)
 #if WITH_PRINTF
     		PRINT6ADDR(&server_ipaddr);
     		PRINTF(":%u\n", UIP_HTONS(REMOTE_PORT));
-    		PRINTF("Data:\n -URI: %s\n -OBSERVE: %u\n -CODE: %u\n -MID: %u\n -PAYLOAD: %s\n",
+    		PRINTF("Data:\n -URI: %s\n -OBSERVE: %u\n -CODE: %u\n -MID: %u\n -PAYLOAD: %s\n\n",
     			request->uri_path, request->observe, request->code,
     			request->mid, (char *)request->payload);
 #endif /* WITH_PRINTF */
