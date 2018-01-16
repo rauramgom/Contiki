@@ -37,7 +37,12 @@ uip_ipaddr_t server_ipaddr;
 
 // Manual Request
 static struct etimer et_manual_request;
-#define MANUAL_INTERVAL 2*CLOCK_SECOND
+#define MANUAL_INTERVAL 7*CLOCK_SECOND
+
+// Observer Request
+static struct etimer et_observer_request;
+#define OBSERVER_INTERVAL 10*CLOCK_SECOND
+static coap_observee_t *obs;
 
 /* URIs that can be queried. */
 #define NUMBER_OF_URLS 2
@@ -55,6 +60,67 @@ client_chunk_handler(void *response)
   PRINTF("Data received: %s\n", (char *)chunk);
 #endif /* WITH_PRINTF */
 }
+
+////////////////////////////////////////////////////////
+#if COAP_OBSERVE_CLIENT
+/*----------------------------------------------------------------------------*/
+/*
+ * Handle the response to the observe request and the following notifications
+ */
+static void
+notification_callback(coap_observee_t *obs, void *notification,
+                      coap_notification_flag_t flag)
+{
+  int len = 0;
+  const uint8_t *payload = NULL;
+
+  printf("Notification handler\n");
+  printf("Observee URI: %s\n", obs->url);
+  if(notification) {
+    len = coap_get_payload(notification, &payload);
+  }
+  switch(flag) {
+  case NOTIFICATION_OK:
+    printf("NOTIFICATION OK: %*s\n", len, (char *)payload);
+    break;
+  case OBSERVE_OK: /* server accepeted observation request */
+    printf("OBSERVE_OK: %*s\n", len, (char *)payload);
+    break;
+  case OBSERVE_NOT_SUPPORTED:
+    printf("OBSERVE_NOT_SUPPORTED: %*s\n", len, (char *)payload);
+    obs = NULL;
+    break;
+  case ERROR_RESPONSE_CODE:
+    printf("ERROR_RESPONSE_CODE: %*s\n", len, (char *)payload);
+    obs = NULL;
+    break;
+  case NO_REPLY_FROM_SERVER:
+    printf("NO_REPLY_FROM_SERVER: "
+           "removing observe registration with token %x%x\n",
+           obs->token[0], obs->token[1]);
+    obs = NULL;
+    break;
+  }
+}
+/*----------------------------------------------------------------------------*/
+/*
+ * Toggle the observation of the remote resource
+ */
+void
+toggle_observation(void)
+{
+  if(obs) {
+    printf("Stopping observation\n");
+    coap_obs_remove_observee(obs);
+    obs = NULL;
+  } else {
+    printf("Starting observation\n");
+    obs = coap_obs_request_registration(&server_ipaddr, REMOTE_PORT,
+                                        "sen/readings", notification_callback, NULL);
+  }
+}
+#endif /* COAP_OBSERVE_CLIENT */
+////////////////////////////////////////////////////////
 
 
 PROCESS_THREAD(COAP_client, ev, data)
@@ -94,10 +160,23 @@ PROCESS_THREAD(COAP_client, ev, data)
     			request->mid, (char *)request->payload);
 #endif /* WITH_PRINTF */
 
-    		COAP_BLOCKING_REQUEST(&server_ipaddr, REMOTE_PORT, request,
-                            client_chunk_handler);
+    		//COAP_BLOCKING_REQUEST(&server_ipaddr, REMOTE_PORT, request, client_chunk_handler);
 
     		etimer_reset(&et_manual_request);
+    	} 
+
+    	if (etimer_expired(&et_observer_request)) {
+    		printf("--Toggle timer--\n");
+      		toggle_observation();
+      		etimer_reset(&et_observer_request);
+
+#if WITH_PRINTF
+    		PRINT6ADDR(&server_ipaddr);
+    		PRINTF(":%u\n", UIP_HTONS(REMOTE_PORT));
+    		PRINTF("Data Observer:\n -URI: %s\n -OBSERVE: %u\n -CODE: %u\n -MID: %u\n -PAYLOAD: %s\n\n",
+    			request->uri_path, request->observe, request->code,
+    			request->mid, (char *)request->payload);
+#endif /* WITH_PRINTF */
     	}
 	}
 
