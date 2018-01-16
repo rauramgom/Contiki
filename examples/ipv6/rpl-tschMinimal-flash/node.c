@@ -52,7 +52,7 @@
 #include "net/rpl/rpl.h"
 #include "net/rpl/rpl-private.h"
 
-#include "sys/etimer.h"
+//#include "sys/etimer.h"
 #include "dev/leds.h"
 
 #include <stdio.h>

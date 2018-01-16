@@ -65,7 +65,7 @@
 #include <stdlib.h>
 
 //Necesario para comprobar la bateria del nodo
-#ifndef WITH_BATMONSENSOR
+#if WITH_BATMONSENSOR
 #include "batmon-sensor.h"
 #endif
 
@@ -377,7 +377,7 @@ update_metric_container(rpl_instance_t *instance)
 			instance->mc.obj.etx = path_cost; //cost = ALPHA*etx + (1-ALPHA)*battery
 			instance->mc.obj.num_low_bat = dag->preferred_parent->mc.obj.num_low_bat;
 			//Check if it is necessary to enhance the low battery count
-#ifndef WITH_BATMONSENSOR
+#if WITH_BATMONSENSOR
 			if(batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT) <= BATTERY_LOW_LIMIT)
 #else
 			if(rand()%10 < 5)
