@@ -32,16 +32,16 @@ PROCESS_THREAD(ADC_process, ev, data)
             ti_lib_aux_wuc_clock_enable(AUX_WUC_ADI_CLOCK | AUX_WUC_ANAIF_CLOCK | AUX_WUC_SMPH_CLOCK);
             while(ti_lib_aux_wuc_clock_status(AUX_WUC_ADI_CLOCK | AUX_WUC_ANAIF_CLOCK | AUX_WUC_SMPH_CLOCK) != AUX_WUC_CLOCK_READY)
             { }
-            printf("clock selected\r\n");
+            //printf("clock selected\r\n");
            
             // Connect AUX IO7 (DIO23, but also DP2 on XDS110) as analog input.
             AUXADCSelectInput(ADC_COMPB_IN_AUXIO7); 
-            printf("input selected\r\n");
+            //printf("input selected\r\n");
            
             // Set up ADC range
             // AUXADC_REF_FIXED = nominally 4.3 V
             AUXADCEnableSync(AUXADC_REF_FIXED,  AUXADC_SAMPLE_TIME_2P7_US, AUXADC_TRIGGER_MANUAL);
-            printf("init adc --- OK\r\n");
+            //printf("init adc --- OK\r\n");
 
             //Trigger ADC converting
             AUXADCGenManualTrigger();

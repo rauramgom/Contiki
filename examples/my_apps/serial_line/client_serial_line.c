@@ -36,20 +36,23 @@ PROCESS_THREAD(serial_slave, ev, data)
   cc26xx_uart_init();
   //Will receive a based-on dictionary measure ID
   cc26xx_uart_set_input(serial_line_input_byte);
-  
-  printf("Serial line interface slave\n");
+  cc26xx_uart_write_byte('a');
+  //printf("Serial line interface slave\n");
 
   while(1) {
     PROCESS_YIELD();
     if(ev == serial_line_event_message) {
+      leds_toggle(LEDS_GREEN);
+      leds_toggle(LEDS_BLUE);
+      cc26xx_uart_write_byte('a');
       //Checkout type of data received
       //if(data == TEMP){
-        measure = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
-        sprintf(buf_measure, "%d", measure);
-        for(pos=0; pos<strlen(buf_measure); pos++)
-          cc26xx_uart_write_byte((uint8_t)buf_measure[pos]);
+        //measure = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP); **
+        //sprintf(buf_measure, "%d", measure); **
+        //for(pos=0; pos<strlen(buf_measure); pos++) **
+          //cc26xx_uart_write_byte((uint8_t)buf_measure[pos]); **
         //Send EOF character to be correctly understanded by serial_line
-        cc26xx_uart_write_byte(END);
+        //cc26xx_uart_write_byte(END); **
       /*} else if (data == VOLT) {
           [CONTINUAR...]
       }*/
@@ -86,8 +89,7 @@ PROCESS_THREAD(serial_slave, ev, data)
             cc26xx_uart_write_byte((uint8_t)buf_error[pos]);
           cc26xx_uart_write_byte(END);
       }
-      */
-      
+      */      
     }
   }
   SENSORS_DEACTIVATE(batmon_sensor);

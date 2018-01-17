@@ -10,7 +10,6 @@
 //#include "contiki-net.h"
 #include "er-coap-engine.h"
 
-// DEFINES & VARIABLES
 #if WITH_PRINTF
 #define PRINTF(...) printf(__VA_ARGS__)
 #define PRINT6ADDR(addr) PRINTF("[%02x%02x:%02x%02x:%02x%02x:%02x%02x:" \
@@ -37,12 +36,14 @@ uip_ipaddr_t server_ipaddr;
 
 // Manual Request
 static struct etimer et_manual_request;
-#define MANUAL_INTERVAL 7*CLOCK_SECOND
+#define MANUAL_INTERVAL 10*CLOCK_SECOND 
 
 // Observer Request
+#if COAP_OBSERVE_CLIENT
 static struct etimer et_observer_request;
-#define OBSERVER_INTERVAL 10*CLOCK_SECOND
+#define OBSERVER_INTERVAL 7*CLOCK_SECOND
 static coap_observee_t *obs;
+#endif /* COAP_OBSERVE_CLIENT */
 
 /* URIs that can be queried. */
 #define NUMBER_OF_URLS 2
@@ -160,11 +161,12 @@ PROCESS_THREAD(COAP_client, ev, data)
     			request->mid, (char *)request->payload);
 #endif /* WITH_PRINTF */
 
-    		//COAP_BLOCKING_REQUEST(&server_ipaddr, REMOTE_PORT, request, client_chunk_handler);
+    		COAP_BLOCKING_REQUEST(&server_ipaddr, REMOTE_PORT, request, client_chunk_handler);
 
     		etimer_reset(&et_manual_request);
     	} 
 
+#if COAP_OBSERVE_CLIENT
     	if (etimer_expired(&et_observer_request)) {
     		printf("--Toggle timer--\n");
       		toggle_observation();
@@ -178,6 +180,7 @@ PROCESS_THREAD(COAP_client, ev, data)
     			request->mid, (char *)request->payload);
 #endif /* WITH_PRINTF */
     	}
+#endif /* COAP_OBSERVE_CLIENT */
 	}
 
 	PROCESS_END();
