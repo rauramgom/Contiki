@@ -13,7 +13,6 @@
 #include "dev/leds.h"
 #include "batmon-sensor.h"
 #include "button-sensor.h"
-//#include "dev/als-sensor.h"
 
 #include <stdio.h> 
 #include <string.h>
@@ -29,23 +28,19 @@
 #define LED_RED		'5'
 #define LED_YELLOW	'6'
 #define LED_ALL		'7'
-//#define AMB_LIGHT	'8'
 ////////////////////////
 
 #define END				0x0a
 #define MEASURE_SIZE	2
 #define VOLT_SIZE		4
-//#define AMB_LIGHT_SIZE	?
 #define ERROR_SIZE		3
-#define ACK_SIZE				3
+#define ACK_SIZE		3
 
 static int measure = 0; 
 static int volt = 0;
-//static int amb_light = 0;
 
 char buf_measure[MEASURE_SIZE];
 char buf_volt[VOLT_SIZE];
-//char buf_amb_light[AMB_LIGHT_SIZE];
 char buf_error[ERROR_SIZE] = "ERR";
 char buf_ack[ACK_SIZE] = "ACK";
 
@@ -99,13 +94,6 @@ static int uart_rx_callback(unsigned char c) {
 			leds_toggle(LED_ALL);
 			send_data_uart(buf_ack);
 			break;
-/*		case AMB_LIGHT:
-			amb_light = als_sensor.value(0);
-			sprintf(buf_amb_light, "%d", amb_light);
-			for(pos=0; pos<strlen(buf_amb_light); pos++)
-				cc26xx_uart_write_byte((uint8_t)buf_amb_light[pos]);
-			cc26xx_uart_write_byte(END);
-*/
 		default:
 			//Error
 			send_data_uart(buf_error);

@@ -1,4 +1,4 @@
-CONTIKI_PROJECT = slave_serial_line
+CONTIKI_PROJECT = prueba
 all: $(CONTIKI_PROJECT)
 CFLAGS += -DPROJECT_CONF_H=\"project-conf.h\"
 
