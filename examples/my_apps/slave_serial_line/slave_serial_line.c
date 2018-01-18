@@ -5,32 +5,62 @@
  *         Raul Ramirez Gomez <raulramirezgomez@gmail.com>
  *
  */
-#include "contiki.h"
+//#include "contiki.h"
+
 #include "dev/cc26xx-uart.h"
 #include "dev/serial-line.h"
+
 #include "dev/leds.h"
 #include "batmon-sensor.h"
 #include "button-sensor.h"
+//#include "dev/als-sensor.h"
 
-//#include <stdio.h> 
-//#include <stdlib.h>
-//#include <string.h>
+#include <stdio.h> 
+#include <string.h>
 
 //DEFINES AND VARIABLES
-#define END						0x0a
+
+//Dictionary
+////////////////////////
+#define TEMP		'1'
+#define VOLT		'2'
+#define LED_GREEN	'3'
+#define LED_BLUE	'4'
+#define LED_RED		'5'
+#define LED_YELLOW	'6'
+#define LED_ALL		'7'
+//#define AMB_LIGHT	'8'
+////////////////////////
+
+#define END				0x0a
 #define MEASURE_SIZE	2
-#define VOLT_SIZE			4
+#define VOLT_SIZE		4
+//#define AMB_LIGHT_SIZE	?
 #define ERROR_SIZE		3
+#define ACK_SIZE				3
+
 static int measure = 0; 
 static int volt = 0;
-int pos = 0;
+//static int amb_light = 0;
 
 char buf_measure[MEASURE_SIZE];
 char buf_volt[VOLT_SIZE];
+//char buf_amb_light[AMB_LIGHT_SIZE];
 char buf_error[ERROR_SIZE] = "ERR";
+char buf_ack[ACK_SIZE] = "ACK";
 
 PROCESS(serial_slave, "Serial line interface slave");
 AUTOSTART_PROCESSES(&serial_slave);
+
+/*
+* Function called to send the requested data
+*/
+static void send_data_uart(char* buf)
+{
+	for(int pos=0; pos<strlen(buf); pos++)
+		cc26xx_uart_write_byte((uint8_t)buf[pos]);
+	cc26xx_uart_write_byte(END);
+}
 
 /*
 * The callback function is called when the slave receives 
@@ -42,37 +72,43 @@ static int uart_rx_callback(unsigned char c) {
 		case TEMP:
 			measure = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
 			sprintf(buf_measure, "%d", measure);
-			for(pos=0; pos<strlen(buf_measure); pos++)
-				cc26xx_uart_write_byte((uint8_t)buf_measure[pos]);
-			cc26xx_uart_write_byte(END);
+			send_data_uart(buf_measure);
 			break;
 		case VOLT:
 			volt = batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT);
 			sprintf(buf_volt, "%d", volt);
-			for(pos=0; pos<strlen(buf_volt); pos++)
-				cc26xx_uart_write_byte((uint8_t)buf_volt[pos]);
+			send_data_uart(buf_volt);
+			break;
+		case LED_GREEN:
+			leds_toggle(LED_GREEN);
+			send_data_uart(buf_ack);
+			break;
+		case LED_BLUE:
+			leds_toggle(LED_BLUE);
+			send_data_uart(buf_ack);
+			break;
+		case LED_RED:
+			leds_toggle(LED_RED);
+			send_data_uart(buf_ack);
+			break;
+		case LED_YELLOW:
+			leds_toggle(LED_YELLOW);
+			send_data_uart(buf_ack);
+			break;
+		case LED_ALL:
+			leds_toggle(LED_ALL);
+			send_data_uart(buf_ack);
+			break;
+/*		case AMB_LIGHT:
+			amb_light = als_sensor.value(0);
+			sprintf(buf_amb_light, "%d", amb_light);
+			for(pos=0; pos<strlen(buf_amb_light); pos++)
+				cc26xx_uart_write_byte((uint8_t)buf_amb_light[pos]);
 			cc26xx_uart_write_byte(END);
-			break;
-		case LEDS_GREEN:
-			leds_toggle(LEDS_GREEN);
-			break;
-		case LEDS_BLUE:
-			leds_toggle(LEDS_BLUE);
-			break;
-		case LEDS_RED:
-			leds_toggle(LEDS_RED);
-			break;
-		case LEDS_YELLOW:
-			leds_toggle(LEDS_YELLOW);
-			break;
-		case LEDS_ALL:
-			leds_toggle(LEDS_ALL);
-			break;
+*/
 		default:
 			//Error
-			for(pos=0; pos<strlen(buf_error); pos++)
-				cc26xx_uart_write_byte((uint8_t)buf_error[pos]);
-			cc26xx_uart_write_byte(END);
+			send_data_uart(buf_error);
 	}
 	return 1;
 }
