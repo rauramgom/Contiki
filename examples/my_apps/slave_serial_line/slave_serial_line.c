@@ -28,21 +28,20 @@
 #define LED_RED		'5'
 #define LED_YELLOW	'6'
 #define LED_ALL		'7'
+#define END			0x0a
 ////////////////////////
 
-#define END				0x0a
+
 #define MEASURE_SIZE	2
 #define VOLT_SIZE		4
-#define ERROR_SIZE		3
-#define ACK_SIZE		3
 
 static int measure = 0; 
 static int volt = 0;
 
 char buf_measure[MEASURE_SIZE];
 char buf_volt[VOLT_SIZE];
-char buf_error[ERROR_SIZE] = "ERR";
-char buf_ack[ACK_SIZE] = "ACK";
+static char buf_error[] = "ERR";
+static char buf_ack[] = "ACK";
 
 PROCESS(serial_slave, "Serial line interface slave");
 AUTOSTART_PROCESSES(&serial_slave);

@@ -366,8 +366,9 @@ eventhandler(process_event_t ev, process_data_t data)
 #if UIP_TCP
   unsigned char i;
   register struct listenport *l;
-#endif /*UIP_TCP*/
   struct process *p;
+#endif /*UIP_TCP*/
+  
 
   switch(ev) {
   case PROCESS_EVENT_EXITED:
@@ -375,9 +376,8 @@ eventhandler(process_event_t ev, process_data_t data)
          the TCP/IP tables to see if this process had any open
          connections or listening TCP ports. If so, we'll close those
          connections. */
-
-    p = (struct process *)data;
 #if UIP_TCP
+    p = (struct process *)data;
     l = s.listenports;
     for(i = 0; i < UIP_LISTENPORTS; ++i) {
       if(l->p == p) {
