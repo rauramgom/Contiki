@@ -32,8 +32,8 @@
 ////////////////////////
 
 
-#define MEASURE_SIZE	2
-#define VOLT_SIZE		4
+#define MEASURE_SIZE	4	//Negative value + \0. ex: -20\0
+#define VOLT_SIZE		5	//4 cipher number + \0. ex: 2596\0
 
 static int measure = 0; 
 static int volt = 0;
