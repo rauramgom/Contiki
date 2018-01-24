@@ -30,25 +30,20 @@ extern "C"
 #define TEMP				'1'
 #define VOLT				'2'
 
-#define LED_GREEN_GET		'3'
-#define LED_GREEN_POST_ON		'a'
-#define LED_GREEN_POST_OFF		'b'
+#define LED_GREEN_POST_ON	'3'
+#define LED_GREEN_POST_OFF	'4'
 
-#define LED_BLUE_GET		'4'
-#define LED_BLUE_POST_ON		'c'
-#define LED_BLUE_POST_OFF		'd'
+#define LED_BLUE_POST_ON	'5'
+#define LED_BLUE_POST_OFF	'6'
 
-#define LED_RED_GET			'5'
-#define LED_RED_POST_ON			'e'
-#define LED_RED_POST_OFF		'f'
+#define LED_RED_POST_ON		'7'
+#define LED_RED_POST_OFF	'8'
 
-#define LED_YELLOW_GET		'6'
-#define LED_YELLOW_POST_ON		'g'
-#define LED_YELLOW_POST_OFF		'h'
+#define LED_YELLOW_POST_ON	'9'
+#define LED_YELLOW_POST_OFF	'a'
 
-#define LED_ALL_GET			'7'
-#define LED_ALL_POST_ON			'i'
-#define LED_ALL_POST_OFF		'j'
+#define LED_ALL_POST_ON		'b'
+#define LED_ALL_POST_OFF	'c'
 
 #define LED_ON				'1'
 #define LED_OFF				'0'

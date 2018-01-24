@@ -76,7 +76,7 @@
 /*************************************/
 //TIMERS
 #define ETIMER_STORE CLOCK_SECOND*5
-#define ETIMER_GET  CLOCK_SECOND*7
+#define ETIMER_GET  CLOCK_SECOND*7000
 
 static struct etimer et_store;				//To store data in Flash
 static struct etimer et_get;				//To get the last value stored
@@ -194,9 +194,12 @@ PROCESS_THREAD(node_process, ev, data)
 		{
 			//Save the data on Flash
 			printf("[%lu]APP: Storing value ...\n", clock_seconds()); 
-			leds_toggle(LEDS_RED);
+			//leds_toggle(LEDS_ORANGE); //blue
+			leds_toggle(LEDS_YELLOW); //NARANJA 
+			//leds_toggle(LEDS_RED);
+			leds_toggle(LEDS_BLUE); //blue
 			//Fill up every Measure struct field
-			temp_measure.measure = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
+			temp_measure.measure = rand()%10;//batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
 			temp_measure.ID = TEMP;
 			temp_measure.sysUpTime = clock_seconds();
 			write_flash(temp_measure, &pos_flash);

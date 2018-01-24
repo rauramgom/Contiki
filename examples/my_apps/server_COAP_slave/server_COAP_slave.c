@@ -17,17 +17,26 @@
 #include <stdio.h> 
 #include <string.h>
 
-//DEFINES AND VARIABLES
-
 //Dictionary
 ////////////////////////
-#define TEMP		'1'
-#define VOLT		'2'
-#define LED_GREEN	'3'
-#define LED_BLUE	'4'
-#define LED_RED		'5'
-#define LED_YELLOW	'6'
-#define LED_ALL		'7'
+#define TEMP				'1'
+#define VOLT				'2'
+
+#define LED_GREEN_POST_ON	'3'
+#define LED_GREEN_POST_OFF	'4'
+
+#define LED_BLUE_POST_ON	'5'
+#define LED_BLUE_POST_OFF	'6'
+
+#define LED_RED_POST_ON		'7'
+#define LED_RED_POST_OFF	'8'
+
+#define LED_YELLOW_POST_ON	'9'
+#define LED_YELLOW_POST_OFF	'a'
+
+#define LED_ALL_POST_ON		'b'
+#define LED_ALL_POST_OFF	'c'
+
 #define END			0x0a
 ////////////////////////
 
@@ -35,16 +44,15 @@
 #define MEASURE_SIZE	4	//Negative value + \0. ex: -20\0
 #define VOLT_SIZE		5	//4 cipher number + \0. ex: 2596\0
 
-static int measure = 0; 
+static int temp = 0; 
 static int volt = 0;
 
-char buf_measure[MEASURE_SIZE];
+char buf_temp[MEASURE_SIZE];
 char buf_volt[VOLT_SIZE];
 static char buf_error[] = "ERR";
-static char buf_ack[] = "ACK";
 
-PROCESS(serial_slave, "Serial line interface slave");
-AUTOSTART_PROCESSES(&serial_slave);
+PROCESS(server_COAP_slave, "Serial line interface slave");
+AUTOSTART_PROCESSES(&server_COAP_slave);
 
 /*
 * Function called to send the requested data
@@ -64,43 +72,62 @@ static int uart_rx_callback(unsigned char c) {
 	//Checkout type of data received
 	switch(c) {
 		case TEMP:
-			measure = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
-			sprintf(buf_measure, "%d", measure);
-			send_data_uart(buf_measure);
+			temp = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
+			sprintf(buf_temp, "%d", temp);
+			send_data_uart(buf_temp);
 			break;
+
 		case VOLT:
 			volt = batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT);
 			sprintf(buf_volt, "%d", volt);
 			send_data_uart(buf_volt);
 			break;
-		case LED_GREEN:
-			leds_toggle(LED_GREEN);
-			send_data_uart(buf_ack);
+
+		case LED_GREEN_POST_ON:
+			leds_on(LED_GREEN);
 			break;
-		case LED_BLUE:
-			leds_toggle(LED_BLUE);
-			send_data_uart(buf_ack);
+
+		case LED_GREEN_POST_OFF:
+			leds_off(LED_GREEN);
 			break;
-		case LED_RED:
-			leds_toggle(LED_RED);
-			send_data_uart(buf_ack);
+
+		case LED_BLUE_POST_ON:
+			leds_on(LED_BLUE);
 			break;
-		case LED_YELLOW:
-			leds_toggle(LED_YELLOW);
-			send_data_uart(buf_ack);
+		case LED_BLUE_POST_OFF:
+			leds_off(LED_BLUE);
 			break;
-		case LED_ALL:
-			leds_toggle(LED_ALL);
-			send_data_uart(buf_ack);
+
+		case LED_RED_POST_ON:
+			leds_on(LED_RED);
 			break;
+		case LED_RED_POST_OFF:
+			leds_off(LED_RED);
+			break;
+
+		case LED_YELLOW_POST_ON:
+			leds_on(LED_YELLOW);
+			break;
+		case LED_YELLOW_POST_OFF:
+			leds_off(LED_YELLOW);
+			break;
+
+		case LED_ALL_POST_ON:
+			leds_on(LED_ALL);
+			break;
+		case LED_ALL_POST_OFF:
+			leds_off(LED_ALL);
+			break;
+
 		default:
 			//Error
+			leds_blink();
 			send_data_uart(buf_error);
 	}
 	return 1;
 }
 
-PROCESS_THREAD(serial_slave, ev, data)
+PROCESS_THREAD(server_COAP_slave, ev, data)
 {
 	PROCESS_BEGIN();
 	SENSORS_ACTIVATE(batmon_sensor);
