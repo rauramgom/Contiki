@@ -102,6 +102,13 @@ reading_resources_GET_handler(void *request, void *response, uint8_t *buffer,
 	measure_temp = read_flash(pos_flash);
 	voltage = batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT);
 
+		PROCESS_YIELD();
+	if(ev == serial_line_event_message && data != NULL)
+		{
+			voltage=1;
+			//Relleno los campos de la response
+		}
+
 	if(accept == -1 || accept == REST.type.APPLICATION_JSON) {
 		//Set the header content
 		REST.set_header_content_type(response, REST.type.APPLICATION_JSON);

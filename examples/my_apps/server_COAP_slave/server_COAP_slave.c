@@ -84,39 +84,39 @@ static int uart_rx_callback(unsigned char c) {
 			break;
 
 		case LED_GREEN_POST_ON:
-			leds_on(LED_GREEN);
+			leds_on(LEDS_GREEN);
 			break;
 
 		case LED_GREEN_POST_OFF:
-			leds_off(LED_GREEN);
+			leds_off(LEDS_GREEN);
 			break;
 
 		case LED_BLUE_POST_ON:
-			leds_on(LED_BLUE);
+			leds_on(LEDS_BLUE);
 			break;
 		case LED_BLUE_POST_OFF:
-			leds_off(LED_BLUE);
+			leds_off(LEDS_BLUE);
 			break;
 
 		case LED_RED_POST_ON:
-			leds_on(LED_RED);
+			leds_on(LEDS_RED);
 			break;
 		case LED_RED_POST_OFF:
-			leds_off(LED_RED);
+			leds_off(LEDS_RED);
 			break;
 
 		case LED_YELLOW_POST_ON:
-			leds_on(LED_YELLOW);
+			leds_on(LEDS_YELLOW);
 			break;
 		case LED_YELLOW_POST_OFF:
-			leds_off(LED_YELLOW);
+			leds_off(LEDS_YELLOW);
 			break;
 
 		case LED_ALL_POST_ON:
-			leds_on(LED_ALL);
+			leds_on(LEDS_ALL);
 			break;
 		case LED_ALL_POST_OFF:
-			leds_off(LED_ALL);
+			leds_off(LEDS_ALL);
 			break;
 
 		default:

@@ -55,7 +55,7 @@ led_POST_green(void *request, void *response, uint8_t *buffer,
 //			-POST function, 
 //			-PUT function, 
 //			-DELETE function
-RESOURCE(led_green,"title=\"led\";green",
+RESOURCE(res_led_green,"title=\"led\";green",
 				NULL, led_POST_green, NULL, NULL);
 /********************************************************************************/
 
@@ -69,7 +69,7 @@ led_POST_blue(void *request, void *response, uint8_t *buffer,
 }//End of led_POST_blue
 
 //Creation of the associated resource.
-RESOURCE(led_blue,"title=\"led\";blue",
+RESOURCE(res_led_blue,"title=\"led\";blue",
 				NULL, led_POST_blue, NULL, NULL);
 /********************************************************************************/
 
@@ -83,7 +83,7 @@ led_POST_red(void *request, void *response, uint8_t *buffer,
 }//End of led_POST_red
 
 //Creation of the associated resource. 
-RESOURCE(led_red,"title=\"led\";red",
+RESOURCE(res_led_red,"title=\"led\";red",
 				NULL, led_POST_red, NULL, NULL);
 /********************************************************************************/
 
@@ -97,7 +97,7 @@ led_POST_yellow(void *request, void *response, uint8_t *buffer,
 }//End of led_POST_yellow
 
 //Creation of the associated resource.
-RESOURCE(led_yellow,"title=\"led\";yellow",
+RESOURCE(res_led_yellow,"title=\"led\";yellow",
 				NULL, led_POST_yellow, NULL, NULL);
 /********************************************************************************/
 
@@ -111,6 +111,6 @@ led_POST_all(void *request, void *response, uint8_t *buffer,
 }//End of led_POST_all
 
 //Creation of the associated resource.
-RESOURCE(led_all,"title=\"led\";all",
+RESOURCE(res_led_all,"title=\"led\";all",
 				NULL, led_POST_all, NULL, NULL);
 /********************************************************************************/
