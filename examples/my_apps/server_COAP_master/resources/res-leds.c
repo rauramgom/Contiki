@@ -22,7 +22,7 @@ res_POST_handler(void *request, void *response,
                     uint8_t *buffer, uint16_t preferred_size, int32_t *offset,
                     char led_on, char led_off)
 {
-	char *mode = NULL;
+	const char *mode = NULL;
 
 	REST.get_post_variable(request, "mode", &mode);
 	if(strncmp(mode, "on", sizeof("on")) == 0)

@@ -5,12 +5,8 @@
  *         Raul Ramirez Gomez <raulramirezgomez@gmail.com>
  *
  */
-#include "contiki.h"
-#include "dev/cc26xx-uart.h"
-#include "dev/serial-line.h"
-#include <stdio.h> 
-#include <string.h>
-#include "lib/ringbuf.h"
+
+#include "resources/api_resources.h"
 
 //Dictionary
 ////////////////////////
@@ -34,39 +30,45 @@
 
 #define LED_ON				'1'
 #define LED_OFF				'0'
-#define END			0x0a
+#define END					0x0a
 ////////////////////////
 
-#define BUFF_SIZE	6	// worse case: 3 2 1 1 END \0
-static char buffer[BUFF_SIZE];
+static char buf_rx_uart[BUFF_SIZE];	//BUFF_SIZE	5
+char shared_variable[BUFF_SIZE] = "";
 
 /*
  * Resources to be activated need to be imported through the extern keyword.
  * The build system automatically compiles the resources in the corresponding sub-directory.
  */
-extern resource_t
-	res_temp,
-	res_volt,
- 	res_led_green,
-	res_led_blue,
-	res_led_red,
-	res_led_yellow,
-	res_led_all
+extern resource_t res_temp;
+extern resource_t res_volt;
+extern resource_t res_led_green;
+extern resource_t res_led_blue;
+extern resource_t res_led_red;
+extern resource_t res_led_yellow;
+extern resource_t res_led_all;
 
-static struct etimer et_get;
-#define ETIMER_GET	CLOCK_SECOND*7
+//static struct etimer et_get;
+//#define OBSERVER_TIMER	CLOCK_SECOND*7
 
 PROCESS(server_COAP_master, "Server COAP and serial line interface master");
-PROCESS(aux_process, "Auxiliar process to fill in the response payload");
 AUTOSTART_PROCESSES(&server_COAP_master);
 
 /*
 * The callback function is called when the master receives the response
 */
 static int uart_rx_callback(unsigned char c) {
-	//RELLENAR BUFFER
-
-	//COPIAR BUFFER EN LA VARIABLE GLOBAL UTILIZADA POR EL RECURSO
+	int pos = 0;
+	//Fill up the buffer
+	for(pos=0; (pos<sizeof(buf_rx_uart))&&(c != END); pos++)
+	{
+		buf_rx_uart[pos] = c;
+	}
+	if (pos<sizeof(buf_rx_uart) && (c == END))
+		buf_rx_uart[pos] = '\0';
+	
+	//Copy the buffer to the global variable used by the resource
+	strncpy(shared_variable, buf_rx_uart, sizeof(buf_rx_uart));
 
 	return 1;
 }
@@ -74,9 +76,9 @@ static int uart_rx_callback(unsigned char c) {
 PROCESS_THREAD(server_COAP_master, ev, data)
 {
 	PROCESS_BEGIN();
-	//Initialize the REST engine. 
+ 
 	rest_init_engine();
-	SENSORS_ACTIVATE(batmon_sensor);
+	//SENSORS_ACTIVATE(batmon_sensor);
 
 #if WITH_OBSERVABLE
 	res_temp.flags += IS_OBSERVABLE;
@@ -91,44 +93,21 @@ PROCESS_THREAD(server_COAP_master, ev, data)
 	rest_activate_resource(&res_led_all, "led/all");
 
 	cc26xx_uart_init();
-	//Will receive the response from slave
+	//Will attend the response from slave
 	cc26xx_uart_set_input(uart_rx_callback);
 
-	etimer_set(&et_get, ETIMER_GET);
+	//etimer_set(&et_get, OBSERVER_TIMER);
 	while(1) {
 		//Waiting request..
-		PROCESS_YIELD();
+		
+		/*PROCESS_YIELD();
 		if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_get))
 		{
-			REST.notify_subscribers(&reading_resources);
+			REST.notify_subscribers(&res_temp);
+			REST.notify_subscribers(&res_volt);
 			etimer_restart(&et_get);
-		}
+		}*/
 	}
-	SENSORS_DEACTIVATE(batmon_sensor);
+	//SENSORS_DEACTIVATE(batmon_sensor);
 	PROCESS_END();
 }
-
-/*PROCESS_THREAD(aux_process, ev, data)
-{
-	PROCESS_BEGIN();
-	PROCESS_PAUSE()
-	int flag_serial = 0;
-	int flag_posted = 0;
-
-	while (flag_posted==0 || flag_serial==0)
-	{
-		PROCESS_YIELD();
-		if(ev == event_posted_by_resource && data != NULL)
-		{
-			flag_posted=1;
-			//Recibe la estructura response
-		}
-
-		if(ev == serial_line_event_message && data != NULL)
-		{
-			flag_serial=1;
-			//Relleno los campos de la response
-		}
-	}
-	PROCESS_END();
-}*/

@@ -1,10 +1,9 @@
 /******************************************************************************
-*	Filename:		api_flash.h
-*	Revised:			2017-10-24 13:04:16 (Tue, 24 Oct 2017)
+*	Filename:		api_resources.h
+*	Revised:		2018-1-24
 *	Author:			Ramirez Gomez, Raul (raulramirezgomez@gmail.com)
 *
-*	Description:	API para interactuar con la Flash.
-						 Describir el funcionamiento...
+*	Description:	API to interact with the resources
 ******************************************************************************/
 
 #ifndef __API_RESOURCES_H__
@@ -12,20 +11,25 @@
 
 
 //*****************************************************************************
-//
 // If building with a C++ compiler, make all of the definitions in this header
 // have a C binding.
-//
 //*****************************************************************************
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-/*************************************/
-//	DEFINES & ASSOCIATED VARIABLES
-/*************************************/
-//Dictionary
+#include "contiki.h"
+#include "rest-engine.h"
+#include <string.h>
+#include <stdio.h>
+
+#include "dev/cc26xx-uart.h"
+#include "dev/serial-line.h"
+#include "batmon-sensor.h"
+#include "button-sensor.h"
+
+// Dictionary
 ////////////////////////
 #define TEMP				'1'
 #define VOLT				'2'
@@ -50,17 +54,24 @@ extern "C"
 #define END			0x0a
 ////////////////////////
 
-//Create the payload
+// Create the payload
 #define ON		1
 #define OFF		0
-const char *not_supported_msg = "Supported:text/plain,application/json";
+#define not_supported_msg "Supported:text/plain,application/json"
+//const char *not_supported_msg = "Supported:text/plain,application/json";
 
+// Shared global variable used to fill up the resource payload response
+#define BUFF_SIZE	5	// worse case: 3 2 8 1 \0
+extern char shared_variable[BUFF_SIZE];
+
+//Used to compare with new measures
+#define OBSERVER_TIMER	CLOCK_SECOND*7
+char temp_old[BUFF_SIZE];
+char volt_old[BUFF_SIZE];
 
 
 //*****************************************************************************
-//
 // Mark the end of the C bindings section for C++ compilers.
-//
 //*****************************************************************************
 #ifdef __cplusplus
 }
