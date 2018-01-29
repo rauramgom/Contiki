@@ -5,22 +5,48 @@
  *         Raul Ramirez Gomez <raulramirezgomez@gmail.com>
  *
  */
+
 #include "resources/api_resources.h"
 
-//static char buf_rx_uart[BUFF_SIZE];		//BUFF_SIZE	5
-//char shared_variable[BUFF_SIZE] = "";	//necessary initiation
+//Dictionary
+////////////////////////
+#define TEMP				'1'
+#define VOLT				'2'
+
+#define LED_GREEN_POST_ON	'3'
+#define LED_GREEN_POST_OFF	'4'
+
+#define LED_BLUE_POST_ON	'5'
+#define LED_BLUE_POST_OFF	'6'
+
+#define LED_RED_POST_ON		'7'
+#define LED_RED_POST_OFF	'8'
+
+#define LED_YELLOW_POST_ON	'9'
+#define LED_YELLOW_POST_OFF	'a'
+
+#define LED_ALL_POST_ON		'b'
+#define LED_ALL_POST_OFF	'c'
+
+#define LED_ON				'1'
+#define LED_OFF				'0'
+#define END					0x0a
+////////////////////////
+
+static char buf_rx_uart[BUFF_SIZE];		//BUFF_SIZE	5
+char shared_variable[BUFF_SIZE] = "";	//necessary initiation
 
 /*
  * Resources to be activated need to be imported through the extern keyword.
  * The build system automatically compiles the resources in the corresponding sub-directory.
  */
-//extern resource_t res_temp;
-//extern resource_t res_volt;
+extern resource_t res_temp;
+extern resource_t res_volt;
 extern resource_t res_led_green;
-//extern resource_t res_led_blue;
+extern resource_t res_led_blue;
 extern resource_t res_led_red;
-//extern resource_t res_led_yellow;
-//extern resource_t res_led_all;
+extern resource_t res_led_yellow;
+extern resource_t res_led_all;
 
 //static struct etimer et_get;
 //#define OBSERVER_TIMER	CLOCK_SECOND*7
@@ -31,7 +57,6 @@ AUTOSTART_PROCESSES(&server_COAP_master);
 /*
 * The callback function is called when the master receives the response
 */
-/*
 static int uart_rx_callback(unsigned char c) {
 	int pos = 0;
 	//Fill up the buffer
@@ -46,12 +71,12 @@ static int uart_rx_callback(unsigned char c) {
 	strncpy(shared_variable, buf_rx_uart, sizeof(buf_rx_uart));
 
 	return 1;
-}*/
+}
 
 PROCESS_THREAD(server_COAP_master, ev, data)
 {
 	PROCESS_BEGIN();
- 	printf("Server COAP master started!\n");
+ 
 	rest_init_engine();
 	//SENSORS_ACTIVATE(batmon_sensor);
 
@@ -59,24 +84,24 @@ PROCESS_THREAD(server_COAP_master, ev, data)
 	res_temp.flags += IS_OBSERVABLE;
 	res_volt.flags += IS_OBSERVABLE;
 #endif
-	//rest_activate_resource(&res_temp, "sen/temp");
-	//rest_activate_resource(&res_volt, "sen/volt");
+	rest_activate_resource(&res_temp, "sen/temp");
+	rest_activate_resource(&res_volt, "sen/volt");
 	rest_activate_resource(&res_led_green, "led/green");
-	//rest_activate_resource(&res_led_blue, "led/blue");
+	rest_activate_resource(&res_led_blue, "led/blue");
 	rest_activate_resource(&res_led_red, "led/red");
-	//rest_activate_resource(&res_led_yellow, "led/yellow");
-	//rest_activate_resource(&res_led_all, "led/all");
+	rest_activate_resource(&res_led_yellow, "led/yellow");
+	rest_activate_resource(&res_led_all, "led/all");
 
-	//cc26xx_uart_init();
+	cc26xx_uart_init();
 	//Will attend the response from slave
-	//cc26xx_uart_set_input(uart_rx_callback);
+	cc26xx_uart_set_input(uart_rx_callback);
 
 	//etimer_set(&et_get, OBSERVER_TIMER);
 	while(1) {
 		//Waiting request..
 		
-		PROCESS_YIELD();
-		/*if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_get))
+		/*PROCESS_YIELD();
+		if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_get))
 		{
 			REST.notify_subscribers(&res_temp);
 			REST.notify_subscribers(&res_volt);

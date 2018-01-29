@@ -20,31 +20,14 @@ extern "C"
 #endif
 
 #include "contiki.h"
-#include "contiki-net.h"
 #include "rest-engine.h"
 #include <string.h>
 #include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
 
 #include "dev/cc26xx-uart.h"
 #include "dev/serial-line.h"
 #include "batmon-sensor.h"
 #include "button-sensor.h"
-#include "dev/leds.h"	
-
-/*#include "sys/process.h"
-#include "er-coap.h"
-
-// IPv6/RPL Stack
-#include "net/netstack.h"
-#include "net/ipv6/uip-ds6-nbr.h"
-#include "net/ipv6/uip-ds6-route.h"*/
-#include "net/rpl/rpl.h"
-#include "net/rpl/rpl-private.h"
-
-#include "net/mac/tsch/tsch.h"
-
 
 // Dictionary
 ////////////////////////
@@ -66,8 +49,8 @@ extern "C"
 #define LED_ALL_POST_ON		'b'
 #define LED_ALL_POST_OFF	'c'
 
-//#define LED_ON				'1'
-//#define LED_OFF				'0'
+#define LED_ON				'1'
+#define LED_OFF				'0'
 #define END			0x0a
 ////////////////////////
 
@@ -78,13 +61,13 @@ extern "C"
 //const char *not_supported_msg = "Supported:text/plain,application/json";
 
 // Shared global variable used to fill up the resource payload response
-//#define BUFF_SIZE	5	// worse case: 3 2 8 1 \0
-//extern char shared_variable[BUFF_SIZE];
+#define BUFF_SIZE	5	// worse case: 3 2 8 1 \0
+extern char shared_variable[BUFF_SIZE];
 
 //Used to compare with new measures
-//#define OBSERVER_TIMER	CLOCK_SECOND*7
-//char temp_old[BUFF_SIZE];
-//char volt_old[BUFF_SIZE];
+#define OBSERVER_TIMER	CLOCK_SECOND*7
+char temp_old[BUFF_SIZE];
+char volt_old[BUFF_SIZE];
 
 
 //*****************************************************************************
