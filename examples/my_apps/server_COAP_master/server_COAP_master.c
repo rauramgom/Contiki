@@ -22,14 +22,11 @@ extern resource_t res_led_red;
 extern resource_t res_led_yellow;
 extern resource_t res_led_all;
 
-//static struct etimer et_get;
-//#define OBSERVER_TIMER	CLOCK_SECOND*7
-
 PROCESS(server_COAP_master, "Server COAP and serial line interface master");
 AUTOSTART_PROCESSES(&server_COAP_master);
 
 /*
-* The callback function is called when the master receives the response
+* The callback function called when the master receives a response
 */
 /*
 static int uart_rx_callback(unsigned char c) {
@@ -48,10 +45,10 @@ static int uart_rx_callback(unsigned char c) {
 	return 1;
 }*/
 
+//Server COAP master start
 PROCESS_THREAD(server_COAP_master, ev, data)
 {
 	PROCESS_BEGIN();
- 	//printf("Server COAP master started!\n");
 	rest_init_engine();
 	//SENSORS_ACTIVATE(batmon_sensor);
 	cc26xx_uart_init();
@@ -70,16 +67,9 @@ PROCESS_THREAD(server_COAP_master, ev, data)
 	rest_activate_resource(&res_led_yellow, "led/yellow");
 	rest_activate_resource(&res_led_all, "led/all");
 
-	//etimer_set(&et_get, OBSERVER_TIMER);
 	while(1) {
 		//Waiting request..
 		PROCESS_YIELD();
-		/*if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_get))
-		{
-			REST.notify_subscribers(&res_temp);
-			REST.notify_subscribers(&res_volt);
-			etimer_restart(&et_get);
-		}*/
 	}
 	//SENSORS_DEACTIVATE(batmon_sensor);
 	PROCESS_END();
