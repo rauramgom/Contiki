@@ -12,6 +12,13 @@
 #undef PROCESS_CONF_NO_PROCESS_NAMES
 #define PROCESS_CONF_NO_PROCESS_NAMES 1
 
+/* 
+* Set 0 to disable RPL debug.
+* Recommended to avoid sending garbage to slave trough UART
+*/
+#undef WITH_RPL_DEBUG
+#define WITH_RPL_DEBUG 0
+
 #undef RF_BLE_CONF_ENABLED
 #define RF_BLE_CONF_ENABLED	0 /**< 0 to disable BLE support */
 #define CC26XX_RF_CONF_BLE_SUPPORT	0

@@ -34,6 +34,13 @@
 /*******************************************************/
 /******************* Configuring RPL *******************/
 /*******************************************************/
+/* 
+* Set 0 to disable RPL debug.
+* Recommended to avoid sending garbage to slave trough UART
+*/
+#undef WITH_RPL_DEBUG
+#define WITH_RPL_DEBUG 0
+
 /* Set to 1 to enable RPL statistics */
 #undef RPL_CONF_STATS
 #define RPL_CONF_STATS 1

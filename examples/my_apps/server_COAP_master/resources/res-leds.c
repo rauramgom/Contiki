@@ -20,13 +20,13 @@ res_POST_handler(void *request, void *response,
 
 	//cc26xx_uart_write_byte(led_on);
 	len = REST.get_post_variable(request, "mode", &mode);
-	if(strncmp(mode, "t", len) == 0){
+	if(strncmp(mode, "on", len) == 0){
 		//leds_toggle(LEDS_GREEN);
 		cc26xx_uart_write_byte(LED_GREEN_POST_ON);
 		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "%c", LED_GREEN_POST_ON);
 		REST.set_response_payload(response, (uint8_t*)buffer,
 			strlen((char *)buffer));
-	} else if(strncmp(mode, "f", len) == 0) {
+	} else if(strncmp(mode, "off", len) == 0) {
 		//leds_toggle(LEDS_RED);
 		cc26xx_uart_write_byte(LED_RED_POST_ON);
 		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "%c", LED_RED_POST_ON);

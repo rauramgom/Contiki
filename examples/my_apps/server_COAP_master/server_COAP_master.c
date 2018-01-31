@@ -51,7 +51,7 @@ static int uart_rx_callback(unsigned char c) {
 PROCESS_THREAD(server_COAP_master, ev, data)
 {
 	PROCESS_BEGIN();
- 	printf("Server COAP master started!\n");
+ 	//printf("Server COAP master started!\n");
 	rest_init_engine();
 	//SENSORS_ACTIVATE(batmon_sensor);
 	cc26xx_uart_init();
@@ -73,7 +73,6 @@ PROCESS_THREAD(server_COAP_master, ev, data)
 	//etimer_set(&et_get, OBSERVER_TIMER);
 	while(1) {
 		//Waiting request..
-		
 		PROCESS_YIELD();
 		/*if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_get))
 		{

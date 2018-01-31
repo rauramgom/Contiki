@@ -19,7 +19,7 @@
 #include <string.h>
 #include <unistd.h>
 
-static int toggle = 0;
+//static int toggle = 0;
 
 #define TEMP  '3'
 #define VOLT  '7'
@@ -30,7 +30,7 @@ static struct etimer et2;
 PROCESS(serial_slave, "Serial line interface slave");
 AUTOSTART_PROCESSES(&serial_slave);
 
-static int uart_rx_callback(unsigned char c) {
+/*static int uart_rx_callback(unsigned char c) {
   if (toggle == 10){
     leds_toggle(LEDS_ALL);
     toggle++;
@@ -47,7 +47,7 @@ static int uart_rx_callback(unsigned char c) {
     //cc26xx_uart_write_byte('M');
   }
   return 1;
-}
+}*/
 
 PROCESS_THREAD(serial_slave, ev, data)
 {
@@ -55,7 +55,7 @@ PROCESS_THREAD(serial_slave, ev, data)
   cc26xx_uart_init();
   //serial_line_init();
   //cc26xx_uart_set_input(serial_line_input_byte);
-  cc26xx_uart_set_input(uart_rx_callback);
+  //cc26xx_uart_set_input(uart_rx_callback);
   //cc26xx_uart_write_byte('M');
 
   etimer_set(&et, ETIMER_GET);
