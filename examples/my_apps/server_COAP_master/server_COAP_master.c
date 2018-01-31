@@ -11,16 +11,16 @@
 //char shared_variable[BUFF_SIZE] = "";	//necessary initiation
 
 /*
- * Resources to be activated need to be imported through the extern keyword.
+ * Resources will be activated need to be imported through the extern keyword.
  * The build system automatically compiles the resources in the corresponding sub-directory.
  */
 //extern resource_t res_temp;
 //extern resource_t res_volt;
 extern resource_t res_led_green;
-//extern resource_t res_led_blue;
+extern resource_t res_led_blue;
 extern resource_t res_led_red;
-//extern resource_t res_led_yellow;
-//extern resource_t res_led_all;
+extern resource_t res_led_yellow;
+extern resource_t res_led_all;
 
 //static struct etimer et_get;
 //#define OBSERVER_TIMER	CLOCK_SECOND*7
@@ -65,10 +65,10 @@ PROCESS_THREAD(server_COAP_master, ev, data)
 	//rest_activate_resource(&res_temp, "sen/temp");
 	//rest_activate_resource(&res_volt, "sen/volt");
 	rest_activate_resource(&res_led_green, "led/green");
-	//rest_activate_resource(&res_led_blue, "led/blue");
+	rest_activate_resource(&res_led_blue, "led/blue");
 	rest_activate_resource(&res_led_red, "led/red");
-	//rest_activate_resource(&res_led_yellow, "led/yellow");
-	//rest_activate_resource(&res_led_all, "led/all");
+	rest_activate_resource(&res_led_yellow, "led/yellow");
+	rest_activate_resource(&res_led_all, "led/all");
 
 	//etimer_set(&et_get, OBSERVER_TIMER);
 	while(1) {

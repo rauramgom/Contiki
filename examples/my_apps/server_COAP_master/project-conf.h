@@ -36,7 +36,7 @@
 /*******************************************************/
 /* 
 * Set 0 to disable RPL debug.
-* Recommended to avoid sending garbage to slave trough UART
+* Recommended to avoid sending garbage to slave through UART
 */
 #undef WITH_RPL_DEBUG
 #define WITH_RPL_DEBUG 0

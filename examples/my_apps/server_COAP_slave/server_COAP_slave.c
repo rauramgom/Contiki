@@ -86,7 +86,7 @@ static int uart_rx_callback(unsigned char c) {
 			leds_toggle(LEDS_GREEN);
 			//leds_on(LEDS_GREEN);
 			break;
-/*
+
 		case LED_GREEN_POST_OFF:
 			leds_off(LEDS_GREEN);
 			break;
@@ -98,12 +98,12 @@ static int uart_rx_callback(unsigned char c) {
 		case LED_BLUE_POST_OFF:
 			leds_off(LEDS_BLUE);
 			break;
-*/
+
 		case LED_RED_POST_ON:
 			leds_toggle(LEDS_RED);
 			//leds_on(LEDS_RED);
 			break;
-/*		case LED_RED_POST_OFF:
+		case LED_RED_POST_OFF:
 			leds_off(LEDS_RED);
 			break;
 
@@ -122,7 +122,7 @@ static int uart_rx_callback(unsigned char c) {
 		case LED_ALL_POST_OFF:
 			leds_off(LEDS_ALL);
 			break;
-*/
+
 		default:
 			leds_blink();
 //			send_data_uart(buf_error);

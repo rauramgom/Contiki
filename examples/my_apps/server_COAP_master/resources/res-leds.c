@@ -21,17 +21,19 @@ res_POST_handler(void *request, void *response,
 	//cc26xx_uart_write_byte(led_on);
 	len = REST.get_post_variable(request, "mode", &mode);
 	if(strncmp(mode, "on", len) == 0){
-		//leds_toggle(LEDS_GREEN);
-		cc26xx_uart_write_byte(LED_GREEN_POST_ON);
-		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "%c", LED_GREEN_POST_ON);
+
+		cc26xx_uart_write_byte(led_on);
+		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "%s", "Led on");
 		REST.set_response_payload(response, (uint8_t*)buffer,
 			strlen((char *)buffer));
+
 	} else if(strncmp(mode, "off", len) == 0) {
-		//leds_toggle(LEDS_RED);
-		cc26xx_uart_write_byte(LED_RED_POST_ON);
-		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "%c", LED_RED_POST_ON);
+
+		cc26xx_uart_write_byte(led_off);
+		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "%s", "Led off");
 		REST.set_response_payload(response, (uint8_t*)buffer,
 			strlen((char *)buffer));
+
 	} else {
 		//ERROR
 		REST.set_response_status(response, REST.status.NOT_ACCEPTABLE);
@@ -59,11 +61,11 @@ led_POST_green(void *request, void *response, uint8_t *buffer,
 //			-PUT function, 
 //			-DELETE function
 RESOURCE(res_led_green,"title=\"led green\"",
-			NULL,led_POST_green, NULL, NULL);
+			NULL,led_POST_green, led_POST_green, NULL);
 /********************************************************************************/
 
 /********************************************************************************/
-/*static void
+static void
 led_POST_blue(void *request, void *response, uint8_t *buffer,
 				uint16_t preferred_size, int32_t *offset)
 {
@@ -73,7 +75,7 @@ led_POST_blue(void *request, void *response, uint8_t *buffer,
 
 //Creation of the associated resource.
 RESOURCE(res_led_blue,"title=\"led blue\"",
-			NULL, led_POST_blue, NULL, NULL);*/
+			NULL, led_POST_blue, led_POST_blue, NULL);
 /********************************************************************************/
 
 /********************************************************************************/
@@ -87,11 +89,11 @@ led_POST_red(void *request, void *response, uint8_t *buffer,
 
 //Creation of the associated resource. 
 RESOURCE(res_led_red,"title=\"led red\"",
-			NULL, led_POST_red, NULL, NULL);
+			NULL, led_POST_red, led_POST_red, NULL);
 /********************************************************************************/
 
 /********************************************************************************/
-/*static void
+static void
 led_POST_yellow(void *request, void *response, uint8_t *buffer,
 				uint16_t preferred_size, int32_t *offset)
 {
@@ -101,11 +103,11 @@ led_POST_yellow(void *request, void *response, uint8_t *buffer,
 
 //Creation of the associated resource.
 RESOURCE(res_led_yellow,"title=\"led yellow\"",
-			NULL, led_POST_yellow, NULL, NULL);*/
+			NULL, led_POST_yellow, led_POST_yellow, NULL);
 /********************************************************************************/
 
 /********************************************************************************/
-/*static void
+static void
 led_POST_all(void *request, void *response, uint8_t *buffer,
 				uint16_t preferred_size, int32_t *offset)
 {
@@ -115,5 +117,5 @@ led_POST_all(void *request, void *response, uint8_t *buffer,
 
 //Creation of the associated resource.
 RESOURCE(res_led_all,"title=\"leds all\"",
-			NULL, led_POST_all, NULL, NULL);*/
+			NULL, led_POST_all, led_POST_all, NULL);
 /********************************************************************************/
