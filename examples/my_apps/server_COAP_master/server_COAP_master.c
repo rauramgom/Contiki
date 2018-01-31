@@ -54,6 +54,9 @@ PROCESS_THREAD(server_COAP_master, ev, data)
  	printf("Server COAP master started!\n");
 	rest_init_engine();
 	//SENSORS_ACTIVATE(batmon_sensor);
+	cc26xx_uart_init();
+	//Will attend the response from slave
+	//cc26xx_uart_set_input(uart_rx_callback);
 
 #if WITH_OBSERVABLE
 	res_temp.flags += IS_OBSERVABLE;
@@ -66,10 +69,6 @@ PROCESS_THREAD(server_COAP_master, ev, data)
 	rest_activate_resource(&res_led_red, "led/red");
 	//rest_activate_resource(&res_led_yellow, "led/yellow");
 	//rest_activate_resource(&res_led_all, "led/all");
-
-	//cc26xx_uart_init();
-	//Will attend the response from slave
-	//cc26xx_uart_set_input(uart_rx_callback);
 
 	//etimer_set(&et_get, OBSERVER_TIMER);
 	while(1) {
