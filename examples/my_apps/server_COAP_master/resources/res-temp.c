@@ -102,6 +102,7 @@ temp_GET(void *request, void *response, uint8_t *buffer,
 {
 	//res_GET_handler(request, response, buffer, preferred_size, offset,
     //                TEMP);
+    leds_blink();
 	measure_event_message = process_alloc_event();
 	
 	Res_handler temp_handler = {request, response, buffer, preferred_size, offset, TEMP};

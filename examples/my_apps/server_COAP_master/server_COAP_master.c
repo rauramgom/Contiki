@@ -81,6 +81,8 @@ PROCESS_THREAD(server_COAP_master, ev, data)
 				REST.get_header_accept(((Res_handler *) data)->res_request, &accept);
 			}
 			str_resource = (Res_handler *)data;
+			//Send request to slave
+			cc26xx_uart_write_byte(str_resource->res_measure);
 		}
 
 		if(ev == serial_line_event_message && str_resource != NULL){
