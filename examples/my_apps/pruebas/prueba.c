@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+char tabla[3];
 
 PROCESS(prueba, "Prueba");
 AUTOSTART_PROCESSES(&prueba);
@@ -34,7 +35,7 @@ PROCESS_THREAD(prueba, ev, data)
 	{
 		PROCESS_YIELD();
 		if(ev == serial_line_event_message){
-			printf("RECIBIDO: %s\n", (char*)data);
+			printf("RECIBIDO: %s\n", (tabla!=NULL)?"SI":"NO");
 			leds_toggle(LEDS_ALL);
 			cc26xx_uart_write_byte('M');
 			cc26xx_uart_write_byte(0x0a);

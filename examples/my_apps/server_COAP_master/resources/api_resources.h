@@ -66,16 +66,27 @@ extern "C"
 #define LED_ALL_POST_ON		'b'
 #define LED_ALL_POST_OFF	'c'
 
-//#define LED_ON				'1'
-//#define LED_OFF				'0'
 #define END			0x0a
 ////////////////////////
 
 // Create the payload
-#define ON		1
-#define OFF		0
 #define not_supported_msg "Supported:text/plain,application/json"
 //const char *not_supported_msg = "Supported:text/plain,application/json";
+
+// Struct to save COAP information
+struct Res_handler {
+	void		*res_request;
+	void		*res_response;
+	uint8_t 	*res_buffer;
+	uint16_t	res_preferred_size;
+	int32_t		*res_offset;
+	char		res_measure;
+};
+typedef struct Res_handler Res_handler;
+
+// Measure event
+process_event_t measure_event_message;
+
 
 // Shared global variable used to fill up the resource payload response
 //#define BUFF_SIZE	5	// worse case: 3 2 8 1 \0

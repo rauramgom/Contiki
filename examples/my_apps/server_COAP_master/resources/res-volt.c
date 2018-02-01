@@ -59,14 +59,14 @@ res_GET_handler(void *request, void *response,
 		REST.set_header_content_type(response, REST.type.APPLICATION_JSON);
 		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE,
 			"{\"Volt\":{\"v\":%s,\"u\":\"mV\"}}",
-			uart_response);
+			(uart_response!=NULL)?uart_response:"NaN");
 		REST.set_response_payload(response, buffer, strlen((char *)buffer));
 	} else if(accept == REST.type.TEXT_PLAIN) {
 		strncpy(volt_old, uart_response, sizeof(volt_old));
 		
 		REST.set_header_content_type(response, REST.type.TEXT_PLAIN);
 		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "Volt=%smV",
-			uart_response);
+			(uart_response!=NULL)?uart_response:"NaN");
 		REST.set_response_payload(response, buffer, strlen((char *)buffer));
 	} else {
 		//ERROR

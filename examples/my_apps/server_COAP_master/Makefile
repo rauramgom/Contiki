@@ -9,7 +9,7 @@ CONTIKI_WITH_IPV4 = 0
 #UIP_CONF_IPV6 = 1
 
 REST_RESOURCES_DIR = ./resources
-REST_RESOURCES_FILES += res-leds.c
+REST_RESOURCES_FILES += res-leds.c res-temp.c
 #REST_RESOURCES_FILES += res-leds.c res-temp.c res-volt.c
 
 PROJECTDIRS += $(REST_RESOURCES_DIR)

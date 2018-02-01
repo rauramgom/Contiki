@@ -7,10 +7,10 @@
 
 #include "api_resources.h"
 
-static void temp_GET(void *request, void *response, uint8_t *buffer,
-						uint16_t preferred_size, int32_t *offset);
+//static void temp_GET(void *request, void *response, uint8_t *buffer,
+//						uint16_t preferred_size, int32_t *offset);
 
-static void res_periodic_handler(void);
+//static void res_periodic_handler(void);
 
 //Creation of the associated resource. Valid to make it OBSERVABLE or be activated
 //	\params
@@ -22,20 +22,20 @@ static void res_periodic_handler(void);
 //			-DELETE function,
 //			-period,
 //			-function_handler
-PERIODIC_RESOURCE(res_temp,
+/*PERIODIC_RESOURCE(res_temp,
 					"title=\"Temp\"",
 					temp_GET, 
 					NULL,
 					NULL,
 					NULL,
 					OBSERVER_TIMER,
-					res_periodic_handler);
+					res_periodic_handler);*/
 
 /********************************************************************************/
 /*
 * Generic GET resource handler
 */
-static void
+/*static void
 res_GET_handler(void *request, void *response,
                     uint8_t *buffer, uint16_t preferred_size, int32_t *offset,
                     char temp)
@@ -59,14 +59,14 @@ res_GET_handler(void *request, void *response,
 		REST.set_header_content_type(response, REST.type.APPLICATION_JSON);
 		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE,
 			"{\"Temp\":{\"v\":%s,\"u\":\"C\"}}",
-			uart_response);
+			(uart_response!=NULL)?uart_response:"NaN");
 		REST.set_response_payload(response, buffer, strlen((char *)buffer));
 	} else if(accept == REST.type.TEXT_PLAIN) {
 		strncpy(temp_old, uart_response, sizeof(temp_old));
 		
 		REST.set_header_content_type(response, REST.type.TEXT_PLAIN);
 		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "Temp=%sC",
-			uart_response);
+			(uart_response!=NULL)?uart_response:"NaN");
 		REST.set_response_payload(response, buffer, strlen((char *)buffer));
 	} else {
 		//ERROR
@@ -74,12 +74,12 @@ res_GET_handler(void *request, void *response,
 		REST.set_response_payload(response, not_supported_msg,
 			strlen(not_supported_msg));
 	}
-}//End of res_GET_handler
+}//End of res_GET_handler*/
 
 /*
 * Handler function for the PERIODIC_RESOURCE
 */
-static void
+/*static void
 res_periodic_handler()
 {
 	char aux_val[BUFF_SIZE];
@@ -92,7 +92,7 @@ res_periodic_handler()
 		REST.notify_subscribers(&res_temp);
 	}
 
-}//End of res_periodic_handler
+}//End of res_periodic_handler*/
 /********************************************************************************/
 
 /********************************************************************************/
@@ -100,7 +100,14 @@ static void
 temp_GET(void *request, void *response, uint8_t *buffer,
 				uint16_t preferred_size, int32_t *offset)
 {
-	res_GET_handler(request, response, buffer, preferred_size, offset,
-                    TEMP);
+	//res_GET_handler(request, response, buffer, preferred_size, offset,
+    //                TEMP);
+	measure_event_message = process_alloc_event();
+	
+	Res_handler temp_handler = {request, response, buffer, preferred_size, offset, TEMP};
+	process_post(PROCESS_BROADCAST, measure_event_message, &temp_handler);
 }//End of temp_GET
+
+RESOURCE(res_temp,"title=\"Temp\"",
+			temp_GET, NULL, NULL, NULL);
 /********************************************************************************/
