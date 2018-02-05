@@ -22,6 +22,7 @@ extern "C"
 #include "contiki.h"
 #include "contiki-net.h"
 #include "rest-engine.h"
+#include "er-coap.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -70,30 +71,14 @@ extern "C"
 ////////////////////////
 
 // Create the payload
-#define not_supported_msg "Supported:text/plain,application/json"
-//const char *not_supported_msg = "Supported:text/plain,application/json";
-
-// Struct to save COAP information
-struct Res_handler {
-	void		*res_request;
-	void		*res_response;
-	uint8_t 	*res_buffer;
-	uint16_t	res_preferred_size;
-	int32_t		*res_offset;
-	char		res_measure;
-};
-typedef struct Res_handler Res_handler;
-
-// Measure event
-process_event_t measure_event_message;
+#define not_supported_msg "Supported:application/json, text/plain"
 
 
 // Shared global variable used to fill up the resource payload response
-//#define BUFF_SIZE	5	// worse case: 3 2 8 1 \0
-//extern char shared_variable[BUFF_SIZE];
+#define BUFF_SIZE	5	// worse case: 2 9 4 1 \0
+extern char shared_variable[BUFF_SIZE];
 
-//Used to compare with new measures
-//#define OBSERVER_TIMER	CLOCK_SECOND*7
+//Used to get new measures
 //char temp_old[BUFF_SIZE];
 //char volt_old[BUFF_SIZE];
 

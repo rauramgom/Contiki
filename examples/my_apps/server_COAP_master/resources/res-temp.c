@@ -100,13 +100,32 @@ static void
 temp_GET(void *request, void *response, uint8_t *buffer,
 				uint16_t preferred_size, int32_t *offset)
 {
-	//res_GET_handler(request, response, buffer, preferred_size, offset,
-    //                TEMP);
-    leds_blink();
-	measure_event_message = process_alloc_event();
-	
-	Res_handler temp_handler = {request, response, buffer, preferred_size, offset, TEMP};
-	process_post(PROCESS_BROADCAST, measure_event_message, &temp_handler);
+	unsigned int accept = 100;
+
+	if(request != NULL) {
+		REST.get_header_accept(request, &accept);
+	}
+
+	if(accept == 100 || accept == REST.type.APPLICATION_JSON) {
+		REST.set_header_content_type(response, REST.type.APPLICATION_JSON);
+		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE,
+			"{\"Temp\":{\"v\":%s,\"u\":\"C\"}}",
+			(strncmp(shared_variable, "FFFF", BUFF_SIZE)!=0)?shared_variable:"NaN");
+		REST.set_response_payload(response, buffer, strlen((char *)buffer));
+
+	} else if(accept == REST.type.TEXT_PLAIN) {
+		REST.set_header_content_type(response, REST.type.TEXT_PLAIN);
+		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "Temp=%sC",
+			(strncmp(shared_variable, "FFFF", BUFF_SIZE)!=0)?shared_variable:"NaN");
+		REST.set_response_payload(response, buffer, strlen((char *)buffer));
+
+	} else {
+		//ERROR
+		REST.set_response_status(response, REST.status.NOT_ACCEPTABLE);
+		REST.set_response_payload(response, not_supported_msg,
+			strlen(not_supported_msg));
+	}
+
 }//End of temp_GET
 
 RESOURCE(res_temp,"title=\"Temp\"",

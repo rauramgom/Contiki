@@ -41,7 +41,7 @@
 
 
 #define TEMP_SIZE	4	//Negative value + \0. ex: -20\0
-//#define VOLT_SIZE		5	//4 cipher number + \0. ex: 2596\0
+//#define VOLT_SIZE		5	//Four numbers + \0. ex: 2596\0
 
 static int temp = 0; 
 //static int volt = 0;
@@ -71,7 +71,6 @@ static int uart_rx_callback(unsigned char c) {
 	//Checkout type of data received
 	switch((char)c) {
 		case TEMP:
-			leds_toggle(LEDS_ALL);
 			temp = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
 			sprintf(buf_temp, "%d", temp);
 			send_data_uart(buf_temp);
@@ -118,7 +117,6 @@ static int uart_rx_callback(unsigned char c) {
 		case LED_ALL_POST_OFF:
 			leds_off(LEDS_ALL);
 			break;
-
 		default:
 			leds_blink();
 			send_data_uart(buf_error);
