@@ -10,7 +10,7 @@
 static void temp_GET(void *request, void *response, uint8_t *buffer,
 						uint16_t preferred_size, int32_t *offset);
 
-static void res_periodic_handler(void);
+static void temp_periodic_handler(void);
 
 //Creation of the associated resource. Valid to make it OBSERVABLE or be activated
 //	\params
@@ -28,28 +28,28 @@ PERIODIC_RESOURCE(res_temp,
 					NULL,
 					NULL,
 					NULL,
-					OBSERVER_TIMER,
-					res_periodic_handler);
+					TEMP_TIMER,
+					temp_periodic_handler);
 
 /********************************************************************************/
 /*
 * Handler function for the PERIODIC_RESOURCE
 */
 static void
-res_periodic_handler()
+temp_periodic_handler()
 {
-	//char aux_val[BUFF_SIZE];
+	//char aux_val[TEMP_SIZE];
 	//Send request to slave
 	cc26xx_uart_write_byte(TEMP);
 	leds_toggle(LEDS_GREEN);
-/*	strncpy(aux_val, shared_variable, sizeof(aux_val));
+/*	strncpy(aux_val, temp_shared_variable, sizeof(aux_val));
 
 	if(strncmp(aux_val, temp_old, sizeof(aux_val)) != 0){
 		strncpy(temp_old, aux_val, sizeof(temp_old));
 		REST.notify_subscribers(&res_temp);
 	}*/
 
-}//End of res_periodic_handler
+}//End of temp_periodic_handler
 
 
 static void
@@ -66,13 +66,13 @@ temp_GET(void *request, void *response, uint8_t *buffer,
 		REST.set_header_content_type(response, REST.type.APPLICATION_JSON);
 		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE,
 			"{\"Temp\":{\"v\":%s,\"u\":\"C\"}}",
-			(strncmp(shared_variable, "FFFF", BUFF_SIZE)!=0)?shared_variable:"NaN");
+			(strncmp(temp_shared_variable, "FFFF", TEMP_SIZE)!=0)?temp_shared_variable:"\"NaN\"");
 		REST.set_response_payload(response, buffer, strlen((char *)buffer));
 
 	} else if(accept == REST.type.TEXT_PLAIN) {
 		REST.set_header_content_type(response, REST.type.TEXT_PLAIN);
 		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "Temp=%sC",
-			(strncmp(shared_variable, "FFFF", BUFF_SIZE)!=0)?shared_variable:"NaN");
+			(strncmp(temp_shared_variable, "FFFF", TEMP_SIZE)!=0)?temp_shared_variable:"\"NaN\"");
 		REST.set_response_payload(response, buffer, strlen((char *)buffer));
 
 	} else {
@@ -83,7 +83,4 @@ temp_GET(void *request, void *response, uint8_t *buffer,
 	}
 
 }//End of temp_GET
-
-/*RESOURCE(res_temp,"title=\"Temp\"",
-			temp_GET, NULL, NULL, NULL);*/
 /********************************************************************************/

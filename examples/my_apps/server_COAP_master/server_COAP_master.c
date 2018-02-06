@@ -19,9 +19,11 @@ extern resource_t res_led_red;
 extern resource_t res_led_yellow;
 extern resource_t res_led_all;
 
-//#define TEMP_TIMER	CLOCK_SECOND*2
-//static struct etimer et_temp;		//To get the last value stored
-char shared_variable[BUFF_SIZE] = "FFFF";
+//Receive temp/volt measure
+char temp_shared_variable[TEMP_SIZE] = "FFFF";
+char volt_shared_variable[VOLT_SIZE] = "FFFFF";
+char aux[VOLT_SIZE] = "FFFFF";
+
 
 PROCESS(server_COAP_master, "Server COAP and serial line interface master");
 AUTOSTART_PROCESSES(&server_COAP_master);
@@ -48,20 +50,20 @@ PROCESS_THREAD(server_COAP_master, ev, data)
 	rest_activate_resource(&res_led_yellow, "led/yellow");
 	rest_activate_resource(&res_led_all, "led/all");
 
-//	etimer_set(&et_temp, TEMP_TIMER);
 	while(1) {
 		//Waiting request..
 		PROCESS_YIELD();
-/*		if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_temp))
-		{
-			leds_toggle(LEDS_GREEN);
-			cc26xx_uart_write_byte(TEMP);
-		}*/
 
 		if(ev == serial_line_event_message && data != NULL){
-			leds_toggle(LEDS_RED);
-			strncpy(shared_variable, (char *)data, strlen(shared_variable));
-			//etimer_restart(&et_temp);
+			//Check if data received is temp(T) or volt(V)
+			strncpy(aux, (char *)data, strlen(aux));
+			if(aux[0] == 'T'){
+				leds_toggle(LEDS_RED);
+				strncpy(temp_shared_variable, aux+sizeof(char), strlen(temp_shared_variable));
+			} else if (aux[0] == 'V'){
+				leds_toggle(LEDS_BLUE);
+				strncpy(volt_shared_variable, aux+sizeof(char), strlen(volt_shared_variable));
+			}
 		}
 
 	}

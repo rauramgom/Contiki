@@ -71,13 +71,13 @@ static int uart_rx_callback(unsigned char c) {
 	switch((char)c) {
 		case TEMP:
 			temp = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
-			sprintf(buf_temp, "%d", temp);
+			sprintf(buf_temp, "T%d", temp);
 			send_data_uart(buf_temp);
 			break;
 
 		case VOLT:
 			volt = batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT);
-			sprintf(buf_volt, "%d", volt);
+			sprintf(buf_volt, "V%d", volt);
 			send_data_uart(buf_volt);
 			break;
 

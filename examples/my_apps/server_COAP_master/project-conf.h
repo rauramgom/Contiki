@@ -64,6 +64,17 @@
 #undef RPL_CONF_SUPPORTED_OFS
 #define RPL_CONF_SUPPORTED_OFS {&rpl_mrhof}
 
+/*
+ * Enable/disable RPL Metric Containers (MC). The actual MC in use
+ * for a given DODAG is decided at runtime, when joining. Note that
+ * OF0 (RFC6552) operates without MC, and so does MRHOF (RFC6719) when
+ * used with ETX as a metric (the rank is the metric). We disable MC
+ * by default, but note it must be enabled to support joining a DODAG
+ * that requires MC (e.g., MRHOF with a metric other than ETX).
+ */
+//#undef RPL_CONF_WITH_MC
+//#define RPL_CONF_WITH_MC 0	//[¡¡¡PROBLEMA!!!]COOJA ROMPE SI LO ACTIVAMOS
+
 /* The MC advertised in DIOs and propagating from the root */
 #undef RPL_CONF_DAG_MC
 #define RPL_CONF_DAG_MC RPL_DAG_MC_ETX
