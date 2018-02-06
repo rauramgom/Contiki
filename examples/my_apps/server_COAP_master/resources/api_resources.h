@@ -78,6 +78,9 @@ extern "C"
 #define BUFF_SIZE	5	// worse case: 2 9 4 1 \0
 extern char shared_variable[BUFF_SIZE];
 
+// Periodic resource timer
+#define OBSERVER_TIMER 1*CLOCK_SECOND
+
 //Used to get new measures
 //char temp_old[BUFF_SIZE];
 //char volt_old[BUFF_SIZE];
