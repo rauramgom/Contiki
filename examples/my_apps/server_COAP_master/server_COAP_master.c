@@ -20,9 +20,9 @@ extern resource_t res_led_yellow;
 extern resource_t res_led_all;
 
 //Receive temp/volt measure
-char temp_shared_variable[TEMP_SIZE] = "FFFF";
-char volt_shared_variable[VOLT_SIZE] = "FFFFF";
-char aux[VOLT_SIZE] = "FFFFF";
+char temp_shared[TEMP_SIZE] = "FFF";
+char volt_shared[VOLT_SIZE] = "FFFF";
+char aux[AUX_SIZE] = "FFFFF";
 
 
 PROCESS(server_COAP_master, "Server COAP and serial line interface master");
@@ -43,7 +43,7 @@ PROCESS_THREAD(server_COAP_master, ev, data)
 	res_volt.flags += IS_OBSERVABLE;
 #endif
 	rest_activate_resource(&res_temp, "sen/temp");
-	//rest_activate_resource(&res_volt, "sen/volt");
+	rest_activate_resource(&res_volt, "sen/volt");
 	rest_activate_resource(&res_led_green, "led/green");
 	rest_activate_resource(&res_led_blue, "led/blue");
 	rest_activate_resource(&res_led_red, "led/red");
@@ -56,13 +56,14 @@ PROCESS_THREAD(server_COAP_master, ev, data)
 
 		if(ev == serial_line_event_message && data != NULL){
 			//Check if data received is temp(T) or volt(V)
-			strncpy(aux, (char *)data, strlen(aux));
+			memset(aux, '\0', AUX_SIZE);
+			strncpy(aux, (char *)data, AUX_SIZE-1);
 			if(aux[0] == 'T'){
-				leds_toggle(LEDS_RED);
-				strncpy(temp_shared_variable, aux+sizeof(char), strlen(temp_shared_variable));
+				memset(temp_shared, '\0', TEMP_SIZE);
+				strncpy(temp_shared, aux+sizeof(char), TEMP_SIZE-1);
 			} else if (aux[0] == 'V'){
-				leds_toggle(LEDS_BLUE);
-				strncpy(volt_shared_variable, aux+sizeof(char), strlen(volt_shared_variable));
+				memset(volt_shared, '\0', VOLT_SIZE);
+				strncpy(volt_shared, aux+sizeof(char), VOLT_SIZE-1);
 			}
 		}
 

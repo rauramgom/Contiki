@@ -40,8 +40,8 @@
 ////////////////////////
 
 
-#define TEMP_SIZE	4	//Negative value + \0. ex: -20\0
-#define VOLT_SIZE	5	//Four numbers + \0. ex: 2596\0
+#define TEMP_SIZE	5	// worse case: T - 2 0 \0
+#define VOLT_SIZE	6	// worse case: V 2 5 9 6 \0
 
 static int temp = 0; 
 static int volt = 0;
@@ -71,12 +71,14 @@ static int uart_rx_callback(unsigned char c) {
 	switch((char)c) {
 		case TEMP:
 			temp = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
+			memset(buf_temp, '\0', TEMP_SIZE);
 			sprintf(buf_temp, "T%d", temp);
 			send_data_uart(buf_temp);
 			break;
 
 		case VOLT:
 			volt = batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT);
+			memset(buf_volt, '\0', VOLT_SIZE);
 			sprintf(buf_volt, "V%d", volt);
 			send_data_uart(buf_volt);
 			break;

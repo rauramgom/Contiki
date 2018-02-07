@@ -41,8 +41,8 @@ temp_periodic_handler()
 	//char aux_val[TEMP_SIZE];
 	//Send request to slave
 	cc26xx_uart_write_byte(TEMP);
-	leds_toggle(LEDS_GREEN);
-/*	strncpy(aux_val, temp_shared_variable, sizeof(aux_val));
+
+/*	strncpy(aux_val, temp_shared, sizeof(aux_val));
 
 	if(strncmp(aux_val, temp_old, sizeof(aux_val)) != 0){
 		strncpy(temp_old, aux_val, sizeof(temp_old));
@@ -66,13 +66,13 @@ temp_GET(void *request, void *response, uint8_t *buffer,
 		REST.set_header_content_type(response, REST.type.APPLICATION_JSON);
 		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE,
 			"{\"Temp\":{\"v\":%s,\"u\":\"C\"}}",
-			(strncmp(temp_shared_variable, "FFFF", TEMP_SIZE)!=0)?temp_shared_variable:"\"NaN\"");
+			(strncmp(temp_shared, "FFF", TEMP_SIZE-1)!=0)?temp_shared:"\"NaN\"");
 		REST.set_response_payload(response, buffer, strlen((char *)buffer));
 
 	} else if(accept == REST.type.TEXT_PLAIN) {
 		REST.set_header_content_type(response, REST.type.TEXT_PLAIN);
 		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "Temp=%sC",
-			(strncmp(temp_shared_variable, "FFFF", TEMP_SIZE)!=0)?temp_shared_variable:"\"NaN\"");
+			(strncmp(temp_shared, "FFF", TEMP_SIZE-1)!=0)?temp_shared:"\"NaN\"");
 		REST.set_response_payload(response, buffer, strlen((char *)buffer));
 
 	} else {

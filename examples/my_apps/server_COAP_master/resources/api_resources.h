@@ -75,14 +75,17 @@ extern "C"
 
 
 // Shared global variable used to fill up the resource payload response
-#define TEMP_SIZE	5	// worse case: T - 2 9 \0
-extern char temp_shared_variable[TEMP_SIZE];
+#define TEMP_SIZE	4	// worse case: - 2 9 \0
+extern char temp_shared[TEMP_SIZE];
 
-#define VOLT_SIZE	6	// worse case: V 2 9 6 1 \0
-extern char volt_shared_variable[VOLT_SIZE];
+#define VOLT_SIZE	5	// worse case: 2 9 6 1 \0
+extern char volt_shared[VOLT_SIZE];
+
+#define AUX_SIZE	6	// worse case: V 2 9 6 1 \0
 
 // Periodic resource timer
 #define TEMP_TIMER 1*CLOCK_SECOND
+#define VOLT_TIMER 1.5*CLOCK_SECOND
 
 
 //*****************************************************************************

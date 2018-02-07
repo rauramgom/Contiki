@@ -145,7 +145,7 @@
 
 /* How long to scan each channel in the scanning phase */
 #undef TSCH_CONF_CHANNEL_SCAN_DURATION
-#define TSCH_CONF_CHANNEL_SCAN_DURATION (CLOCK_SECOND/16)
+#define TSCH_CONF_CHANNEL_SCAN_DURATION (CLOCK_SECOND/16) //(CLOCK_SECOND/10)
 
 /* Set to start TSCH at init, without waiting for NETSTACK_MAC.on() */
 #undef TSCH_CONF_AUTOSTART
