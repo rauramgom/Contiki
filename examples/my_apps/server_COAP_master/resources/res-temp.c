@@ -12,6 +12,9 @@ static void temp_GET(void *request, void *response, uint8_t *buffer,
 
 static void temp_periodic_handler(void);
 
+//Notify subscribers
+char temp_old[TEMP_SIZE] = "FFF";
+
 //Creation of the associated resource. Valid to make it OBSERVABLE or be activated
 //	\params
 //			-name, 
@@ -38,17 +41,14 @@ PERIODIC_RESOURCE(res_temp,
 static void
 temp_periodic_handler()
 {
-	//char aux_val[TEMP_SIZE];
+	if(strcmp(temp_old, temp_shared) != 0){
+		memset(temp_old, '\0', TEMP_SIZE);
+		strncpy(temp_old, temp_shared, TEMP_SIZE-1);
+		REST.notify_subscribers(&res_temp);
+	}
+	
 	//Send request to slave
 	cc26xx_uart_write_byte(TEMP);
-
-/*	strncpy(aux_val, temp_shared, sizeof(aux_val));
-
-	if(strncmp(aux_val, temp_old, sizeof(aux_val)) != 0){
-		strncpy(temp_old, aux_val, sizeof(temp_old));
-		REST.notify_subscribers(&res_temp);
-	}*/
-
 }//End of temp_periodic_handler
 
 

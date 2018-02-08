@@ -24,7 +24,6 @@ char temp_shared[TEMP_SIZE] = "FFF";
 char volt_shared[VOLT_SIZE] = "FFFF";
 char aux[AUX_SIZE] = "FFFFF";
 
-
 PROCESS(server_COAP_master, "Server COAP and serial line interface master");
 AUTOSTART_PROCESSES(&server_COAP_master);
 
@@ -38,10 +37,6 @@ PROCESS_THREAD(server_COAP_master, ev, data)
 	cc26xx_uart_init();
 	cc26xx_uart_set_input(serial_line_input_byte);
 
-#if WITH_OBSERVABLE
-	res_temp.flags += IS_OBSERVABLE;
-	res_volt.flags += IS_OBSERVABLE;
-#endif
 	rest_activate_resource(&res_temp, "sen/temp");
 	rest_activate_resource(&res_volt, "sen/volt");
 	rest_activate_resource(&res_led_green, "led/green");

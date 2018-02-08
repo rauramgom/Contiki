@@ -12,6 +12,9 @@ static void volt_GET(void *request, void *response, uint8_t *buffer,
 
 static void volt_periodic_handler(void);
 
+//Notify subscribers
+char volt_old[VOLT_SIZE] = "FFFF";
+
 //Creation of the associated resource. Valid to make it OBSERVABLE or be activated
 //	\params
 //			-name, 
@@ -33,20 +36,19 @@ PERIODIC_RESOURCE(res_volt,
 
 /********************************************************************************/
 /*
-* Handler function for the PERIODIC_RESOURCE
+* Handler function for PERIODIC_RESOURCE
 */
 static void
 volt_periodic_handler()
 {
-	//char aux_val[BUFF_SIZE];
+	if(strcmp(volt_old, volt_shared) != 0){
+		memset(volt_old, '\0', VOLT_SIZE);
+		strncpy(volt_old, volt_shared, VOLT_SIZE-1);
+		REST.notify_subscribers(&res_volt);
+	}
+
 	//Send request to slave
 	cc26xx_uart_write_byte(VOLT);
-
-/*	if(strncmp(aux_val, volt_old, sizeof(aux_val)) != 0){
-		strncpy(volt_old, aux_val, sizeof(volt_old));
-		REST.notify_subscribers(&res_volt);
-	}*/
-
 }//End of volt_periodic_handler
 
 

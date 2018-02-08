@@ -8,9 +8,6 @@
 #ifndef __PROJECT_CONF_H__
 #define __PROJECT_CONF_H__
 
-#undef WITH_OBSERVABLE
-#define WITH_OBSERVABLE 0
-
 /* Set to run TSCH */
 #ifndef WITH_TSCH
 #define WITH_TSCH 1
