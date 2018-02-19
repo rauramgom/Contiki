@@ -1,11 +1,13 @@
 /**
  * \file
- *			COAP resource to manage TEMP sensors
+ *			COAP resource to manage local TEMP sensors
  * \author
  *			Raul Ramirez Gomez <raulramirezgomez@gmail.com>
  */
 
 #include "api_resources.h"
+#include "batmon-sensor.h"
+#include "button-sensor.h"
 
 static void temp_GET(void *request, void *response, uint8_t *buffer,
 						uint16_t preferred_size, int32_t *offset);
@@ -41,14 +43,17 @@ PERIODIC_RESOURCE(res_temp,
 static void
 temp_periodic_handler()
 {
-	if(strcmp(temp_old, temp_shared) != 0){
+	int temp;
+	char temp_aux[TEMP_SIZE];
+
+	temp = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
+	memset(temp_aux, '\0', TEMP_SIZE);
+	sprintf(temp_aux, "%d", temp);
+	if(strcmp(temp_old, temp_aux) != 0){
 		memset(temp_old, '\0', TEMP_SIZE);
-		strncpy(temp_old, temp_shared, TEMP_SIZE-1);
+		strncpy(temp_old, temp_aux, strlen(temp_aux));
 		REST.notify_subscribers(&res_temp);
 	}
-	
-	//Send request to slave
-	cc26xx_uart_write_byte(TEMP);
 }//End of temp_periodic_handler
 
 
@@ -66,13 +71,13 @@ temp_GET(void *request, void *response, uint8_t *buffer,
 		REST.set_header_content_type(response, REST.type.APPLICATION_JSON);
 		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE,
 			"{\"Temp\":{\"v\":%s,\"u\":\"C\"}}",
-			(strncmp(temp_shared, "FFF", TEMP_SIZE-1)!=0)?temp_shared:"\"NaN\"");
+			(strncmp(temp_old, "FFF", TEMP_SIZE-1)!=0)?temp_old:"\"NaN\"");
 		REST.set_response_payload(response, buffer, strlen((char *)buffer));
 
 	} else if(accept == REST.type.TEXT_PLAIN) {
 		REST.set_header_content_type(response, REST.type.TEXT_PLAIN);
 		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "Temp=%sC",
-			(strncmp(temp_shared, "FFF", TEMP_SIZE-1)!=0)?temp_shared:"\"NaN\"");
+			(strncmp(temp_old, "FFF", TEMP_SIZE-1)!=0)?temp_old:"\"NaN\"");
 		REST.set_response_payload(response, buffer, strlen((char *)buffer));
 
 	} else {

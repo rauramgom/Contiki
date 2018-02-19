@@ -42,9 +42,6 @@
 #undef RPL_CONF_STATS
 #define RPL_CONF_STATS 1
 
-#undef RPL_CONF_MOP
-#define RPL_CONF_MOP RPL_MOP_NON_STORING /* Mode of operation*/
-
 /*
  * The objective function (OF) used by a RPL root is configurable through
  * the RPL_CONF_OF_OCP parameter. This is defined as the objective code
@@ -188,7 +185,7 @@
 /* 6TiSCH Minimal schedule slotframe length 
  * Larger values result in less frequent active slots: reduces capacity and saves energy. */
 #undef TSCH_SCHEDULE_CONF_DEFAULT_LENGTH
-#define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH	3  //7 
+#define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH	7  //7 
 
 /* Keep radio always on within TSCH timeslot (1) or 
  * turn it off between packet and ACK? (0) */

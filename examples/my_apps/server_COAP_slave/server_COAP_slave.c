@@ -79,7 +79,7 @@ static int uart_rx_callback(unsigned char c) {
 		case VOLT:
 			volt = batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT);
 			memset(buf_volt, '\0', VOLT_SIZE);
-			sprintf(buf_volt, "V%d", volt);
+			sprintf(buf_volt, "V%d", (volt*125)>>5);
 			send_data_uart(buf_volt);
 			break;
 

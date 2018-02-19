@@ -32,7 +32,7 @@
 #define PROJECT_ROUTER_CONF_H_
 
 #ifndef WITH_NON_STORING
-#define WITH_NON_STORING 0 /* Set this to run with non-storing mode */
+#define WITH_NON_STORING 1 /* Set this to run with non-storing mode */
 #endif /* WITH_NON_STORING */
 
 #if WITH_NON_STORING
@@ -90,6 +90,12 @@
 /*******************************************************/
 /******************* Configuring RPL *******************/
 /*******************************************************/
+/* 
+* Set 1 to enable RPL debug.
+*/
+#undef WITH_RPL_DEBUG
+#define WITH_RPL_DEBUG 1
+
 /* Set to 1 to enable RPL statistics */
 #undef RPL_CONF_STATS
 #define RPL_CONF_STATS 1
@@ -181,8 +187,8 @@
 #define RPL_MOP_STORING_NO_MULTICAST    2
 #define RPL_MOP_STORING_MULTICAST       3
 */
-//#undef RPL_CONF_MOP
-//#define RPL_CONF_MOP RPL_MOP_NON_STORING /* Mode of operation*/
+#undef RPL_CONF_MOP
+#define RPL_CONF_MOP RPL_MOP_NON_STORING /* Mode of operation*/
 //#define RPL_CONF_MOP RPL_MOP_STORING_NO_MULTICAST /* Mode of operation*/
 
 #endif /* WITH_RPL */

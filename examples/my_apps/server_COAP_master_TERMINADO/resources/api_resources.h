@@ -20,14 +20,32 @@ extern "C"
 #endif
 
 #include "contiki.h"
+#include "contiki-net.h"
 #include "rest-engine.h"
+#include "er-coap.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
 
 #include "dev/cc26xx-uart.h"
 #include "dev/serial-line.h"
 #include "batmon-sensor.h"
 #include "button-sensor.h"
+#include "dev/leds.h"	
+
+/*#include "sys/process.h"
+#include "er-coap.h"
+
+// IPv6/RPL Stack
+#include "net/netstack.h"
+#include "net/ipv6/uip-ds6-nbr.h"
+#include "net/ipv6/uip-ds6-route.h"*/
+#include "net/rpl/rpl.h"
+#include "net/rpl/rpl-private.h"
+
+#include "net/mac/tsch/tsch.h"
+
 
 // Dictionary
 ////////////////////////
@@ -49,25 +67,25 @@ extern "C"
 #define LED_ALL_POST_ON		'b'
 #define LED_ALL_POST_OFF	'c'
 
-#define LED_ON				'1'
-#define LED_OFF				'0'
 #define END			0x0a
 ////////////////////////
 
 // Create the payload
-#define ON		1
-#define OFF		0
-#define not_supported_msg "Supported:text/plain,application/json"
-//const char *not_supported_msg = "Supported:text/plain,application/json";
+#define not_supported_msg "Supported:application/json, text/plain"
+
 
 // Shared global variable used to fill up the resource payload response
-#define BUFF_SIZE	5	// worse case: 3 2 8 1 \0
-extern char shared_variable[BUFF_SIZE];
+#define TEMP_SIZE	4	// worse case: - 2 9 \0
+extern char temp_shared[TEMP_SIZE];
 
-//Used to compare with new measures
-#define OBSERVER_TIMER	CLOCK_SECOND*7
-char temp_old[BUFF_SIZE];
-char volt_old[BUFF_SIZE];
+#define VOLT_SIZE	5	// worse case: 2 9 6 1 \0
+extern char volt_shared[VOLT_SIZE];
+
+#define AUX_SIZE	6	// worse case: V 2 9 6 1 \0
+
+// Periodic resource timer
+#define TEMP_TIMER 1*CLOCK_SECOND
+#define VOLT_TIMER 1.5*CLOCK_SECOND
 
 
 //*****************************************************************************

@@ -12,9 +12,7 @@
  * The build system automatically compiles the resources in the corresponding sub-directory.
  */
 extern resource_t res_temp;
-extern resource_t res_periodic_temp;
 extern resource_t res_volt;
-extern resource_t res_periodic_volt;
 extern resource_t res_led_green;
 extern resource_t res_led_blue;
 extern resource_t res_led_red;
@@ -33,17 +31,14 @@ AUTOSTART_PROCESSES(&server_COAP_master);
 PROCESS_THREAD(server_COAP_master, ev, data)
 {
 	PROCESS_BEGIN();
-	SENSORS_ACTIVATE(batmon_sensor);
 	rest_init_engine();
 
 	//Will attend the response from slave
 	cc26xx_uart_init();
 	cc26xx_uart_set_input(serial_line_input_byte);
 
-	rest_activate_resource(&res_periodic_temp, "sen/remote temp");
-	rest_activate_resource(&res_periodic_volt, "sen/remote volt");
-	rest_activate_resource(&res_temp, "sen/local temp");
-	rest_activate_resource(&res_volt, "sen/local volt");
+	rest_activate_resource(&res_temp, "sen/temp");
+	rest_activate_resource(&res_volt, "sen/volt");
 	rest_activate_resource(&res_led_green, "led/green");
 	rest_activate_resource(&res_led_blue, "led/blue");
 	rest_activate_resource(&res_led_red, "led/red");
@@ -68,6 +63,5 @@ PROCESS_THREAD(server_COAP_master, ev, data)
 		}
 
 	}
-	SENSORS_DEACTIVATE(batmon_sensor);
 	PROCESS_END();
 }

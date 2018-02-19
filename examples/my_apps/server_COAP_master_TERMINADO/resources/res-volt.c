@@ -1,13 +1,11 @@
 /**
  * \file
- *			COAP resource to manage local VOLT sensors
+ *			COAP resource to manage VOLT sensors
  * \author
  *			Raul Ramirez Gomez <raulramirezgomez@gmail.com>
  */
 
 #include "api_resources.h"
-#include "batmon-sensor.h"
-#include "button-sensor.h"
 
 static void volt_GET(void *request, void *response, uint8_t *buffer,
 						uint16_t preferred_size, int32_t *offset);
@@ -43,18 +41,14 @@ PERIODIC_RESOURCE(res_volt,
 static void
 volt_periodic_handler()
 {
-	int volt;
-	char volt_aux[VOLT_SIZE];
-
-	volt = batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT);
-	memset(volt_aux, '\0', VOLT_SIZE);
-	sprintf(volt_aux, "%d", (volt*125) >> 5);
-
-	if(strcmp(volt_old, volt_aux) != 0){
+	if(strcmp(volt_old, volt_shared) != 0){
 		memset(volt_old, '\0', VOLT_SIZE);
-		strncpy(volt_old, volt_aux, strlen(volt_aux));
+		strncpy(volt_old, volt_shared, VOLT_SIZE-1);
 		REST.notify_subscribers(&res_volt);
 	}
+
+	//Send request to slave
+	cc26xx_uart_write_byte(VOLT);
 }//End of volt_periodic_handler
 
 
@@ -72,12 +66,12 @@ volt_GET(void *request, void *response, uint8_t *buffer,
 		REST.set_header_content_type(response, REST.type.APPLICATION_JSON);
 		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE,
 			"{\"Volt\":{\"v\":%s,\"u\":\"mV\"}}",
-			(strncmp(volt_old, "FFFF", VOLT_SIZE-1)!=0)?volt_old:"\"NaN\"");
+			(strncmp(volt_shared, "FFFF", VOLT_SIZE-1)!=0)?volt_shared:"\"NaN\"");
 		REST.set_response_payload(response, buffer, strlen((char *)buffer));
 	} else if(accept == REST.type.TEXT_PLAIN) {
 		REST.set_header_content_type(response, REST.type.TEXT_PLAIN);
 		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "Volt=%smV",
-			(strncmp(volt_old, "FFFF", VOLT_SIZE-1)!=0)?volt_old:"\"NaN\"");
+			(strncmp(volt_shared, "FFFF", VOLT_SIZE-1)!=0)?volt_shared:"\"NaN\"");
 		REST.set_response_payload(response, buffer, strlen((char *)buffer));
 	} else {
 		//ERROR

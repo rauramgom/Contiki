@@ -84,8 +84,11 @@ extern char volt_shared[VOLT_SIZE];
 #define AUX_SIZE	6	// worse case: V 2 9 6 1 \0
 
 // Periodic resource timer
-#define TEMP_TIMER 1*CLOCK_SECOND
-#define VOLT_TIMER 1.5*CLOCK_SECOND
+#define TEMP_TIMER		1*CLOCK_SECOND
+#define VOLT_TIMER		1.5*CLOCK_SECOND
+
+#define VOLT_PER_TIMER	5*CLOCK_SECOND
+#define TEMP_PER_TIMER	10*CLOCK_SECOND
 
 
 //*****************************************************************************
