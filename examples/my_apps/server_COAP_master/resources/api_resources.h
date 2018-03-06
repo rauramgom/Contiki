@@ -34,13 +34,6 @@ extern "C"
 #include "button-sensor.h"
 #include "dev/leds.h"	
 
-/*#include "sys/process.h"
-#include "er-coap.h"
-
-// IPv6/RPL Stack
-#include "net/netstack.h"
-#include "net/ipv6/uip-ds6-nbr.h"
-#include "net/ipv6/uip-ds6-route.h"*/
 #include "net/rpl/rpl.h"
 #include "net/rpl/rpl-private.h"
 
@@ -67,14 +60,14 @@ extern "C"
 #define LED_ALL_POST_ON		'b'
 #define LED_ALL_POST_OFF	'c'
 
-#define END			0x0a
+#define END					0x0a
 ////////////////////////
 
-// Create the payload
+// Error in payload
 #define not_supported_msg "Supported:application/json, text/plain"
 
 
-// Shared global variable used to fill up the resource payload response
+// Shared global variables used to fill up the payload response of the resource
 #define TEMP_SIZE	4	// worse case: - 2 9 \0
 extern char temp_shared[TEMP_SIZE];
 
@@ -84,11 +77,11 @@ extern char volt_shared[VOLT_SIZE];
 #define AUX_SIZE	6	// worse case: V 2 9 6 1 \0
 
 // Periodic resource timer
-#define TEMP_TIMER		1*CLOCK_SECOND
-#define VOLT_TIMER		1.5*CLOCK_SECOND
+#define TEMP_TIMER		10*CLOCK_SECOND
+#define VOLT_TIMER		10*CLOCK_SECOND
 
-#define VOLT_PER_TIMER	5*CLOCK_SECOND
-#define TEMP_PER_TIMER	10*CLOCK_SECOND
+#define VOLT_PER_TIMER	2*CLOCK_SECOND
+#define TEMP_PER_TIMER	2*CLOCK_SECOND
 
 
 //*****************************************************************************

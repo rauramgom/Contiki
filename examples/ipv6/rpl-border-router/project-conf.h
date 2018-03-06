@@ -90,6 +90,12 @@
 /*******************************************************/
 /******************* Configuring RPL *******************/
 /*******************************************************/
+/*
+* Set 0 to disable updating DIO with ETX forced-modified 
+*/
+#undef WITH_BATFLAG
+#define WITH_BATFLAG 0
+
 /* 
 * Set 1 to enable RPL debug.
 */
@@ -127,8 +133,8 @@
  * by default, but note it must be enabled to support joining a DODAG
  * that requires MC (e.g., MRHOF with a metric other than ETX).
  */
-//#undef RPL_CONF_WITH_MC
-//#define RPL_CONF_WITH_MC 0	//[¡¡¡PROBLEMA!!!]COOJA ROMPE SI LO ACTIVAMOS
+#undef RPL_CONF_WITH_MC
+#define RPL_CONF_WITH_MC 1
 
 /* The MC advertised in DIOs and propagating from the root */
 #undef RPL_CONF_DAG_MC
@@ -143,7 +149,7 @@
  * ContikiRPL thus sets the default to 2^12 ms = 4.096 s.
  */
 #undef RPL_CONF_DIO_INTERVAL_MIN
-#define RPL_CONF_DIO_INTERVAL_MIN	10	//Default: 12
+#define RPL_CONF_DIO_INTERVAL_MIN	9	//0.512seg
 
 /*
  * Maximum amount of timer doublings.
@@ -153,7 +159,7 @@
  * unsuitable when we start with a minimum interval of 2^12.
  */
 #undef RPL_CONF_DIO_INTERVAL_DOUBLINGS
-#define RPL_CONF_DIO_INTERVAL_DOUBLINGS 8
+#define RPL_CONF_DIO_INTERVAL_DOUBLINGS 3	//9+3 --> 4.096seg
 
 /*
  * Default route lifetime unit. This is the granularity of time
@@ -181,6 +187,12 @@
 #undef RPL_CONF_DIS_INTERVAL
 #define RPL_CONF_DIS_INTERVAL	60	//Default: 60
 
+/*
+ * Added delay of first DIS transmission after boot
+ */
+#undef RPL_CONF_DIS_START_DELAY
+#define RPL_CONF_DIS_START_DELAY 3
+
 /* DAG Mode of Operation 
 #define RPL_MOP_NO_DOWNWARD_ROUTES      0
 #define RPL_MOP_NON_STORING             1
@@ -189,7 +201,6 @@
 */
 #undef RPL_CONF_MOP
 #define RPL_CONF_MOP RPL_MOP_NON_STORING /* Mode of operation*/
-//#define RPL_CONF_MOP RPL_MOP_STORING_NO_MULTICAST /* Mode of operation*/
 
 #endif /* WITH_RPL */
 

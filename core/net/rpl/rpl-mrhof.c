@@ -103,11 +103,8 @@ to the threshold of 96 in the non-squared case) */
 /* Reject parents that have a higher path cost than the following. */
 #define MAX_PATH_COST      32768   /* Eq path ETX of 256 */
 
-/* Alpha value chosen for the Objective Function */
-#define ALPHA 1.0
-#include <math.h>
-
-#define BATTERY_LOW_LIMIT   3000 /*Lower limit of batery in mV*/
+/*AEA: variable global para indicar la bateria*/
+int bat_flag=0;
 
 /*---------------------------------------------------------------------------*/
 //Resets the objective function state for a specific DAG. This function is
@@ -179,9 +176,6 @@ static uint16_t
 parent_path_cost(rpl_parent_t *p)
 {
 	uint16_t base;
-#if RPL_WITH_MC
-	double new_link_cost;
-#endif
 
 
 	if(p == NULL || p->dag == NULL || p->dag->instance == NULL) {
@@ -192,8 +186,8 @@ parent_path_cost(rpl_parent_t *p)
 	/* Handle the different MC types */
 	switch(p->dag->instance->mc.type) {
 		case RPL_DAG_MC_ETX:
-			base = p->mc.obj.etx;
-			break;
+      		base = p->mc.obj.etx+bat_flag;
+      		break;
 		case RPL_DAG_MC_ENERGY:
 			base = p->mc.obj.energy.energy_est << 8;
 			break;
@@ -201,40 +195,11 @@ parent_path_cost(rpl_parent_t *p)
 			base = p->rank;
 			break;
 	}
-
-	//OF must calculate the range based on two parameters
-	new_link_cost = ALPHA*parent_link_metric(p) + (1-ALPHA)*(p->mc.obj.num_low_bat);
-	/****************************/
-	//otra opción
-	//new_link_cost = ALPHA*((uint16_t)base+parent_link_metric(p))+(1-ALPHA)*p->mc.obj.num_low_bat;
-	//return MIN(Rounding(new_link_cost), 0xffff);
-	/****************************/
-	
-	//Rounding to the upper integer only if is bigger than 0.5
-	if(new_link_cost - (int)new_link_cost >= 0.5)
-		new_link_cost = ceil(new_link_cost);
-
-	PRINTF("\n-*-*-*-*-*\n");
-	PRINTF(" -ETX_base: %d\n", base);
-	PRINTF(" -ETX_parent_link_metric: %lf",
-				new_link_cost - (1-ALPHA)*(p->mc.obj.num_low_bat));
-	PRINTF(" -ETC_num_low_bat: %lf", (1-ALPHA)*(p->mc.obj.num_low_bat));
-	PRINTF(" -ETX_new_link_cos: %lu\n", (uint32_t)new_link_cost);
-	PRINTF("-*-*-*-*-*\n\n");
 #else /* RPL_WITH_MC */
 	base = p->rank;
 #endif /* RPL_WITH_MC */
 
-	/* path cost upper bound: 0xffff 
-	*
-	*		- base:				parent_ETX
-	*		- new_link_cost:	link cost based on link_metric + num_device_low_battery
-	*/
-#if RPL_WITH_MC
-	return MIN((uint32_t)base + (uint32_t)new_link_cost, 0xffff);
-#else
 	return MIN((uint32_t)base + parent_link_metric(p), 0xffff);
-#endif
 }
 
 /*---------------------------------------------------------------------------*/
@@ -374,15 +339,13 @@ update_metric_container(rpl_instance_t *instance)
 		case RPL_DAG_MC_ETX:
 			//Fill up the DIO message fields
 			instance->mc.length = sizeof(instance->mc.obj.etx); //uint16_t
-			instance->mc.obj.etx = path_cost; //cost = ALPHA*etx + (1-ALPHA)*battery
-			instance->mc.obj.num_low_bat = dag->preferred_parent->mc.obj.num_low_bat;
-			//Check if it is necessary to enhance the low battery count
-#if WITH_BATMONSENSOR
-			if(batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT) <= BATTERY_LOW_LIMIT)
-#else
-			if(rand()%10 < 5)
+#if WITH_BATFLAG
+			if(10>(unsigned)((clock_time() - 600*CLOCK_SECOND)/CLOCK_SECOND)){
+				bat_flag = 128;
+				reset(dag);
+			}
 #endif
-				instance->mc.obj.num_low_bat++;
+			instance->mc.obj.etx = path_cost+bat_flag;
 			break;
 		case RPL_DAG_MC_ENERGY:
 			instance->mc.length = sizeof(instance->mc.obj.energy);

@@ -8,13 +8,15 @@
 #include "resources/api_resources.h"
 
 /*
- * Resources will be activated need to be imported through the extern keyword.
+ * Resources will be activated need to be imported.
  * The build system automatically compiles the resources in the corresponding sub-directory.
  */
-extern resource_t res_temp;
-extern resource_t res_periodic_temp;
-extern resource_t res_volt;
-extern resource_t res_periodic_volt;
+extern resource_t res_local_temp;
+extern resource_t res_remote_temp;
+
+extern resource_t res_local_volt;
+extern resource_t res_remote_volt;
+
 extern resource_t res_led_green;
 extern resource_t res_led_blue;
 extern resource_t res_led_red;
@@ -40,10 +42,11 @@ PROCESS_THREAD(server_COAP_master, ev, data)
 	cc26xx_uart_init();
 	cc26xx_uart_set_input(serial_line_input_byte);
 
-	rest_activate_resource(&res_periodic_temp, "sen/remote temp");
-	rest_activate_resource(&res_periodic_volt, "sen/remote volt");
-	rest_activate_resource(&res_temp, "sen/local temp");
-	rest_activate_resource(&res_volt, "sen/local volt");
+	rest_activate_resource(&res_remote_temp, "sen/remote temp");
+	rest_activate_resource(&res_remote_volt, "sen/remote volt");
+	rest_activate_resource(&res_local_temp, "sen/local temp");
+	rest_activate_resource(&res_local_volt, "sen/local volt");
+	
 	rest_activate_resource(&res_led_green, "led/green");
 	rest_activate_resource(&res_led_blue, "led/blue");
 	rest_activate_resource(&res_led_red, "led/red");

@@ -65,6 +65,8 @@
 #define DEBUG DEBUG_NONE
 #endif /* TSCH_LOG_LEVEL */
 #include "net/net-debug.h"
+int num_pkt_tx=0;
+int num_rtx=0;
 
 /* TSCH debug macros, i.e. to set LEDs or GPIOs on various TSCH
  * timeslot events */
@@ -371,6 +373,8 @@ update_neighbor_state(struct tsch_neighbor *n, struct tsch_packet *p,
 
     /* Update CSMA state in the unicast case */
     if(is_unicast) {
+      //num_pkt_tx++;
+      
       if(is_shared_link || tsch_queue_is_empty(n)) {
         /* If this is a shared link, reset backoff on success.
          * Otherwise, do so only is the queue is empty */
@@ -379,10 +383,14 @@ update_neighbor_state(struct tsch_neighbor *n, struct tsch_packet *p,
     }
   } else {
     /* Failed transmission */
+
     if(p->transmissions >= TSCH_MAC_MAX_FRAME_RETRIES + 1) {
+      //num_rtx=num_rtx-TSCH_MAC_MAX_FRAME_RETRIES;
       /* Drop packet */
       tsch_queue_remove_packet_from_queue(n);
       in_queue = 0;
+    } else {
+      //num_rtx++;
     }
     /* Update CSMA state in the unicast case */
     if(is_unicast) {
@@ -693,6 +701,12 @@ PT_THREAD(tsch_tx_slot(struct pt *pt, struct rtimer *t))
     }
 
     /* Log every tx attempt */
+    if(mac_tx_status == MAC_TX_OK){
+      num_pkt_tx++;
+      num_rtx+=current_packet->transmissions;
+      PRINTF("\n[NUM PAQ TX]TSCH: %d\n", num_pkt_tx);
+      PRINTF("[NUM ReTX]TSCH: %d\n", num_rtx);
+    }
     TSCH_LOG_ADD(tsch_log_tx,
         log->tx.mac_tx_status = mac_tx_status;
     log->tx.num_tx = current_packet->transmissions;

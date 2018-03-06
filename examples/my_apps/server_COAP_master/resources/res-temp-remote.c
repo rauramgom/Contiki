@@ -1,19 +1,16 @@
 /**
  * \file
- *			COAP resource to manage TEMP sensors
+ *			COAP resource to manage remote TEMP sensors
  * \author
  *			Raul Ramirez Gomez <raulramirezgomez@gmail.com>
  */
 
 #include "api_resources.h"
 
-static void temp_GET(void *request, void *response, uint8_t *buffer,
+static void temp_periodic_GET(void *request, void *response, uint8_t *buffer,
 						uint16_t preferred_size, int32_t *offset);
 
 static void temp_periodic_handler(void);
-
-//Notify subscribers
-char temp_old[TEMP_SIZE] = "FFF";
 
 //Creation of the associated resource. Valid to make it OBSERVABLE or be activated
 //	\params
@@ -25,13 +22,13 @@ char temp_old[TEMP_SIZE] = "FFF";
 //			-DELETE function,
 //			-period,
 //			-function_handler
-PERIODIC_RESOURCE(res_temp,
+PERIODIC_RESOURCE(res_remote_temp,
 					"title=\"Temp\"",
-					temp_GET, 
+					temp_periodic_GET, 
 					NULL,
 					NULL,
 					NULL,
-					TEMP_TIMER,
+					TEMP_PER_TIMER,
 					temp_periodic_handler);
 
 /********************************************************************************/
@@ -41,19 +38,13 @@ PERIODIC_RESOURCE(res_temp,
 static void
 temp_periodic_handler()
 {
-	if(strcmp(temp_old, temp_shared) != 0){
-		memset(temp_old, '\0', TEMP_SIZE);
-		strncpy(temp_old, temp_shared, TEMP_SIZE-1);
-		REST.notify_subscribers(&res_temp);
-	}
-	
-	//Send request to slave
+	REST.notify_subscribers(&res_periodic_temp);
 	cc26xx_uart_write_byte(TEMP);
 }//End of temp_periodic_handler
 
 
 static void
-temp_GET(void *request, void *response, uint8_t *buffer,
+temp_periodic_GET(void *request, void *response, uint8_t *buffer,
 				uint16_t preferred_size, int32_t *offset)
 {
 	unsigned int accept = 100;
@@ -67,6 +58,7 @@ temp_GET(void *request, void *response, uint8_t *buffer,
 		snprintf((char *)buffer, REST_MAX_CHUNK_SIZE,
 			"{\"Temp\":{\"v\":%s,\"u\":\"C\"}}",
 			(strncmp(temp_shared, "FFF", TEMP_SIZE-1)!=0)?temp_shared:"\"NaN\"");
+		
 		REST.set_response_payload(response, buffer, strlen((char *)buffer));
 
 	} else if(accept == REST.type.TEXT_PLAIN) {
@@ -81,6 +73,5 @@ temp_GET(void *request, void *response, uint8_t *buffer,
 		REST.set_response_payload(response, not_supported_msg,
 			strlen(not_supported_msg));
 	}
-
-}//End of temp_GET
+}//End of temp_periodic_GET
 /********************************************************************************/
