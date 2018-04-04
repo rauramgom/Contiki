@@ -25,7 +25,7 @@ For more information, see the Contiki website:
       * UNIFLASH
       * TI SMARTRF FLASH PROGRAMMER v2
   3. Conexión por puerto serie
-  4. Creacin dee túnel entre red RPL y PC
+  4. Creación dee túnel entre red RPL y PC
   5. Capturador de tráfico y visualización con Wireshark
   6. Protocolo de comunicación a través de UART
       * Funcionamiento del esclavo
@@ -111,7 +111,7 @@ Una vez que tenemos las motas flasheadas con la imagen correcta, podemos ver la 
 ~~~
 
 
-# 4.Creacin de túnel entre red RPL y PC
+# 4.Creación de túnel entre red RPL y PC
 Cuando queremos establecer un túnel para conectar la red RPL que hemos montado a nuestro ordenador, como por ejemplo hacemos cuando establecemos una de las motas como BorderRouter (en el caso de establecer el Router en el PC y poner la placa como radio había algunos problemas y no siempre funcionaba), hacemos lo siguiente:  
   * Con la imagen ya volcada, abrimos un terminal en **modo root** y nos desplazamos al directorio contiki/tools para ejecutar lo siguiente:
 ~~~
@@ -149,7 +149,7 @@ Básicamente lo que hace es capturar todo el tráfico resultante y extraer todo 
 ![Ver /doc/pictures-GUIDE/pic13](https://github.com/rauramgom/contiki/blob/master/doc/pictures-GUIDE/pic13.png)
 
 
-#  6.Protocolo de comunicacin a través de UART
+#  6.Protocolo de comunicación a través de UART
 Con objeto de tener una comunicación rápida y efectiva entre el maestro y el esclavo (recordemos que ambos en conjunto actúan como el servidor COAP) por interfaz serie, ha sido necesario indagar en Contiki para poder tratar la información que se envía y recibe a través de dicha interfaz.  
 Una vez estudiado el contenido de estas funciones, y sabiendo que sólo puede enviarse información carácter a carácter, se ha optado por elaborar un diccionario o mapa de equivalencias que permita comunicar peticiones COAP de manera efectiva. El diccionario es el siguiente:
 
@@ -188,7 +188,7 @@ Los archivos utilizados pueden ser encontrados en /examples/my_apps/server_COAP_
 ## Iniciar Wireshark  
 Este paso está ampliamente explicado en el apartado ‘*5.- Capturador de tráfico y visualización con Wireshark*’.
 
-## Ubicar las placas y contetar por serie Master&Slave  
+## Ubicar las placas y conectar por serie Master&Slave  
 El funcionamiento de la conexión por UART viene explicado en ‘*6.- Protocolo de comunicación a través de UART*’.  
 En cuanto a la conexión física, han sido utilizados únicamente 3 pines: **GND**, **EM_UART_TX** y **EM_UART_RX**, siendo estos dos últimos cruzados en su conexión. En la siguiente foto puede verse su conexionado:
 
