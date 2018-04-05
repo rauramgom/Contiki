@@ -39,6 +39,8 @@
  *         Atis Elsts <atis.elsts@bristol.ac.uk>
  *
  */
+//#ifndef WITH_CONTADOR
+#define WITH_CONTADOR 1
 
 #include "contiki.h"
 #include "dev/radio.h"
@@ -65,8 +67,27 @@
 #define DEBUG DEBUG_NONE
 #endif /* TSCH_LOG_LEVEL */
 #include "net/net-debug.h"
+
+  #undef DEBUG
+  #define DEBUG DEBUG_FULL
+
 int num_pkt_tx=0;
-int num_rtx=0;
+int num_intentos=0;
+int num_max_rtx=1;
+
+
+#if WITH_CONTADOR
+
+
+int RADIO_num_intentos_tx_buff=0;
+int RADIO_num_collision=0;
+int RADIO_num_pkt_radio_tx_ok=0;
+int RADIO_num_pkt_ack_tx=0;
+int RADIO_num_pkt_noack_tx=0;
+int RADIO_num_pkt_broad=0;
+int RADIO_num_pkt_radio_tx_err=0;
+int RADIO_num_intentos_tx_drop=0;
+#endif
 
 /* TSCH debug macros, i.e. to set LEDs or GPIOs on various TSCH
  * timeslot events */
@@ -385,12 +406,12 @@ update_neighbor_state(struct tsch_neighbor *n, struct tsch_packet *p,
     /* Failed transmission */
 
     if(p->transmissions >= TSCH_MAC_MAX_FRAME_RETRIES + 1) {
-      //num_rtx=num_rtx-TSCH_MAC_MAX_FRAME_RETRIES;
+      //num_intentos=num_intentos-TSCH_MAC_MAX_FRAME_RETRIES;
       /* Drop packet */
       tsch_queue_remove_packet_from_queue(n);
       in_queue = 0;
     } else {
-      //num_rtx++;
+      //num_intentos++;
     }
     /* Update CSMA state in the unicast case */
     if(is_unicast) {
@@ -549,6 +570,10 @@ PT_THREAD(tsch_tx_slot(struct pt *pt, struct rtimer *t))
       if(packet_ready && NETSTACK_RADIO.prepare(packet, packet_len) == 0) { /* 0 means success */
         static rtimer_clock_t tx_duration;
 
+#if WITH_CONTADOR
+        RADIO_num_intentos_tx_buff++;
+#endif
+
 #if CCA_ENABLED
         cca_status = 1;
         /* delay before CCA */
@@ -563,6 +588,10 @@ PT_THREAD(tsch_tx_slot(struct pt *pt, struct rtimer *t))
         /*  NETSTACK_RADIO.off(); */
         if(cca_status == 0) {
           mac_tx_status = MAC_TX_COLLISION;
+#if WITH_CONTADOR
+          RADIO_num_collision++;
+#endif
+          
         } else
 #endif /* CCA_ENABLED */
         {
@@ -581,6 +610,10 @@ PT_THREAD(tsch_tx_slot(struct pt *pt, struct rtimer *t))
           tsch_radio_off(TSCH_RADIO_CMD_OFF_WITHIN_TIMESLOT);
 
           if(mac_tx_status == RADIO_TX_OK) {
+#if WITH_CONTADOR
+          RADIO_num_pkt_radio_tx_ok++;
+#endif
+
             if(!is_broadcast) {
               uint8_t ackbuf[TSCH_PACKET_MAX_LEN];
               int ack_len;
@@ -650,6 +683,11 @@ PT_THREAD(tsch_tx_slot(struct pt *pt, struct rtimer *t))
               }
 
               if(ack_len != 0) {
+
+#if WITH_CONTADOR
+                RADIO_num_pkt_ack_tx++;
+#endif
+
                 if(is_time_source) {
                   int32_t eack_time_correction = US_TO_RTIMERTICKS(ack_ies.ie_time_correction);
                   int32_t since_last_timesync = TSCH_ASN_DIFF(tsch_current_asn, last_sync_asn);
@@ -674,15 +712,32 @@ PT_THREAD(tsch_tx_slot(struct pt *pt, struct rtimer *t))
                 }
                 mac_tx_status = MAC_TX_OK;
               } else {
+#if WITH_CONTADOR
+                RADIO_num_pkt_noack_tx++;
+#endif
+
                 mac_tx_status = MAC_TX_NOACK;
               }
             } else {
+#if WITH_CONTADOR
+              RADIO_num_pkt_broad++;
+#endif
+
               mac_tx_status = MAC_TX_OK;
             }
           } else {
+#if WITH_CONTADOR
+              RADIO_num_pkt_radio_tx_err++;
+#endif
+
             mac_tx_status = MAC_TX_ERR;
           }
         }
+      } else {
+        //ERROR PREP PAQ SEND - no copy to radio buffer
+#if WITH_CONTADOR
+        RADIO_num_intentos_tx_drop++;
+#endif   
       }
     }
 
@@ -703,9 +758,34 @@ PT_THREAD(tsch_tx_slot(struct pt *pt, struct rtimer *t))
     /* Log every tx attempt */
     if(mac_tx_status == MAC_TX_OK){
       num_pkt_tx++;
-      num_rtx+=current_packet->transmissions;
-      PRINTF("\n[NUM PAQ TX]TSCH: %d\n", num_pkt_tx);
-      PRINTF("[NUM ReTX]TSCH: %d\n", num_rtx);
+      num_intentos+=current_packet->transmissions;
+      if(current_packet->transmissions-1 > num_max_rtx)
+        num_max_rtx=current_packet->transmissions-1;
+
+      PRINTF("\n***ESTADISTICOS***\n");
+      PRINTF("[TSCH] Nº intentos totales: %d\n", num_intentos);
+      PRINTF("[TSCH] Nº TX sin RTX: %d\n", num_pkt_tx);
+      PRINTF("[TSCH] Nº RTX: %d\n", num_intentos-num_pkt_tx);
+      PRINTF("[TSCH] Máx nº RTX: %d\n", num_max_rtx);
+      
+
+#if WITH_CONTADOR
+      PRINTF("[RADIO] Nº intentos TX totales: %d - %d encolados y %d tirados\n", 
+        RADIO_num_intentos_tx_buff+RADIO_num_intentos_tx_drop, 
+        RADIO_num_intentos_tx_buff,
+        RADIO_num_intentos_tx_drop);
+
+      //PRINTF("[RADIO] Colisiones: %d\n", RADIO_num_collision);
+
+      PRINTF("[RADIO] Encolados: %d radio-tx y %d radio-err\n",
+        RADIO_num_pkt_radio_tx_ok, RADIO_num_pkt_radio_tx_err);
+
+      PRINTF("[RADIO] Radio-TX: %d TX-ack-UNICAST, %d TX-noack-UNICAST Y %d broadcast\n",
+        RADIO_num_pkt_ack_tx, RADIO_num_pkt_noack_tx, RADIO_num_pkt_broad);
+      PRINTF("[RADIO] Unicast: %d\n", RADIO_num_pkt_ack_tx+RADIO_num_pkt_noack_tx);
+      PRINTF("******************\n\n");
+#endif
+
     }
     TSCH_LOG_ADD(tsch_log_tx,
         log->tx.mac_tx_status = mac_tx_status;
