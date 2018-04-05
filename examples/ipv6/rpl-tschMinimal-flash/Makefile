@@ -17,7 +17,7 @@ MODULES += core/net/mac/tsch
 MODULES += core/net/rpl
 CONTIKI_WITH_RPL = 1
 
-PROJECT_SOURCEFILES += api_flash.c
+#PROJECT_SOURCEFILES += api_flash.c
 
 #ifeq ($(MAKE_WITH_ORCHESTRA),1)
 #CFLAGS += -DWITH_ORCHESTRA=1

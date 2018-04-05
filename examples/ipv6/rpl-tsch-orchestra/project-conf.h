@@ -52,16 +52,13 @@
 /* Length of the various slotframes. Tune to balance network capacity,
  * contention, energy, latency. */
 #undef ORCHESTRA_CONF_EBSF_PERIOD
-#define ORCHESTRA_CONF_EBSF_PERIOD	397 //Level TSCH. Default: 397
-
-#undef ORCHESTRA_CONF_COMMON_RPL_PERIOD
-#define ORCHESTRA_CONF_COMMON_RPL_PERIOD	103 //Level RPL. Default: 51
+#define ORCHESTRA_CONF_EBSF_PERIOD	97 //Level TSCH. Default: 397
 
 #undef ORCHESTRA_CONF_COMMON_SHARED_PERIOD
-#define ORCHESTRA_CONF_COMMON_SHARED_PERIOD	1010 //Level App_shared. Default: 31
+#define ORCHESTRA_CONF_COMMON_SHARED_PERIOD	31 //Level App_shared. Default: 31
 
 #undef ORCHESTRA_CONF_UNICAST_PERIOD
-#define ORCHESTRA_CONF_UNICAST_PERIO 510 //Level App_unicast.Default: 17
+#define ORCHESTRA_CONF_UNICAST_PERIO 23 //Level App_unicast.Default: 17
 
 /*******************************************************/
 /********************* Enable TSCH *********************/
@@ -94,6 +91,14 @@
 #undef TSCH_LOG_CONF_LEVEL
 #define TSCH_LOG_CONF_LEVEL 2
 
+/* Default hopping sequence, used in case hopping sequence ID == 0 */
+#undef TSCH_CONF_DEFAULT_HOPPING_SEQUENCE
+#define TSCH_CONF_DEFAULT_HOPPING_SEQUENCE TSCH_HOPPING_SEQUENCE_1_1
+
+/* Hopping sequence used for joining (scan channels) */
+#undef TSCH_CONF_JOIN_HOPPING_SEQUENCE
+#define TSCH_CONF_JOIN_HOPPING_SEQUENCE TSCH_DEFAULT_HOPPING_SEQUENCE
+
 /* IEEE802.15.4 PANID */
 #undef IEEE802154_CONF_PANID
 #define IEEE802154_CONF_PANID 0xabcd
@@ -105,7 +110,7 @@
 /* 6TiSCH minimal schedule length.
  * Larger values result in less frequent active slots: reduces capacity and saves energy. */
 #undef TSCH_SCHEDULE_CONF_DEFAULT_LENGTH
-#define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH 3
+#define TSCH_SCHEDULE_CONF_DEFAULT_LENGTH 1
 
 #if WITH_SECURITY
 
@@ -177,7 +182,7 @@
 /*********** RPL storing mode & Sender-based ***********/
 /*******************************************************/
 #undef UIP_CONF_MAX_ROUTES
-#define UIP_CONF_MAX_ROUTES 100 /* No need for routes */
+#define UIP_CONF_MAX_ROUTES 50 /* No need for routes */
 
 /* DAG Mode of Operation 
 #define RPL_MOP_NO_DOWNWARD_ROUTES      0
@@ -190,7 +195,7 @@
 
 /* Orchestra in storing mode for the sender-based */
 #undef ORCHESTRA_CONF_RULES
-#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &unicast_per_neighbor_rpl_storing, &rpl_common, &default_common,  } 
+#define ORCHESTRA_CONF_RULES { &eb_per_time_source, &unicast_per_neighbor_rpl_storing, &default_common} 
 //										MAC ------------> APP_unicast -----------------> RPL -------> APP_unicast
 
 /* Is the per-neighbor unicast slotframe sender-based (if not, it is receiver-based).
@@ -203,7 +208,7 @@
 /******************* Configuring RPL *******************/
 /*******************************************************/
 /* Set to 1 to enable RPL statistics */
-#define RPL_CONF_STATS 1
+#define RPL_CONF_STATS 0
 
 /*
  * The objective function (OF) used by a RPL root is configurable through

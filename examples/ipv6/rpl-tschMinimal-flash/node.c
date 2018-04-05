@@ -43,8 +43,8 @@
 #include "sys/process.h"
 #include "rest-engine.h"
 #include "er-coap.h"
-#include "batmon-sensor.h"
-#include "button-sensor.h"
+//#include "batmon-sensor.h"
+//#include "button-sensor.h"
 // IPv6/RPL Stack
 #include "net/netstack.h"
 #include "net/ipv6/uip-ds6-nbr.h"
@@ -110,9 +110,10 @@ reading_resources_GET_handler(void *request, void *response, uint8_t *buffer,
 	}
 
 	//Value of sensor is rescued
-	measure_temp = read_flash(pos_flash);
+	measure_temp.measure = 20;//read_flash(pos_flash);
+	measure_temp.ID = TEMP;
 	//measure_temp.measure = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);;
-	voltage = batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT);
+	voltage = 222;//batmon_sensor.value(BATMON_SENSOR_TYPE_VOLT);
 
 	if(accept == -1 || accept == REST.type.APPLICATION_JSON) {
 		//Set the header content
@@ -178,10 +179,10 @@ PROCESS_THREAD(node_process, ev, data)
 	reading_resources.flags += IS_OBSERVABLE;
 	rest_activate_resource(&reading_resources, "sen/readings");
 	//Activate comun sensors
-	SENSORS_ACTIVATE(batmon_sensor);
+	//SENSORS_ACTIVATE(batmon_sensor);
 
 	printf("[%lu] Erasing the flash for first time...\n\n", clock_seconds());
-	erase_flash(&pos_flash);
+	//erase_flash(&pos_flash);
 
 	/* Print out routing tables every minute */
 	etimer_set(&et_store, ETIMER_STORE);
@@ -199,10 +200,10 @@ PROCESS_THREAD(node_process, ev, data)
 			//leds_toggle(LEDS_RED);
 			leds_toggle(LEDS_BLUE); //blue
 			//Fill up every Measure struct field
-			temp_measure.measure = rand()%10;//batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
+			/*temp_measure.measure = rand()%10;//batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP);
 			temp_measure.ID = TEMP;
 			temp_measure.sysUpTime = clock_seconds();
-			write_flash(temp_measure, &pos_flash);
+			write_flash(temp_measure, &pos_flash);*/
 			etimer_restart(&et_store);
 		}
 		if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_get)) 
@@ -210,13 +211,13 @@ PROCESS_THREAD(node_process, ev, data)
 			//Get the last value stored on the Flash
 			leds_toggle(LEDS_GREEN);
 			printf("[%lu]APP: Getting value ...\n", clock_seconds());
-			read_flash(pos_flash);
+			//read_flash(pos_flash);
 			REST.notify_subscribers(&reading_resources);
 			etimer_restart(&et_get);
 		}
 	}
 
-	SENSORS_DEACTIVATE(batmon_sensor);
+	//SENSORS_DEACTIVATE(batmon_sensor);
 	PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/

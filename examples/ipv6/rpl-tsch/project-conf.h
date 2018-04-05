@@ -40,6 +40,10 @@
 #define WITH_ORCHESTRA 1
 #endif /* WITH_ORCHESTRA */
 
+#ifndef WITH_BATMONSENSOR
+#define WITH_BATMONSENSOR 0
+#endif
+
 /* Set to enable TSCH security */
 #ifndef WITH_SECURITY
 #define WITH_SECURITY 1
