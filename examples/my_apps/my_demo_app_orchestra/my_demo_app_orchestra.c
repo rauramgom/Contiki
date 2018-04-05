@@ -261,6 +261,11 @@ PROCESS_THREAD(my_demo_app, ev, data)
 
 	//Initialize the REST engine. 
 	rest_init_engine();
+
+	//Vamos a organizar una red basada en el planificador orchestra, en la cual
+	// el nodo ROOT siempre va a ser el ID=1
+	orchestra_init();
+
 	//Activate comun sensors
 	//SENSORS_ACTIVATE(batmon_sensor);
 	//Activate the created resources
@@ -307,10 +312,6 @@ PROCESS_THREAD(my_demo_app, ev, data)
 	} else {
 		net_init(NULL);
 	}
-
-	//Vamos a organizar una red basada en el planificador orchestra, en la cual
-	// el nodo ROOT siempre va a ser el ID=1
-	orchestra_init();
 
 	/* Print out routing tables every minute */
 	etimer_set(&et_routing_tables, ETIMER_ROUTING);
